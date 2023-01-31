@@ -1,30 +1,41 @@
-import React, { ReactElement } from 'react';
-import { AppBar, Box, Toolbar} from '@mui/material';
-import HeaderComponentSearch from './HeaderComponent/HeaderComponentSearch';
-import HeaderComponentLogo from './HeaderComponent/HeaderComponentLogo';
-import HeaderComponentMessage from './HeaderComponent/HeaderComponentMessage';
-import HeaderComponentProfile from './HeaderComponent/HeaderComponentProfile';
+import React, { ReactElement, useState } from 'react';
+import { Toolbar, AppBar, Container, IconButton, Typography, Box, Button } from '@mui/material';
+import { styled } from '@mui/material'
+import HeaderComponentSearch from '../Common/HeaderComponent/HeaderComponentSearch';
+import HeaderComponentMessage from '../Common/HeaderComponent/HeaderComponentMessage';
+import HeaderComponentProfile from '../Common/HeaderComponent/HeaderComponentProfile';
 
+function HeaderLogin(): ReactElement {
 
-function Header() {
+const [detailsHeaderComponentUser, setDetailsHeaderComponentUser ] = useState(true)
+const [detailsHeaderComponentSearch, setDetailsHeaderComponentSearch ] = useState(true)
+
   return (
-    <Box>
-      <AppBar position="static">
+    <AppBar position="static">
+      <Container>
         <Toolbar>
-          <HeaderComponentLogo />
+          <Box sx={{ display: 'flex', flexGrow: 1, alignItems: 'center' }}>
+            <Typography variant='h5' >RSSocial</Typography>
+            {detailsHeaderComponentSearch &&
+            <HeaderComponentSearch />
+            }
+          </Box>
 
-          <HeaderComponentSearch />
+          <Box sx={{ display: 'flex', columnGap: '10px' }}>
+            <Button color='inherit' variant='outlined'>Вход</Button>
+            <Button color='secondary' variant='contained'>Регистрация</Button>
+          </Box>
+          {detailsHeaderComponentUser &&
 
-          <Box sx={{ flexGrow: 1 }} />
-
-          <HeaderComponentMessage />
-
-          <HeaderComponentProfile />
-          
+          <Box sx={{ display: 'flex', columnGap: '10px' }}>
+            <HeaderComponentMessage />
+            <HeaderComponentProfile />
+          </Box>
+          }
         </Toolbar>
-      </AppBar>
-    </Box>
+      </Container>
+    </AppBar>
   );
 }
 
-export default Header;
+export default HeaderLogin;

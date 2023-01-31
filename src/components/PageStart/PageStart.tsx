@@ -6,8 +6,6 @@ import MainRegistrations from './MainRegistrations';
 function PageStart() {
   return (
     <>
-      <HeaderLogin />
-      {/* Выбрать необходимую страничку */}
       <MainLogin />
       <MainRegistrations />
     </>
