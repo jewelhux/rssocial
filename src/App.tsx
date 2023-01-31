@@ -11,8 +11,8 @@ function App() {
     <>
       <DefaultStyle />
       <Header />
-      <PageStart />
-      <PageChat />
+      {/* <PageStart /> */}
+      {/* <PageChat /> */}
       <PageProfile />
       <Footer />
     </>
