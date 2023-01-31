@@ -9,9 +9,9 @@ function App() {
   return (
     <>
       <DefaultStyle />
-      {/* <PageStart /> */}
+      <PageStart />
       <PageChat />
-      {/* <PageProfile /> */}
+      <PageProfile />
       <Footer />
     </>
   );
