@@ -4,14 +4,16 @@ import Footer from './components/Common/Footer';
 import PageChat from './components/PageChat/PageChat';
 import PageProfile from './components/PageProfile/PageProfile';
 import PageStart from './components/PageStart/PageStart';
+import HeaderLogin from './components/PageStart/HeaderLogin';
 
 function App() {
   return (
     <>
       <DefaultStyle />
+      <HeaderLogin />
       <PageStart />
-      <PageChat />
-      <PageProfile />
+      {/* <PageChat /> */}
+      {/* <PageProfile /> */}
       <Footer />
     </>
   );
