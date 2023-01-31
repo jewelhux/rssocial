@@ -3,14 +3,22 @@ import { AppBar, Box, Toolbar, IconButton, Typography, Badge, MenuItem, Menu} fr
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 
-function HeaderComponentMessage():ReactElement {
+
+export function HeaderMails() {
   return (
-    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+    <>
       <IconButton size="large" aria-label="show 4 new mails" color="inherit">
         <Badge badgeContent={4} color="error">
           <MailIcon />
         </Badge>
       </IconButton>
+    </>
+  );
+}
+
+export function HeaderAccount() {
+  return (
+    <>
       <IconButton
         size="large"
         edge="end"
@@ -20,6 +28,16 @@ function HeaderComponentMessage():ReactElement {
     >
         <AccountCircle />
       </IconButton>
+    </>
+  );
+}
+
+
+function HeaderComponentMessage():ReactElement {
+  return (
+    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+      <HeaderMails />
+      <HeaderAccount />
     </Box>
   );
 }
