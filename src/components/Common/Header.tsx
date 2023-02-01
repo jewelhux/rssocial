@@ -10,6 +10,7 @@ import HeaderComponentLogo from './HeaderComponent/HeaderComponentLogo';
 import HeaderComponentMobileMenu from './HeaderComponent/HeaderComponentMobileMenu';
 import HeaderComponentProfile from './HeaderComponent/HeaderComponentProfile';
 import HeaderComponentMessage from './HeaderComponent/HeaderComponentMessage';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -43,12 +44,12 @@ export default function Header() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      <MenuItem component={Link} to="/messages">
         <HeaderComponentMessage />
         <p>Messages</p>
       </MenuItem>
       
-      <MenuItem>
+      <MenuItem component={Link} to="/profile">
         <HeaderComponentProfile />
         <p>Profile</p>
       </MenuItem>
