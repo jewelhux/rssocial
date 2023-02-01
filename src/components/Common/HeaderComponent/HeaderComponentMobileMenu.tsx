@@ -5,7 +5,7 @@ import { IHeaderMobileMenu } from '../../../utils/interfaces'
 
 function HeaderComponentMobileMenu({mobileMenuId, handleMobileMenuOpen}: IHeaderMobileMenu):ReactElement {
   return (
-    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+    <Box sx={{ display: { xs: 'flex', md: 'none'} }}>
       <IconButton
         size="large"
         aria-label="show more"
