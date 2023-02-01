@@ -1,61 +1,30 @@
-import React, { ReactElement, ReactEventHandler, useState } from 'react';
-import { AppBar, Box, Toolbar, IconButton, Typography, Badge, MenuItem, Menu } from '@mui/material';
+import React, { ReactElement } from 'react';
+import { AppBar, Box, Toolbar, IconButton, Typography, Badge, MenuItem, Menu} from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MoreIcon from '@mui/icons-material/MoreVert';
-import HeaderComponentMessage, { HeaderMails, HeaderAccount } from './HeaderComponentMessage';
 import MailIcon from '@mui/icons-material/Mail';
+import { Link } from 'react-router-dom';
+import { Routes, Route, useParams } from 'react-router-dom';
+import { IHeaderLink } from '../../../utils/interfaces';
 
-// три точки вертикальные
-function HeaderComponentProfile(): ReactElement {
+// function ProfilePage() {
+//   // Get the userId param from the URL.
+//   const { userId } = useParams();
+//   console.log(userId)
+//   // .
+// }
 
-  const [anchorElement, setAncrElement] = useState<null | HTMLElement>(null)
-  const [open, setOpen] = useState(false)
+// ProfilePage()
 
-  const handleClose = () => {
-    setAncrElement(null)
-    setOpen(false)
-  }
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAncrElement(event.currentTarget)
-    setOpen(true)
-  }
-
+function HeaderComponentProfile({title}:IHeaderLink):ReactElement {
   return (
-    <>
-      <Box sx={{ display: { xs: 'flex', md: 'none' } }}
-      >
-        <IconButton
-          onClick={handleOpen}
-          size="large"
-          aria-label="show more"
-          aria-haspopup="true"
-          color="inherit"
-
-        >
-          <MoreIcon />
-        </IconButton>
+    <MenuItem component={Link} to="/profile" sx={{padding: '3', display: 'flex', columnGap: '15px'}}>
+      <Box>
+        <Badge color="error">
+          <AccountCircle />
+        </Badge>
       </Box>
-      <Menu
-        anchorEl={anchorElement}
-        open={open}
-        onClose={handleClose}
-        sx={{ display: { xs: 'flex', md: 'none', flexDirection: "column" } }}
-      >
-        <MenuItem >
-          <HeaderMails />
-          <Typography>
-            Почта
-          </Typography>
-        </MenuItem>
-        <MenuItem >
-          <HeaderAccount />
-          <Typography>
-            Аккаунт
-          </Typography>
-        </MenuItem>
-      </Menu>
-    </>
-
+      {title && <p>{title}</p>}
+    </MenuItem>
   );
 }
 

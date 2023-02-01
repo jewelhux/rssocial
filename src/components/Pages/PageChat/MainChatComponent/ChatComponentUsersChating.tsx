@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { Avatar, List, ListItem, ListItemText, Box } from "@mui/material";
-import { StyledBadge } from '../../Common/CustomStyleComponents'
+import { StyledBadge } from '../../../Common/CustomStyleComponents'
 
 function ChatComponentUsersChating():ReactElement {
   return (
