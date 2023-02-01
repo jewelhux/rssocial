@@ -5,7 +5,7 @@ import MainRegistrations from './MainRegistrations';
 function PageStart() {
   return (
     <>
-      <MainLogin />
+      {/* <MainLogin /> */}
       <MainRegistrations />
     </>
   );
