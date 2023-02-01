@@ -5,7 +5,6 @@ import MainChat from './MainChat';
 function PageChat() {
   return (
     <>
-      <Header />
       <MainChat /> 
     </>
   );

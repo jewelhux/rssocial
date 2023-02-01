@@ -20,7 +20,7 @@ function Footer():ReactElement {
               <Avatar alt="Syderi" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
             </Link>
           </Box>
-          <Typography variant='h5' sx={{ color: '#FFF' }}>2023</Typography>
+          <Typography sx={{ color: '#FFF' }}>2023</Typography>
           <Link href="https://rs.school/index.html">
             <Avatar sx={{objectFit: 'contain', width: '100%', height: '50px'}} alt="JiK" src="https://rs.school/images/partners/logo-rs.svg" />
           </Link>
