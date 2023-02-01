@@ -5,8 +5,8 @@ import MailIcon from '@mui/icons-material/Mail';
 
 function HeaderComponentMessage():ReactElement {
   return (
-    <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-      <Badge badgeContent={4} color="error">
+    <IconButton size="large" aria-label="new messages" color="inherit">
+      <Badge badgeContent={69} color="error">
         <MailIcon />
       </Badge>
     </IconButton>
