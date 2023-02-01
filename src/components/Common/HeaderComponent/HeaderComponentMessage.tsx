@@ -3,14 +3,18 @@ import { AppBar, Box, Toolbar, IconButton, Typography, Badge, MenuItem, Menu} fr
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import { Link } from 'react-router-dom';
+import { IHeaderLink } from '../../../utils/interfaces';
 
-function HeaderComponentMessage():ReactElement {
+function HeaderComponentMessage({title}:IHeaderLink):ReactElement {
   return (
-    <IconButton component={Link} size="large" aria-label="new messages" color="inherit" to="/messages">
-      <Badge badgeContent={69} color="error">
-        <MailIcon />
-      </Badge>
-    </IconButton>
+    <MenuItem component={Link} to="/messages" sx={{padding: '3', display: 'flex', columnGap: '15px'}}>
+      <Box>
+        <Badge badgeContent={69} color="error">
+          <MailIcon />
+        </Badge>
+      </Box>
+      {title && <p>{title}</p>}
+    </MenuItem>
   );
 }
 

@@ -44,15 +44,9 @@ export default function Header() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem component={Link} to="/messages">
-        <HeaderComponentMessage />
-        <p>Messages</p>
-      </MenuItem>
-      
-      <MenuItem component={Link} to="/profile">
-        <HeaderComponentProfile />
-        <p>Profile</p>
-      </MenuItem>
+      <HeaderComponentMessage title={'Messages'} />
+      <HeaderComponentProfile title={'Profile'}/>
+
     </Menu>
   );
 
@@ -75,8 +69,8 @@ export default function Header() {
 
           {/* СООБЩЕНИЯ И ПРОФИЛЬ */}
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <HeaderComponentMessage />
-            <HeaderComponentProfile />
+            <HeaderComponentMessage/>
+            <HeaderComponentProfile/>
           </Box>
 
           {/* МЕНЮ ТРЕХ ТОЧЕК */}
