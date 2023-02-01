@@ -1,12 +1,11 @@
 import React, { ReactElement } from 'react';
 import { Box, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
+
 
 function HeaderComponentLogin():ReactElement {
   return (
-    <Box sx={{ display: 'flex', columnGap: '10px'}}>
-      <Button color='inherit' variant='outlined'>Вход</Button>
-      <Button color='secondary' variant='contained'>Регистрация</Button>
-    </Box>
+    <Button component={Link} color='inherit' variant='outlined' to="/auth">Вход</Button>
   );
 }
 
