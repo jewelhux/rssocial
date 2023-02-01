@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Box, Container, Avatar, Typography, FormControlLabel, Checkbox, Button, Grid, Link, Paper, InputAdornment, IconButton, FormControl, InputLabel, OutlinedInput } from '@mui/material';
+import { TextField, Box, Container, Avatar, Typography, FormControlLabel, Checkbox, Button, Grid, Link, Paper, InputAdornment, IconButton, FormControl, InputLabel, OutlinedInput, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
@@ -8,25 +8,26 @@ function MainRegistrations() {
   const [isSing, setIsSing] = useState(true)
   const [isCheckedRules, setIsCheckedRules] = useState(false)
   const [isCheckedRememberUser, setIsCheckedRememberUser] = useState(false)
+  const [openDialog, setOpenDialog] = React.useState(false)
   const [isValidForm, setisValidForm] = useState(
     {
-      firstName: true,
-      lastName: true,
-      password: false,
+      firstName: false,
+      lastName: false,
       email: false,
+      password: false,
     }
   )
   const [onSubmit, setOnSubmit] = useState(
     {
       firstName: "",
       lastName: "",
-      password: "",
       email: "",
+      password: "",
     }
   )
 
-  console.log('XXX-isValidForm', isValidForm)
-  console.log('YYY-onSubmit', onSubmit)
+  // console.log('XXX-isValidForm', isValidForm)
+  // console.log('YYY-onSubmit', onSubmit)
 
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -124,19 +125,86 @@ function MainRegistrations() {
 
   }
 
+
+
+  // const [onSubmit, setOnSubmit] = useState(
+  //   {
+  //     firstName: "",
+  //     lastName: "",
+  //     password: "",
+  //     email: "",
+  //   }
+  // )
+
   const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    console.log('XXX-isValidForm', isValidForm)
+    console.log('YYY-onSubmit', onSubmit)
 
+    const isValidArray = Object.values(isValidForm)
+    // проверяем есть ли поле имени. Если есть значит выполняется вход
+    if (!onSubmit.firstName) {
+      const valid = isValidArray.slice(-2).every((el) => el)
+      console.log('valid', valid)
+      if (valid) {
+        console.log('Отправили даныне на сервер')
+        const response = true
+        console.log('Получили тру с сервера')
+        if (response) {
+          // ТУТ НЕОБХОДИМО ЗАКРЫТЬ ОКНО И ВОЙТИ С ПОЛЬЗОВАТЕЛЕМ, 
+          // а также сохранить данные О ЖЕЛАНИИ ПОЛЬЗОВАТЕЛЯ ОСТАТСЯ В СИСТЕМЕ
+          console.log('ПРОИЗОШЕЛ ВХОД В СИСТЕМУ')
 
-    // ОТПРАВКА ДАННЫХ НА СЕРВЕР
-    
-    
-    console.log('НЕ УСПЕХ ПРОВЕРЬТЕ ДАННЫЕ', onSubmit) 
-    console.log('УСПЕХ Регистрации', onSubmit) 
-    console.log('УСПЕХ Входа', onSubmit)
+          return
+        }
+      }
+    } else {
+      // ВХОД ОТ РЕГИСТРАЦИИ
+      const valid = isValidArray.every((el) => el)
+      if (valid && isCheckedRules) {
+        // ТУТ НЕОБХОДИМО ЗАКРЫТЬ ОКНО И ВОЙТИ С ПОЛЬЗОВАТЕЛЕМ
+        console.log('ПРОИЗОШЕЛ ВХОД В СИСТЕМУ')
+        return
+      }
+    }
+    // ТУТ НЕОБХОДИМО ВЫВЕСТИ СООБЩЕНИЕ ЧТО ВХОД НЕ ВЫПОЛНЕН
+    console.log('Проверьте вводимые поля')
+    handleClickOpen()
   }
 
+
+
+
+
+  const handleClickOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
+
   return (
+<>
+    <Dialog
+      open={openDialog}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{"Попытка ввода данных"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Пожалуйста, проверьте вводимые данные
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary" autoFocus>
+          Закрыть
+        </Button>
+      </DialogActions>
+    </Dialog>
+
     <Container component="main"
       maxWidth='md'
       sx={{
@@ -231,7 +299,7 @@ function MainRegistrations() {
 
                 /> */}
 
-                <FormControl    fullWidth>
+                <FormControl fullWidth>
                   <InputLabel htmlFor="outlined-adornment-password">{(onSubmit.password === '') ? "Password*" : isValidForm.password ? "Password*" : 'Ошибка'}</InputLabel>
                   <OutlinedInput
                     endAdornment={
@@ -256,7 +324,7 @@ function MainRegistrations() {
                     label="Password"
                     // type="password"
                     type={showPassword ? 'text' : 'password'}
-                      id="password"
+                    id="password"
                     autoComplete="new-password"
                   />
                 </FormControl>
@@ -314,6 +382,12 @@ function MainRegistrations() {
                   password: "",
                   email: "",
                 })
+                setisValidForm({
+                  firstName: false,
+                  lastName: false,
+                  email: false,
+                  password: false,
+                })
               }}
             >
               {isSing ? "Перейти к регистрации" : "Перейти ко Входу"}
@@ -324,6 +398,7 @@ function MainRegistrations() {
       </Paper>
 
     </Container>
+    </>
   );
 }
 
