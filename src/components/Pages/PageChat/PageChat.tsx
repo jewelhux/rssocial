@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '../Common/Header';
+import Header from '../../Common/Header';
 import MainChat from './MainChat';
 
 function PageChat() {

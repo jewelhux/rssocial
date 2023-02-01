@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { FormControl, Grid, IconButton, List, ListItem, ListItemText, TextField, Box } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
-import { SmallAvatar } from '../../Common/CustomStyleComponents';
+import { SmallAvatar } from '../../../Common/CustomStyleComponents';
 
 function ChatComponentDialogBox():ReactElement {
   return (
