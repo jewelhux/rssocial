@@ -7,7 +7,7 @@ import ChatComponentDialogBox from "./MainChatComponent/ChatComponentDialogBox";
 
 function MainChat():ReactElement  {
     return (
-        <Container sx={{ mb: 2, mt: 10, flexGrow: 1 }}>
+        <Container sx={{ mb: 2, mt: 1, flexGrow: 1 }}>
             <Paper elevation={8}>
                 <Box p={3}>
                     <ChatComponentHeader />
