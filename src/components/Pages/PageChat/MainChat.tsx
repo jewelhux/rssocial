@@ -1,9 +1,9 @@
 import { Container, Divider, Paper,} from "@mui/material";
 import { Box } from "@mui/system";
-import React, { ReactElement } from 'react';
 import ChatComponentHeader from "./MainChatComponent/ChatComponentHeader";
 import ChatComponentUsersChating from "./MainChatComponent/ChatComponentUsersChating";
 import ChatComponentDialogBox from "./MainChatComponent/ChatComponentDialogBox";
+import { ReactElement } from "react";
 
 function MainChat():ReactElement  {
     return (

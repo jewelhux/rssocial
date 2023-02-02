@@ -2,38 +2,39 @@ import React, { ReactElement } from 'react';
 import { FormControl, Grid, IconButton, List, ListItem, ListItemText, TextField, Box, Typography } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import { SmallAvatar } from '../../../Common/CustomStyleComponents';
+import Message, { DataMessage } from './Message';
+
 
 function ChatComponentDialogBox(): ReactElement {
+
+
+  
+
+const dataMessage: DataMessage[] = [
+  {
+    currentUser: true,
+    message: 'Это первое сообщение Евгения',
+    imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
+    timeOfCreateMassage: new Date(2023, 1, 1, 21, 0, 0, 0)
+  }
+]
+
+
+console.log( (   (new Date().getMilliseconds() - dataMessage[0].timeOfCreateMassage.getMilliseconds())/60000 )   )
+console.log(   Math.ceil((Date.now() - new Date(2023, 1, 2, 21, 0, 0, 0).getTime())/60000) )
+console.log(   new Date(2023, 1, 2, 21, 0, 0, 0).getTime() )
+console.log(   new Date().getTime() )
+console.log(   new Date().toLocaleDateString()  )
+console.log(   dataMessage[0]  )
+
+
   return (
     <Box sx={{ display: 'flex', flexDirection: "column", height: '60vh', width: '100%' }}>
 
-
+      <Message dataMessage = {dataMessage[0]}/>
 
       <Box sx={{ display: 'flex', flexDirection: "column", flexGrow: 1, height: 300, overflow: "auto", width: '100%' }}>
-        <Box padding={1} display='flex' sx={{ flexDirection: "column" }}>
-          <Box display='flex' marginTop={2} sx={{ flexDirection: 'row-reverse' }}>
-            <SmallAvatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
-            <Typography
-              sx={{
-                margin: '0 10px',
-                borderRadius: '10px',
-                backgroundColor: '#1876f9',
-                color: 'white',
-                padding: 1,
-                // width: 'max-content',
-                hyphens: 'auto',
-                maxWidth: '65%',
-                wordBreak:'break-all',
 
-              }}
-            >
-              zzzzzzzzsquam esse.
-            </Typography>
-          </Box>
-          <Typography variant='subtitle1' display='flex' sx={{ fontSize: 14, flexDirection: 'row-reverse' }}>
-            5 часов назад
-          </Typography>
-        </Box>
         <Box padding={1} display='flex' sx={{ flexDirection: "column" }}>
           <Box display='flex' marginTop={2} sx={{ flexDirection: 'row' }}>
             <SmallAvatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
@@ -47,7 +48,7 @@ function ChatComponentDialogBox(): ReactElement {
                 // width: 'max-content',
                 hyphens: 'auto',
                 maxWidth: '65%',
-                wordBreak:'break-all',
+                wordBreak: 'break-all',
 
               }}
             >
@@ -62,8 +63,8 @@ function ChatComponentDialogBox(): ReactElement {
 
 
 
-        
- 
+
+
       </Box>
 
 
