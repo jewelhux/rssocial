@@ -43,7 +43,7 @@ function ChatComponentDialogBox(): ReactElement {
     },
     {
       currentUser: false,
-      message: 'Ага это правлиьно. Пусть Кирилл затащит проект',
+      message: 'Ага это правлиьно.',
       imgSrc: 'https://avatars.githubusercontent.com/u/38877564?v=4',
       timeOfCreateMassage: new Date(2023, 1, 2, 21, 55, 0, 0)
     },
