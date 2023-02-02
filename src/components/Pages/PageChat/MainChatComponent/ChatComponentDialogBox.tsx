@@ -8,34 +8,78 @@ import Message, { DataMessage } from './Message';
 function ChatComponentDialogBox(): ReactElement {
 
 
-  
-
-const dataMessage: DataMessage[] = [
-  {
-    currentUser: true,
-    message: 'Это первое сообщение Евгения',
-    imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
-    timeOfCreateMassage: new Date(2023, 1, 1, 21, 0, 0, 0)
-  }
-]
 
 
-console.log( (   (new Date().getMilliseconds() - dataMessage[0].timeOfCreateMassage.getMilliseconds())/60000 )   )
-console.log(   Math.ceil((Date.now() - new Date(2023, 1, 2, 21, 0, 0, 0).getTime())/60000) )
-console.log(   new Date(2023, 1, 2, 21, 0, 0, 0).getTime() )
-console.log(   new Date().getTime() )
-console.log(   new Date().toLocaleDateString()  )
-console.log(   dataMessage[0]  )
+  const dataMessage: DataMessage[] = [
+    {
+      currentUser: true,
+      message: 'Это первое сообщение Евгения',
+      imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
+      timeOfCreateMassage: new Date(2023, 1, 2, 21, 0, 0, 0)
+    },
+    {
+      currentUser: false,
+      message: 'Это первый ответ Ильи',
+      imgSrc: 'https://avatars.githubusercontent.com/u/38877564?v=4',
+      timeOfCreateMassage: new Date(2023, 1, 2, 21, 5, 0, 0)
+    },
+    {
+      currentUser: true,
+      message: 'Давай работай, хватит сидеть чаты читать',
+      imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
+      timeOfCreateMassage: new Date(2023, 1, 2, 21, 8, 0, 0)
+    },
+    {
+      currentUser: false,
+      message: 'Да я как папо Карло работаю',
+      imgSrc: 'https://avatars.githubusercontent.com/u/38877564?v=4',
+      timeOfCreateMassage: new Date(2023, 1, 2, 21, 50, 0, 0)
+    },
+    {
+      currentUser: true,
+      message: 'Ну тогда Ок. Значт больше отдыхай',
+      imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
+      timeOfCreateMassage: new Date(2023, 1, 2, 22, 8, 0, 0)
+    },
+    {
+      currentUser: false,
+      message: 'Ага это правлиьно. Пусть Кирилл затащит проект',
+      imgSrc: 'https://avatars.githubusercontent.com/u/38877564?v=4',
+      timeOfCreateMassage: new Date(2023, 1, 2, 21, 55, 0, 0)
+    },
+    {
+      currentUser: true,
+      message: 'А как у тебя твоя девка. Ты её добавил?',
+      imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
+      timeOfCreateMassage: new Date(2023, 1, 2, 22, 18, 0, 0)
+    }
+  ]
+
+
+  console.log(((new Date().getMilliseconds() - dataMessage[0].timeOfCreateMassage.getMilliseconds()) / 60000))
+  console.log(Math.ceil((Date.now() - new Date(2023, 1, 2, 21, 0, 0, 0).getTime()) / 60000))
+  console.log(new Date(2023, 1, 2, 21, 0, 0, 0).getTime())
+  console.log(new Date().getTime())
+  console.log(new Date().toLocaleDateString())
+  console.log(dataMessage[0])
+
+  const messages = dataMessage.map((el) => {
+    return <Message key={el.timeOfCreateMassage.getMilliseconds().toString()} dataMessage={el} />
+  })
 
 
   return (
     <Box sx={{ display: 'flex', flexDirection: "column", height: '60vh', width: '100%' }}>
 
-      <Message dataMessage = {dataMessage[0]}/>
+
+
+      {/* <Message dataMessage = {dataMessage[0]}/> */}
 
       <Box sx={{ display: 'flex', flexDirection: "column", flexGrow: 1, height: 300, overflow: "auto", width: '100%' }}>
 
-        <Box padding={1} display='flex' sx={{ flexDirection: "column" }}>
+      {messages}
+
+        {/* <Box padding={1} display='flex' sx={{ flexDirection: "column" }}>
           <Box display='flex' marginTop={2} sx={{ flexDirection: 'row' }}>
             <SmallAvatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
             <Typography
@@ -58,7 +102,7 @@ console.log(   dataMessage[0]  )
           <Typography variant='subtitle1' display='flex' sx={{ fontSize: 14, flexDirection: 'row' }}>
             5 часов назад
           </Typography>
-        </Box>
+        </Box> */}
 
 
 

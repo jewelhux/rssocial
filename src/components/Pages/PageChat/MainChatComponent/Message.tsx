@@ -6,23 +6,23 @@ export type DataMessage = {
   currentUser: boolean,
   message: string,
   imgSrc: string,
-  timeOfCreateMassage: Date, 
+  timeOfCreateMassage: Date,
 }
 
 
-function Message(dataMessage: DataMessage): ReactElement {
+function Message(props: { dataMessage: DataMessage }): ReactElement {
 
+  const { dataMessage } = props;
+  const createMinutes = (data: Date) => {
+    const currentData = Date.now()
+    const minutes = Math.ceil((currentData - data.getTime()) / 60000)
+    return minutes
 
-const createMinutes = (data: Date) => {
-const currentData = Date.now()
-const minutes = Math.ceil((currentData - data.getTime())/60000)
-return minutes
-
-}
+  }
 
   return (
     <Box padding={1} display='flex' sx={{ flexDirection: "column" }}>
-      <Box display='flex' marginTop={1} sx={{ flexDirection: dataMessage.currentUser ? 'row-reverse' : 'row' }}>
+      <Box display='flex' marginTop={1} sx={{ flexDirection: `${dataMessage.currentUser ? 'row-reverse' : 'row'}` }}>
         <SmallAvatar alt="image" src={dataMessage.imgSrc} />
         <Typography
           sx={{
@@ -33,14 +33,15 @@ return minutes
             padding: 1,
             hyphens: 'auto',
             maxWidth: '65%',
-            wordBreak: 'break-all',
+            wordBreak: 'break-word',
+            // wordWrap: 'break-word',
 
           }}
         >
           {dataMessage.message}
         </Typography>
       </Box>
-      <Typography variant='subtitle1' display='flex' sx={{ fontSize: 14, flexDirection: `dataMessage.currentUser ? 'row-reverse' : 'row'` }}>
+      <Typography variant='subtitle1' display='flex' sx={{ fontSize: 14, flexDirection: `${dataMessage.currentUser ? 'row-reverse' : 'row'}` }}>
         {createMinutes(dataMessage.timeOfCreateMassage)} минут назад
       </Typography>
     </Box>
