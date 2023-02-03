@@ -69,6 +69,12 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   justifyContent: 'center',
 }));
 
+const ImageMessage = styled('img')(() => ({
+  maxWidth: '75%',
+  borderRadius: '10%',
+  marginTop:'2px',
+}));
+
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
@@ -105,4 +111,4 @@ const CustomCreatePost = styled(Box)(({ theme }) => ({
   flexGrow: '1',
 }));
 
-export { StyledBadge, SmallAvatar, Search, SearchIconWrapper, StyledInputBase, CustomGrid, CustomGridItem, CustomCreatePost }
+export { StyledBadge, SmallAvatar, Search, SearchIconWrapper, StyledInputBase, CustomGrid, CustomGridItem, CustomCreatePost, ImageMessage }

@@ -1,22 +1,36 @@
-import React, { ReactElement } from 'react';
-import { Avatar, List, ListItem, ListItemText, Box } from "@mui/material";
+import { ReactElement, useState } from 'react';
+import { Avatar, List, ListItem, ListItemText, Box, useMediaQuery, useTheme } from "@mui/material";
 import { StyledBadge } from '../../../Common/CustomStyleComponents'
 
-function ChatComponentUsersChating():ReactElement {
+function ChatComponentUsersChating(): ReactElement {
+  const theme = useTheme()
+
+  const isMatchMoreScreen = useMediaQuery(theme.breakpoints.up('sm'))
+  // const [showNameUser, setshowNameUser] = useState(true)
+
+  // console.log('isMatchMoreScreen',isMatchMoreScreen)
+
+
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: "column"}}>
-      <List sx={{flexGrow: 1, height:300, overflowY: 'scroll', overflowX: 'hidden'}}>
-        <ListItem sx={{cursor: 'pointer'}}>
+    <Box sx={{ display: 'flex', flexDirection: "column", maxWidth: '30%' }}>
+      <List sx={{ flexGrow: 1, height: 300, overflowY: 'scroll', overflowX: 'hidden' }}>
+        <ListItem sx={{ cursor: 'pointer' }}>
           <StyledBadge
-          overlap="circular"
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          variant="dot"
+            overlap="circular"
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            variant="dot"
           >
             <Avatar alt="image" src="https://avatars.githubusercontent.com/u/38877564?v=4" />
           </StyledBadge>
-          <ListItemText>JIK</ListItemText>
+          {isMatchMoreScreen && <ListItemText>JIK</ListItemText>}
+
         </ListItem>
-        <ListItem sx={{cursor: 'pointer'}}>
+        <ListItem sx={{
+          cursor: 'pointer',
+
+          wordBreak: 'break-word',
+        }}>
           <StyledBadge
             overlap="circular"
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -24,9 +38,9 @@ function ChatComponentUsersChating():ReactElement {
           >
             <Avatar alt="image" src="https://avatars.githubusercontent.com/u/74072987?v=4" />
           </StyledBadge>
-          <ListItemText>Ferka</ListItemText>
+          {isMatchMoreScreen && <ListItemText >Ferka</ListItemText>}
         </ListItem>
-        <ListItem sx={{cursor: 'pointer'}}>
+        <ListItem sx={{ cursor: 'pointer' }}>
           <StyledBadge
             overlap="circular"
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -34,60 +48,10 @@ function ChatComponentUsersChating():ReactElement {
           >
             <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
           </StyledBadge>
-          <ListItemText> Syderi </ListItemText>
-        </ListItem>
-        <ListItem sx={{cursor: 'pointer'}}>
-          <StyledBadge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            variant="dot"
-          >
-            <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
-          </StyledBadge>
-          <ListItemText> Syderi </ListItemText>
-        </ListItem>
-        <ListItem sx={{cursor: 'pointer'}}>
-          <StyledBadge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            variant="dot"
-          >
-            <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
-          </StyledBadge>
-          <ListItemText> Syderi </ListItemText>
-        </ListItem>
-        <ListItem sx={{cursor: 'pointer'}}>
-          <StyledBadge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            variant="dot"
-          >
-            <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
-          </StyledBadge>
-          <ListItemText> Syderi </ListItemText>
-        </ListItem>
-        <ListItem sx={{cursor: 'pointer'}}>
-          <StyledBadge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            variant="dot"
-          >
-            <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
-          </StyledBadge>
-          <ListItemText> Syderi </ListItemText>
-        </ListItem>
-        <ListItem sx={{cursor: 'pointer'}}>
-          <StyledBadge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            variant="dot"
-          >
-            <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
-          </StyledBadge>
-          <ListItemText> Syderi </ListItemText>
+          {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
         </ListItem>
       </List>
-    </Box>  
+    </Box>
   );
 }
 
