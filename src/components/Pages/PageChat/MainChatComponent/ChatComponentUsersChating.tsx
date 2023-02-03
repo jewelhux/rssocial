@@ -11,7 +11,8 @@ function ChatComponentUsersChating(): ReactElement {
 
   // console.log('isMatchMoreScreen',isMatchMoreScreen)
 
-  const { isOpenUsers, setisOpenUsers } = useContext(Context)
+  const { isOpenUsers } = useContext(Context)
+
 
   return (
     <Box sx={{ display: `${isOpenUsers ? 'flex': 'none'}`, flexDirection: "column", maxWidth: '30%' }}>

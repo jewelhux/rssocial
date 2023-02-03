@@ -14,7 +14,7 @@ function ChatComponentHeader(): ReactElement {
         <IconButton aria-label="send" color="primary" onClick={() => { setisOpenUsers(!isOpenUsers) }}>
           {isOpenUsers ? <ExpandMoreIcon /> : <ChevronRightIcon />}
         </IconButton>
-        <Typography variant="h4" gutterBottom> Мои диалоги </Typography>
+        <Typography variant="h5" gutterBottom> Мои диалоги </Typography>
       </Box>
     </>
   );

@@ -91,6 +91,7 @@ function ChatComponentDialogBox(): ReactElement {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: "column", height: '60vh', width: '100%' }}>
+      
       <Box sx={{ display: 'flex', flexDirection: "column", flexGrow: 1, height: 300, overflow: "auto", width: '100%' }}>
         {dataMessage.map((el) => {
           return <Message key={el.timeOfCreateMassage.toString()} dataMessage={el} />
@@ -133,15 +134,18 @@ function ChatComponentDialogBox(): ReactElement {
           /> */}
           <div>
             <input
-            style={{display: 'none'}}
+              style={{ display: 'none', width: '100%' }}
               type="file"
               name='file'
               id='file'
               accept=".jpg, .jpeg, .png"
               onChange={handleFileChange}
             />
-            <label style={{cursor: 'pointer'}} htmlFor='file'>Выберите файл</label>
-            <Divider/>
+            <Button sx={{ width: '100%', padding: 0 }}>
+              <label style={{ cursor: 'pointer', width: '100%' }} htmlFor='file'>Выберите файл</label>
+            </Button>
+
+            <Divider />
             <Typography variant='subtitle2'>{file?.name}</Typography>
             {/* <TextField
               // label="File name"
@@ -150,8 +154,8 @@ function ChatComponentDialogBox(): ReactElement {
             /> */}
           </div>
           {/* <div> */}
-    {/* <label for="profile_pic">Choose file to upload</label> */}
-    {/* <input
+          {/* <label for="profile_pic">Choose file to upload</label> */}
+          {/* <input
       type="file"
       id="profile_pic"
       name="profile_pic"
@@ -164,7 +168,7 @@ function ChatComponentDialogBox(): ReactElement {
         </DialogActions>
       </Dialog>
       {/* <div> */}
-    {/* <label htmlFor="profile_pic">Choose file to upload</label>
+      {/* <label htmlFor="profile_pic">Choose file to upload</label>
     <input
       type="file"
       id="profile_pic"

@@ -11,7 +11,7 @@ function Message(props: { dataMessage: DataMessage }): ReactElement {
 
   const keyImage = dataMessage.imgMassage.length === 0 ? false : true;
 
-  console.log('keyImage', keyImage)
+  // console.log('keyImage', keyImage)
 
   return (
     <Box padding={1} display='flex' sx={{ flexDirection: "column" }}>

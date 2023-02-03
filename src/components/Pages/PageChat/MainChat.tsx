@@ -22,7 +22,7 @@ function MainChat():ReactElement  {
                 <Box p={1}>
                     <ChatComponentHeader />
                     <Divider />
-                    <Box sx={{ display: 'flex' }}>
+                    <Box sx={{ display: 'flex'}}>
                         <ChatComponentUsersChating />
                         <Divider flexItem orientation="vertical" />
                         <ChatComponentDialogBox />
