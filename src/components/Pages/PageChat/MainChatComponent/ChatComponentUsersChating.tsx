@@ -16,7 +16,7 @@ function ChatComponentUsersChating(): ReactElement {
 
   return (
     <Box sx={{ display: `${isOpenUsers ? 'flex': 'none'}`, flexDirection: "column", maxWidth: '30%' }}>
-       <List sx={{ flexGrow: 1, height: 300, overflowY: 'scroll', overflowX: 'hidden' }}>
+       <List sx={{ flexGrow: 1, overflowY: 'scroll', overflowX: 'hidden' }}>
           <ListItem sx={{ cursor: 'pointer' }}>
             <StyledBadge
               overlap="circular"
@@ -52,7 +52,117 @@ function ChatComponentUsersChating(): ReactElement {
             </StyledBadge>
             {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
           </ListItem>
-        </List>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
+          </ListItem>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
+          </ListItem>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
+          </ListItem>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
+          </ListItem>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
+          </ListItem>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
+          </ListItem>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
+          </ListItem>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
+          </ListItem>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
+          </ListItem>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
+          </ListItem>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
+          </ListItem>
+         </List>
 
     </Box>
   );

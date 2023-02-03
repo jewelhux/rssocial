@@ -8,6 +8,7 @@ import { DataMessage } from '../../../../utils/Type';
 
 import { Context } from "../../../Context/context";
 import { display } from '@mui/system';
+import ChatComponentUsersChating from './ChatComponentUsersChating';
 
 
 function ChatComponentDialogBox(): ReactElement {
@@ -90,13 +91,21 @@ function ChatComponentDialogBox(): ReactElement {
   // })
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: "column", height: '60vh', width: '100%' }}>
-      
-      <Box sx={{ display: 'flex', flexDirection: "column", flexGrow: 1, height: 300, overflow: "auto", width: '100%' }}>
-        {dataMessage.map((el) => {
-          return <Message key={el.timeOfCreateMassage.toString()} dataMessage={el} />
-        })}
+    <Box sx={{ display: 'flex', flexDirection: "column", height: '75vh', width: '100%' }}>
+
+      <Box sx={{ display: 'flex', width: '100%', flexGrow: 1, minHeight: '50%' }}>
+
+        <ChatComponentUsersChating />
+
+        <Box sx={{ flexGrow: 1, height: '100%', overflow: 'auto' }}>
+          {dataMessage.map((el) => {
+            return <Message key={el.timeOfCreateMassage.toString()} dataMessage={el} />
+          })}
+        </Box>
       </Box>
+
+
+
       <Grid container alignItems="center" sx={{ pl: 1 }}>
         <Grid sm={10} xs={8} item>
           <FormControl fullWidth>
@@ -127,11 +136,6 @@ function ChatComponentDialogBox(): ReactElement {
           {file && (
             <img src={URL.createObjectURL(file)} alt="Preview" style={{ maxWidth: '90%' }} />
           )}
-          {/* <TextField
-            sx={{ display: 'flex' }}
-            type="file"
-            onChange={handleFileChange}
-          /> */}
           <div>
             <input
               style={{ display: 'none', width: '100%' }}
@@ -144,37 +148,15 @@ function ChatComponentDialogBox(): ReactElement {
             <Button sx={{ width: '100%', padding: 0 }}>
               <label style={{ cursor: 'pointer', width: '100%' }} htmlFor='file'>Выберите файл</label>
             </Button>
-
             <Divider />
             <Typography variant='subtitle2'>{file?.name}</Typography>
-            {/* <TextField
-              // label="File name"
-              value={file?.name}
-              disabled
-            /> */}
           </div>
-          {/* <div> */}
-          {/* <label for="profile_pic">Choose file to upload</label> */}
-          {/* <input
-      type="file"
-      id="profile_pic"
-      name="profile_pic"
-      accept=".jpg, .jpeg, .png" />
-  </div> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Отмена</Button>
           <Button onClick={handleUpload}>Загрузить</Button>
         </DialogActions>
       </Dialog>
-      {/* <div> */}
-      {/* <label htmlFor="profile_pic">Choose file to upload</label>
-    <input
-      type="file"
-      id="profile_pic"
-      name="profile_pic"
-      accept=".jpg, .jpeg, .png" />
-  </div> */}
     </Box>
   );
 }
