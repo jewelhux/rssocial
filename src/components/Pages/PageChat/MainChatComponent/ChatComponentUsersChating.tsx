@@ -11,48 +11,47 @@ function ChatComponentUsersChating(): ReactElement {
 
   // console.log('isMatchMoreScreen',isMatchMoreScreen)
 
-  const {isOpenUsers, setisOpenUsers} = useContext(Context)
+  const { isOpenUsers, setisOpenUsers } = useContext(Context)
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: "column", maxWidth: '30%' }}>
+    <Box sx={{ display: `${isOpenUsers ? 'flex': 'none'}`, flexDirection: "column", maxWidth: '30%' }}>
+       <List sx={{ flexGrow: 1, height: 300, overflowY: 'scroll', overflowX: 'hidden' }}>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/38877564?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText>JIK</ListItemText>}
 
-      {isOpenUsers &&       <List sx={{ flexGrow: 1, height: 300, overflowY: 'scroll', overflowX: 'hidden' }}>
-        <ListItem sx={{ cursor: 'pointer' }}>
-          <StyledBadge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            variant="dot"
-          >
-            <Avatar alt="image" src="https://avatars.githubusercontent.com/u/38877564?v=4" />
-          </StyledBadge>
-          {isMatchMoreScreen && <ListItemText>JIK</ListItemText>}
+          </ListItem>
+          <ListItem sx={{
+            cursor: 'pointer',
 
-        </ListItem>
-        <ListItem sx={{
-          cursor: 'pointer',
-
-          wordBreak: 'break-word',
-        }}>
-          <StyledBadge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            variant="dot"
-          >
-            <Avatar alt="image" src="https://avatars.githubusercontent.com/u/74072987?v=4" />
-          </StyledBadge>
-          {isMatchMoreScreen && <ListItemText >Ferka</ListItemText>}
-        </ListItem>
-        <ListItem sx={{ cursor: 'pointer' }}>
-          <StyledBadge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            variant="dot"
-          >
-            <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
-          </StyledBadge>
-          {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
-        </ListItem>
-      </List>}
+            wordBreak: 'break-word',
+          }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/74072987?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText >Ferka</ListItemText>}
+          </ListItem>
+          <ListItem sx={{ cursor: 'pointer' }}>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt="image" src="https://avatars.githubusercontent.com/u/107023048?v=4" />
+            </StyledBadge>
+            {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
+          </ListItem>
+        </List>
 
     </Box>
   );

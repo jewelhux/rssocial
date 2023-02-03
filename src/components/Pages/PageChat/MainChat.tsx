@@ -13,7 +13,7 @@ type ContextType = {
 
 function MainChat():ReactElement  {
 
-    const [isOpenUsers, setisOpenUsers] = useState(false);
+    const [isOpenUsers, setisOpenUsers] = useState(true);
     
     return (
         <Context.Provider value={{isOpenUsers, setisOpenUsers}}>
