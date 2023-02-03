@@ -1,8 +1,8 @@
 import { createContext, Dispatch, SetStateAction } from "react";
 
 type ContextType = {
-  isOpen: true | false,
-  setisOpen: (key:boolean) =>{}
+  isOpenUsers: boolean,
+  setisOpenUsers: Dispatch<SetStateAction<boolean>>
 };
 
-export const Context = createContext<Partial<ContextType>>()
+export const Context = createContext<ContextType>({} as ContextType)
