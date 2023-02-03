@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { ReactElement, useContext, useState } from 'react';
 import { FormControl, Grid, IconButton, List, ListItem, ListItemText, TextField, Box, Typography, Dialog, DialogTitle, Button, DialogActions, DialogContent } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -6,11 +6,15 @@ import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import Message from './Message';
 import { DataMessage } from '../../../../utils/Type';
 
+import { Context } from "../../../Context/context";
+
 
 function ChatComponentDialogBox(): ReactElement {
 
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+
+
 
 
   const handleClickOpen = () => {
@@ -30,8 +34,6 @@ function ChatComponentDialogBox(): ReactElement {
     console.log('File:', file);
     setOpen(false);
   };
-
-
 
 
   const dataMessage: DataMessage[] = [

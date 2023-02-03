@@ -1,6 +1,7 @@
-import { ReactElement, useState } from 'react';
+import { ReactElement, useContext, useState } from 'react';
 import { Avatar, List, ListItem, ListItemText, Box, useMediaQuery, useTheme } from "@mui/material";
 import { StyledBadge } from '../../../Common/CustomStyleComponents'
+import { Context } from '../../../Context/context'
 
 function ChatComponentUsersChating(): ReactElement {
   const theme = useTheme()
@@ -10,11 +11,12 @@ function ChatComponentUsersChating(): ReactElement {
 
   // console.log('isMatchMoreScreen',isMatchMoreScreen)
 
-
+  const {isOpenUsers, setisOpenUsers} = useContext(Context)
 
   return (
     <Box sx={{ display: 'flex', flexDirection: "column", maxWidth: '30%' }}>
-      <List sx={{ flexGrow: 1, height: 300, overflowY: 'scroll', overflowX: 'hidden' }}>
+
+      {isOpenUsers &&       <List sx={{ flexGrow: 1, height: 300, overflowY: 'scroll', overflowX: 'hidden' }}>
         <ListItem sx={{ cursor: 'pointer' }}>
           <StyledBadge
             overlap="circular"
@@ -50,7 +52,8 @@ function ChatComponentUsersChating(): ReactElement {
           </StyledBadge>
           {isMatchMoreScreen && <ListItemText> Syderi </ListItemText>}
         </ListItem>
-      </List>
+      </List>}
+
     </Box>
   );
 }
