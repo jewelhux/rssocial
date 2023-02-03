@@ -15,48 +15,48 @@ function ChatComponentDialogBox(): ReactElement {
       currentUser: true,
       message: 'Это первое сообщение Евгения',
       imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
-      timeOfCreateMassage: new Date(2023, 1, 2, 21, 0, 0, 0)
+      timeOfCreateMassage: (new Date(2023, 1, 2, 21, 0, 0, 0)).getTime()
     },
     {
       currentUser: false,
       message: 'Это первый ответ Ильи',
       imgSrc: 'https://avatars.githubusercontent.com/u/38877564?v=4',
-      timeOfCreateMassage: new Date(2023, 1, 2, 21, 5, 0, 0)
+      timeOfCreateMassage: (new Date(2023, 1, 2, 21, 5, 0, 0)).getTime()
     },
     {
       currentUser: true,
       message: 'Давай работай, хватит сидеть чаты читать',
       imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
-      timeOfCreateMassage: new Date(2023, 1, 2, 21, 8, 0, 0)
+      timeOfCreateMassage: (new Date(2023, 1, 2, 21, 8, 0, 0)).getTime()
     },
     {
       currentUser: false,
       message: 'Да я как папо Карло работаю',
       imgSrc: 'https://avatars.githubusercontent.com/u/38877564?v=4',
-      timeOfCreateMassage: new Date(2023, 1, 2, 21, 50, 0, 0)
+      timeOfCreateMassage: (new Date(2023, 1, 2, 21, 50, 0, 0)).getTime()
     },
     {
       currentUser: true,
       message: 'Ну тогда Ок. Значт больше отдыхай',
       imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
-      timeOfCreateMassage: new Date(2023, 1, 2, 22, 8, 0, 0)
+      timeOfCreateMassage: (new Date(2023, 1, 2, 22, 8, 0, 0)).getTime()
     },
     {
       currentUser: false,
       message: 'Ага это правлиьно.',
       imgSrc: 'https://avatars.githubusercontent.com/u/38877564?v=4',
-      timeOfCreateMassage: new Date(2023, 1, 2, 21, 55, 0, 0)
+      timeOfCreateMassage: (new Date(2023, 1, 2, 21, 55, 0, 0)).getTime()
     },
     {
       currentUser: true,
       message: 'А как у тебя твоя девка. Ты её добавил?',
       imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
-      timeOfCreateMassage: new Date(2023, 1, 2, 22, 18, 0, 0)
+      timeOfCreateMassage: (new Date(2023, 1, 2, 22, 18, 0, 0)).getTime()
     }
   ]
 
 
-  console.log(((new Date().getMilliseconds() - dataMessage[0].timeOfCreateMassage.getMilliseconds()) / 60000))
+  console.log(((new Date().getMilliseconds() - dataMessage[0].timeOfCreateMassage) / 60000))
   console.log(Math.ceil((Date.now() - new Date(2023, 1, 2, 21, 0, 0, 0).getTime()) / 60000))
   console.log(new Date(2023, 1, 2, 21, 0, 0, 0).getTime())
   console.log(new Date().getTime())
@@ -64,7 +64,7 @@ function ChatComponentDialogBox(): ReactElement {
   console.log(dataMessage[0])
 
   const messages = dataMessage.map((el) => {
-    return <Message key={el.timeOfCreateMassage.getMilliseconds().toString()} dataMessage={el} />
+    return <Message key={el.timeOfCreateMassage.toString()} dataMessage={el} />
   })
 
 

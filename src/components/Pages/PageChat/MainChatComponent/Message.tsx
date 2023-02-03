@@ -6,19 +6,26 @@ export type DataMessage = {
   currentUser: boolean,
   message: string,
   imgSrc: string,
-  timeOfCreateMassage: Date,
+  timeOfCreateMassage: number,
 }
 
 
 function Message(props: { dataMessage: DataMessage }): ReactElement {
 
   const { dataMessage } = props;
-  const createMinutes = (data: Date) => {
+
+// подфунция получения времени сообщения
+  function createMinutes(data: number) {
     const currentData = Date.now()
-    const minutes = Math.ceil((currentData - data.getTime()) / 60000)
+    const messageData = new Date(data)
+    console.log(messageData)
+    console.log(messageData.getDate(),messageData.getMonth(),messageData.getFullYear(),messageData.getHours(), messageData.getMinutes())
+    const minutes = Math.ceil((currentData - data) / 60000)
     return minutes
 
   }
+
+
 
   return (
     <Box padding={1} display='flex' sx={{ flexDirection: "column" }}>
