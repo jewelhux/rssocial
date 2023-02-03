@@ -1,5 +1,5 @@
 import { styled, alpha } from '@mui/material/styles';
-import { AppBar, Box, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Avatar} from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Typography, Badge, Paper, MenuItem, Menu, Avatar} from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import MoreIcon from '@mui/icons-material/MoreVert';
@@ -83,4 +83,26 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export { StyledBadge, SmallAvatar, Search, SearchIconWrapper, StyledInputBase }
+const CustomGrid = styled(Box)(({ theme }) => ({
+  display: 'grid',
+  gap: '15px'
+}));
+
+const CustomGridItem = styled(Paper)(({ theme }) => ({
+  padding: '5px 10px',
+  textAlign: 'center',
+  alignContent: 'center',
+  alignSelf: 'center',
+  verticalAlign: 'center',
+  height: '100%',
+}));
+
+const CustomCreatePost = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  width: '100%',
+  gap: '10px',
+  flexGrow: '1',
+}));
+
+export { StyledBadge, SmallAvatar, Search, SearchIconWrapper, StyledInputBase, CustomGrid, CustomGridItem, CustomCreatePost }
