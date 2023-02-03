@@ -1,8 +1,8 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { FormControl, Grid, IconButton, List, ListItem, ListItemText, TextField, Box, Typography } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
-import { SmallAvatar } from '../../../Common/CustomStyleComponents';
-import Message, { DataMessage } from './Message';
+import Message from './Message';
+import { DataMessage } from '../../../Types/Type';
 
 
 function ChatComponentDialogBox(): ReactElement {
@@ -51,13 +51,6 @@ function ChatComponentDialogBox(): ReactElement {
       timeOfCreateMassage: (new Date(2023, 1, 2, 22, 18, 0, 0)).getTime()
     }
   ]
-
-  // console.log(((new Date().getMilliseconds() - dataMessage[0].timeOfCreateMassage) / 60000))
-  // console.log(Math.ceil((Date.now() - new Date(2023, 1, 2, 21, 0, 0, 0).getTime()) / 60000))
-  // console.log(new Date(2023, 1, 2, 21, 0, 0, 0).getTime())
-  // console.log(new Date().getTime())
-  // console.log(new Date().toLocaleDateString())
-  // console.log(dataMessage[0])
 
   const messages = dataMessage.map((el) => {
     return <Message key={el.timeOfCreateMassage.toString()} dataMessage={el} />
