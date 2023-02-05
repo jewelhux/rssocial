@@ -5,3 +5,10 @@ export type DataMessage = {
   imgMassage: string,
   timeOfCreateMassage: number,
 }
+
+
+export type DataOfUsers = {
+  isOnlineUser: boolean,
+  nameOfUser: string,
+  imgOfUser: string,
+}

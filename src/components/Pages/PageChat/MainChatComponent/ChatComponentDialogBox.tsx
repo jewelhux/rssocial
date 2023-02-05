@@ -86,10 +86,6 @@ function ChatComponentDialogBox(): ReactElement {
     }
   ]
 
-  // const messages = dataMessage.map((el) => {
-  //   return <Message key={el.timeOfCreateMassage.toString()} dataMessage={el} />
-  // })
-
   return (
     <Box sx={{ display: 'flex', flexDirection: "column", height: '75vh', width: '100%' }}>
 
@@ -113,12 +109,6 @@ function ChatComponentDialogBox(): ReactElement {
           </FormControl>
         </Grid>
         <Grid sm={1} xs={2} item>
-
-
-          {/* <TextField
-            name="upload-photo"
-            type="file"
-          /> */}
           <IconButton aria-label="send" color="primary" onClick={handleClickOpen}>
             <InsertPhotoOutlinedIcon />
           </IconButton>

@@ -6,12 +6,16 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 
+interface StyledBadgeProps {
+  isOnlineUser: boolean;
+}
 
-const StyledBadge = styled(Badge)(({ theme }) => ({
+
+const StyledBadge = styled(Badge)<StyledBadgeProps>(({ theme , isOnlineUser}) => ({
   '& .MuiBadge-badge': {
       position: "relative",
-      backgroundColor: '#44b700',
-      color: '#44b700',
+      backgroundColor: isOnlineUser ? '#44b700': '#ccc',
+      color:  isOnlineUser ? '#44b700': '#ccc',
       boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
       '&::after': {
           position: 'absolute',
@@ -20,14 +24,14 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
           width: '100%',
           height: '100%',
           borderRadius: '50%',
-          animation: 'ripple 1.2s infinite ease-in-out',
+          animation: isOnlineUser ? 'ripple 1.2s infinite ease-in-out': '',
           border: '1px solid currentColor',
           content: '""',
       },
   },
   '@keyframes ripple': {
       '0%': {
-          transform: 'scale(.8)',
+          transform: 'scale(.8)' ,
           opacity: 1,
       },
       '100%': {
