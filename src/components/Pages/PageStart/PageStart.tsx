@@ -125,17 +125,6 @@ function PageStart() {
 
   }
 
-
-
-  // const [onSubmit, setOnSubmit] = useState(
-  //   {
-  //     firstName: "",
-  //     lastName: "",
-  //     password: "",
-  //     email: "",
-  //   }
-  // )
-
   const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log('XXX-isValidForm', isValidForm)
@@ -213,7 +202,6 @@ function PageStart() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        // maxWidth: '600px',
       }}
     >
       <Paper elevation={8} sx={{ padding: 5, marginBottom: 5, width: '100%' }}>
@@ -282,23 +270,6 @@ function PageStart() {
                 />
               </Grid>
               <Grid item xs={12}>
-                {/* <TextField
-                  error={(onSubmit.password === '') ? false : isValidForm.password ? false : true}
-                  helperText={(onSubmit.password === '') ? " " : isValidForm.password ? " " : 'Ошибочный ввод длина не менее трёх символов'}
-                  required
-                  fullWidth
-                  name="password"
-                  value={onSubmit.password}
-                  onChange={handleOnChangeTextField}
-                  label="Password"
-                  // type="password"
-                  type={showPassword ? 'text' : 'password'}
-
-                  id="password"
-                  autoComplete="new-password"
-
-                /> */}
-
                 <FormControl fullWidth>
                   <InputLabel htmlFor="outlined-adornment-password">{(onSubmit.password === '') ? "Password*" : isValidForm.password ? "Password*" : 'Ошибка'}</InputLabel>
                   <OutlinedInput
