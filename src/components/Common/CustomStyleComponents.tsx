@@ -115,4 +115,12 @@ const CustomCreatePost = styled(Box)(({ theme }) => ({
   flexGrow: '1',
 }));
 
-export { StyledBadge, SmallAvatar, Search, SearchIconWrapper, StyledInputBase, CustomGrid, CustomGridItem, CustomCreatePost, ImageMessage }
+const CustomButtinListFriend = styled(Box)(({ theme }) => ({
+  display: 'flex', 
+  flexDirection: 'column', 
+  alignItems: 'center', 
+  textAlign: 'center', 
+  justifyContent:'center'
+}));
+
+export { StyledBadge, SmallAvatar, Search, SearchIconWrapper, StyledInputBase, CustomGrid, CustomGridItem, CustomCreatePost, ImageMessage, CustomButtinListFriend }

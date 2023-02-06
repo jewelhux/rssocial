@@ -9,7 +9,6 @@ function ProfileComponentMainInfo():ReactElement {
         <img width={'100%'} alt="UserAvatar" src="https://avatars.githubusercontent.com/u/38877564?v=4" />
       </Box>
       <Typography variant='h5' sx={{textAlign: 'center', width: '100%'}}>User Name</Typography>
-      <Button color='inherit' variant='outlined'>Изменить профиль</Button>
       <Button component={Link}  to="/friend" color='inherit' variant='outlined'>Мои друзья</Button>
       <Button component={Link}  to="/setting" color='inherit' variant='outlined'>Настройки</Button>
       <Button color='info' variant='contained'>Написать сообщение</Button>
