@@ -6,3 +6,7 @@ export interface IHeaderMobileMenu {
 export interface IHeaderLink {
   title?: string
 }
+
+export interface StyledBadgeProps {
+  isonlineuser: string;
+}

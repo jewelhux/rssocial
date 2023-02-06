@@ -17,7 +17,7 @@ function UserInChat(props: { dataOfUsers: DataOfUsers }): ReactElement {
               overlap="circular"
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               variant="dot"
-              isOnlineUser={dataOfUsers.isOnlineUser}
+              isonlineuser={dataOfUsers.isOnlineUser.toString()}
             >
               <Avatar alt="image" src={dataOfUsers.imgOfUser} />
             </StyledBadge>
