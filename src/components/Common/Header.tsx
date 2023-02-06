@@ -13,6 +13,8 @@ import HeaderComponentMessage from './HeaderComponent/HeaderComponentMessage';
 import { Link } from 'react-router-dom';
 import Switch from '@mui/material/Switch';
 import { Dispatch, SetStateAction } from 'react';
+import HeaderComponentFriend from './HeaderComponent/HeaderComponentFriend';
+import HeaderComponentSetting from './HeaderComponent/HeaderComponentSetting';
 
  type ModeDark = 'light' | 'dark'
 
@@ -53,7 +55,8 @@ export default function Header({ modeDark, setmodeDark }: {
     >
       <HeaderComponentMessage title={'Messages'} />
       <HeaderComponentProfile title={'Profile'} />
-
+      <HeaderComponentFriend title={'Friend'} />
+      <HeaderComponentSetting title={'Setting'} />
     </Menu>
   );
 
@@ -80,6 +83,8 @@ export default function Header({ modeDark, setmodeDark }: {
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <HeaderComponentMessage />
             <HeaderComponentProfile />
+            <HeaderComponentFriend />
+            <HeaderComponentSetting />
           </Box>
 
           {/* МЕНЮ ТРЕХ ТОЧЕК */}
