@@ -1,4 +1,4 @@
-import { ReactElement, useContext, useState } from 'react';
+import { ReactElement, useContext, useEffect, useRef, useState } from 'react';
 import { FormControl, Grid, IconButton, List, ListItem, ListItemText, TextField, Box, Typography, Dialog, DialogTitle, Button, DialogActions, DialogContent, Divider } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -7,32 +7,16 @@ import { DataMessage } from '../../../../utils/Type';
 import { display } from '@mui/system';
 import ChatComponentUsersChating from './ChatComponentUsersChating';
 import Message from './Message';
+import { NorthWest } from '@mui/icons-material';
 
 
 function ChatComponentDialogBox(): ReactElement {
 
+  const chatContainerRef = useRef<HTMLElement>(null);
+
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(event.target.files![0]);
-  };
-
-  const handleUpload = () => {
-    // Perform the image upload logic here
-    console.log('File:', file);
-    setOpen(false);
-  };
-
-  const dataMessage: DataMessage[] = [
+  const [dataMessage, setdataMessage] = useState<DataMessage[]>([
     {
       currentUser: true,
       message: 'Это первое сообщение Евгения',
@@ -82,7 +66,35 @@ function ChatComponentDialogBox(): ReactElement {
       imgMassage: 'https://cdn.forbes.ru/forbes-static/750x422/new/2021/12/GettyImages-1204843675-61c4216fd8046.jpg',
       timeOfCreateMassage: (new Date(2023, 1, 2, 22, 18, 0, 0)).getTime()
     }
-  ]
+  ]);
+
+
+  useEffect(() => {
+    console.log(chatContainerRef.current)
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [chatContainerRef]);
+
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(event.target.files![0]);
+  };
+
+  const handleUpload = () => {
+    // Perform the image upload logic here
+    console.log('File:', file);
+    setOpen(false);
+  };
+
 
   return (
     <Box sx={{ display: 'flex', flexDirection: "column", height: '75vh', width: '100%' }}>
@@ -91,19 +103,17 @@ function ChatComponentDialogBox(): ReactElement {
 
         <ChatComponentUsersChating />
 
-        <Box sx={{ flexGrow: 1, height: '100%', overflow: 'auto' }}>
+        <Box ref={chatContainerRef}  sx={{ flexGrow: 1, height: '100%', overflow: 'auto' }}>
           {dataMessage.map((el) => {
-            return <Message key={el.timeOfCreateMassage.toString()} dataMessage={el} />
+            return <Message key={`${el.timeOfCreateMassage.toString()} + ${Date.now().toString()})`} dataMessage={el} />
           })}
         </Box>
       </Box>
 
-
-
       <Grid container alignItems="center" sx={{ pl: 1 }}>
         <Grid sm={10} xs={8} item>
           <FormControl fullWidth>
-            <TextField label="Ваш текст..." variant="outlined" />
+            <TextField label="Ваш текст..." variant="outlined"/>
           </FormControl>
         </Grid>
         <Grid sm={1} xs={2} item>
@@ -113,7 +123,15 @@ function ChatComponentDialogBox(): ReactElement {
 
         </Grid>
         <Grid sm={1} xs={2} item>
-          <IconButton aria-label="send" color="primary">
+          <IconButton aria-label="send" color="primary" onClick={() => {
+            setdataMessage(prev => [...prev, {
+                currentUser: true,
+                message: 'Ну тогда Ок. Значт больше отдыхай!!!0000!!!!!!!',
+                imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
+                imgMassage: '',
+                timeOfCreateMassage: Date.now()
+              }])
+          }}>
             <SendIcon />
           </IconButton>
         </Grid>
