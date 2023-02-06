@@ -5,17 +5,14 @@ import MailIcon from '@mui/icons-material/Mail';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
-
-interface StyledBadgeProps {
-  isOnlineUser: boolean;
-}
+import { StyledBadgeProps } from '../../utils/interfaces';
 
 
-const StyledBadge = styled(Badge)<StyledBadgeProps>(({ theme , isOnlineUser}) => ({
+const StyledBadge = styled(Badge)<StyledBadgeProps>(({ theme , isonlineuser}) => ({
   '& .MuiBadge-badge': {
       position: "relative",
-      backgroundColor: isOnlineUser ? '#44b700': '#ccc',
-      color:  isOnlineUser ? '#44b700': '#ccc',
+      backgroundColor: isonlineuser === 'true' ? '#44b700': '#ccc',
+      color:  isonlineuser === 'true' ? '#44b700': '#ccc',
       boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
       '&::after': {
           position: 'absolute',
@@ -24,7 +21,7 @@ const StyledBadge = styled(Badge)<StyledBadgeProps>(({ theme , isOnlineUser}) =>
           width: '100%',
           height: '100%',
           borderRadius: '50%',
-          animation: isOnlineUser ? 'ripple 1.2s infinite ease-in-out': '',
+          animation: isonlineuser === 'true' ? 'ripple 1.2s infinite ease-in-out': '',
           border: '1px solid currentColor',
           content: '""',
       },
