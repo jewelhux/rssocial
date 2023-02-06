@@ -3,12 +3,10 @@ import { FormControl, Grid, IconButton, List, ListItem, ListItemText, TextField,
 import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
-import Message from './Message';
 import { DataMessage } from '../../../../utils/Type';
-
-import { Context } from "../../../Context/context";
 import { display } from '@mui/system';
 import ChatComponentUsersChating from './ChatComponentUsersChating';
+import Message from './Message';
 
 
 function ChatComponentDialogBox(): ReactElement {
