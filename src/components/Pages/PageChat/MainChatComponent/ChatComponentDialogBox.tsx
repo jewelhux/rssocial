@@ -19,15 +19,7 @@ function ChatComponentDialogBox(): ReactElement {
 
   const [newMessage, setNewMessage] = useState<string>('');
 
-  // const [newUserMessage, setNewUserMessage] = useState<DataMessage>(
-  //   {
-  //     currentUser: true,
-  //     message: newMessage,
-  //     imgSrc: '',
-  //     imgMassage: '',
-  //     timeOfCreateMassage: Date.now(),
-  //   }
-  // );
+
   const [dataMessage, setDataMessage] = useState<DataMessage[]>([
     {
       currentUser: true,
@@ -112,6 +104,8 @@ function ChatComponentDialogBox(): ReactElement {
     console.log('file50', file)
     if (!newMessage.trim() && !file) {
       console.log('СТРОКА ПУСТАЯ И КАРТИНКА ПУСТАЯ')
+      setNewMessage('')
+      setFile(null)
       return
     }
     if (newMessage.trim() || file) {
@@ -137,12 +131,12 @@ function ChatComponentDialogBox(): ReactElement {
 
   // Изменение текста сообщения
   const handleNewMessage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const trim = event.target.value.trim()
-    if (trim) {
+    // const trim = event.target.value.trim()
+    // if (trim) {
       setNewMessage(event.target.value)
-    } else {
-      setNewMessage(trim)
-    }
+    // } else {
+      // setNewMessage(trim)
+    // }
 
   };
 
