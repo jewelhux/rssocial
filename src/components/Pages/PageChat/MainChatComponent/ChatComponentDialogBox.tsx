@@ -72,9 +72,9 @@ function ChatComponentDialogBox(): ReactElement {
   useEffect(() => {
     console.log(chatContainerRef.current)
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollIntoView({ behavior: 'smooth' });
+      chatContainerRef.current.scrollTo({ top: chatContainerRef.current.scrollHeight, behavior: 'smooth' })
     }
-  }, [chatContainerRef]);
+  }, [dataMessage]);
 
 
   const handleClickOpen = () => {
