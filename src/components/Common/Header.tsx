@@ -11,8 +11,15 @@ import HeaderComponentMobileMenu from './HeaderComponent/HeaderComponentMobileMe
 import HeaderComponentProfile from './HeaderComponent/HeaderComponentProfile';
 import HeaderComponentMessage from './HeaderComponent/HeaderComponentMessage';
 import { Link } from 'react-router-dom';
+import Switch from '@mui/material/Switch';
+import { Dispatch, SetStateAction } from 'react';
 
-export default function Header() {
+ type ModeDark = 'light' | 'dark'
+
+export default function Header({ modeDark, setmodeDark }: {
+  modeDark: ModeDark;
+  setmodeDark: Dispatch<SetStateAction<ModeDark>>;
+}) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -45,7 +52,7 @@ export default function Header() {
       onClose={handleMobileMenuClose}
     >
       <HeaderComponentMessage title={'Messages'} />
-      <HeaderComponentProfile title={'Profile'}/>
+      <HeaderComponentProfile title={'Profile'} />
 
     </Menu>
   );
@@ -64,13 +71,15 @@ export default function Header() {
           {/* БЛОК ДЛЯ ОТСТУПА */}
           <Box sx={{ flexGrow: 1 }} />
 
+          <Switch onChange={e => setmodeDark(modeDark === 'light' ? 'dark' : 'light')} />
           {/* ВХОД И РЕГИСТРАЦИЯ */}
           <HeaderComponentLogin />
 
+
           {/* СООБЩЕНИЯ И ПРОФИЛЬ */}
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <HeaderComponentMessage/>
-            <HeaderComponentProfile/>
+            <HeaderComponentMessage />
+            <HeaderComponentProfile />
           </Box>
 
           {/* МЕНЮ ТРЕХ ТОЧЕК */}

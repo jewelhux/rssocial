@@ -1,12 +1,14 @@
 import React, { ReactElement } from 'react';
-import { Toolbar, AppBar, Container, IconButton, Typography, Box, Button, Avatar, Link } from '@mui/material';
+import { Toolbar, AppBar, Container, IconButton, Typography, Box, Button, Avatar, Link, Divider } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { styled } from '@mui/material'
 
 
 function Footer():ReactElement {
   return (
-    <Box sx={{ background: '#1976d2' }}>
+    // <Box sx={{ background: '#1976d2' }}>
+    <Box bgcolor={'backround.default'}>
+      <Divider/>
       <Container>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', columnGap: '5px' }}>
