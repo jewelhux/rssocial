@@ -1,13 +1,13 @@
 import { ReactElement, useContext, useEffect, useRef, useState } from 'react';
 import { FormControl, Grid, IconButton, List, ListItem, ListItemText, TextField, Box, Typography, Dialog, DialogTitle, Button, DialogActions, DialogContent, Divider } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+// import AttachFileIcon from '@mui/icons-material/AttachFile';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { DataMessage } from '../../../../utils/Type';
-import { display } from '@mui/system';
+// import { display } from '@mui/system';
 import ChatComponentUsersChating from './ChatComponentUsersChating';
 import Message from './Message';
-import { NorthWest } from '@mui/icons-material';
+// import { NorthWest } from '@mui/icons-material';
 
 
 function ChatComponentDialogBox(): ReactElement {
@@ -16,7 +16,19 @@ function ChatComponentDialogBox(): ReactElement {
 
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [dataMessage, setdataMessage] = useState<DataMessage[]>([
+
+  const [newMessage, setNewMessage] = useState<string>('');
+
+  // const [newUserMessage, setNewUserMessage] = useState<DataMessage>(
+  //   {
+  //     currentUser: true,
+  //     message: newMessage,
+  //     imgSrc: '',
+  //     imgMassage: '',
+  //     timeOfCreateMassage: Date.now(),
+  //   }
+  // );
+  const [dataMessage, setDataMessage] = useState<DataMessage[]>([
     {
       currentUser: true,
       message: 'Это первое сообщение Евгения',
@@ -70,7 +82,7 @@ function ChatComponentDialogBox(): ReactElement {
 
 
   useEffect(() => {
-    console.log(chatContainerRef.current)
+    console.log('chatContainerRef.current===', chatContainerRef.current)
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTo({ top: chatContainerRef.current.scrollHeight, behavior: 'smooth' })
     }
@@ -87,12 +99,59 @@ function ChatComponentDialogBox(): ReactElement {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFile(event.target.files![0]);
+    console.log('handleFileChange=', file)
   };
 
   const handleUpload = () => {
     // Perform the image upload logic here
     console.log('File:', file);
     setOpen(false);
+  };
+
+  const handleNewUserMessage = () => {
+    console.log('file50', file)
+    if (!newMessage.trim() && !file) {
+      console.log('СТРОКА ПУСТАЯ И КАРТИНКА ПУСТАЯ')
+      return
+    }
+    if (newMessage.trim() || file) {
+      console.log('СТРОКА', newMessage)
+      console.log('file100', file)
+      setDataMessage(prev => (
+        [...prev,
+        {
+          currentUser: true,
+          message: newMessage || 'Лови картинку',
+          imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
+          imgMassage: file?.name ? 'https://mirpozitiva.ru/wp-content/uploads/2019/11/1472042719_15.jpg' : '',
+          // imgMassage: 'https://mirpozitiva.ru/wp-content/uploads/2019/11/1472042719_15.jpg',
+          timeOfCreateMassage: Date.now(),
+        }
+        ]
+      ))
+      setNewMessage('')
+      setFile(null)
+    }
+
+  };
+
+  // Изменение текста сообщения
+  const handleNewMessage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const trim = event.target.value.trim()
+    if (trim) {
+      setNewMessage(event.target.value)
+    } else {
+      setNewMessage(trim)
+    }
+
+  };
+
+  const handleKeyPressNewMessage = (event: React.KeyboardEvent) => {
+    // event.preventDefault()
+    if (event.key === 'Enter') {
+      console.log('НАЖАЛИ ЕНТЕР')
+      handleNewUserMessage()
+    }
   };
 
 
@@ -103,17 +162,26 @@ function ChatComponentDialogBox(): ReactElement {
 
         <ChatComponentUsersChating />
 
-        <Box ref={chatContainerRef}  sx={{ flexGrow: 1, height: '100%', overflow: 'auto' }}>
+        <Box ref={chatContainerRef} sx={{ flexGrow: 1, height: '100%', overflow: 'auto' }}>
+          <Divider />
           {dataMessage.map((el) => {
             return <Message key={`${el.timeOfCreateMassage.toString()} + ${Date.now().toString()})`} dataMessage={el} />
           })}
+          <Divider />
         </Box>
       </Box>
 
       <Grid container alignItems="center" sx={{ pl: 1 }}>
         <Grid sm={10} xs={8} item>
-          <FormControl fullWidth>
-            <TextField label="Ваш текст..." variant="outlined"/>
+          <FormControl fullWidth >
+            {/* Инпут заполнения сообщения */}
+            <TextField
+              label="Ваш текст..."
+              variant="outlined"
+              value={newMessage}
+              onChange={handleNewMessage}
+              onKeyPress={handleKeyPressNewMessage}
+            />
           </FormControl>
         </Grid>
         <Grid sm={1} xs={2} item>
@@ -123,15 +191,8 @@ function ChatComponentDialogBox(): ReactElement {
 
         </Grid>
         <Grid sm={1} xs={2} item>
-          <IconButton aria-label="send" color="primary" onClick={() => {
-            setdataMessage(prev => [...prev, {
-                currentUser: true,
-                message: 'Ну тогда Ок. Значт больше отдыхай!!!0000!!!!!!!',
-                imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
-                imgMassage: '',
-                timeOfCreateMassage: Date.now()
-              }])
-          }}>
+          {/* Основная кнопка отправки сообщения */}
+          <IconButton aria-label="send" color="primary" onClick={handleNewUserMessage}>
             <SendIcon />
           </IconButton>
         </Grid>
@@ -144,7 +205,7 @@ function ChatComponentDialogBox(): ReactElement {
           )}
           <div>
             <input
-              style={{ display: 'none', width: '100%' }}
+              style={{ display: 'none', width: '80%' }}
               type="file"
               name='file'
               id='file'
