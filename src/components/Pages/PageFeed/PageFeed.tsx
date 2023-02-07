@@ -1,7 +1,8 @@
 import { Box, Typography } from '@mui/material';
 import { Container } from '@mui/system';
 import React from 'react';
-import FeedComponentFeed from './MainFeedComponent/FeedComponentFeed'
+import FeedComponentFeed from './MainFeedComponent/FeedComponentFeed';
+
 
 function PageFeed() {
   return (
