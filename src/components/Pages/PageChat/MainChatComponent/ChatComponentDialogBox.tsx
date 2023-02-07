@@ -14,6 +14,7 @@ function ChatComponentDialogBox(): ReactElement {
 
   const chatContainerRef = useRef<HTMLElement>(null);
 
+  const [scroll, setscroll] = useState(false);
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
@@ -72,13 +73,12 @@ function ChatComponentDialogBox(): ReactElement {
     }
   ]);
 
-
   useEffect(() => {
     console.log('chatContainerRef.current===', chatContainerRef.current)
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTo({ top: chatContainerRef.current.scrollHeight, behavior: 'smooth' })
     }
-  }, [dataMessage]);
+  }, [scroll]);
 
 
   const handleClickOpen = () => {
@@ -123,10 +123,10 @@ function ChatComponentDialogBox(): ReactElement {
         }
         ]
       ))
+      setscroll(!scroll)
       setNewMessage('')
       setFile(null)
     }
-
   };
 
   // Изменение текста сообщения
@@ -161,7 +161,10 @@ function ChatComponentDialogBox(): ReactElement {
           {dataMessage.map((el) => {
             return <Message key={`${el.timeOfCreateMassage.toString()} + ${Date.now().toString()})`} dataMessage={el} />
           })}
+          {/* <Box sx={{ width: '100%', minHeight: '1px' }} > */}
+            
           <Divider />
+          {/* </Box> */}
         </Box>
       </Box>
 

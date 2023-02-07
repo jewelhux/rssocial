@@ -71,7 +71,8 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 }));
 
 const ImageMessage = styled('img')(() => ({
-  maxWidth: '75%',
+  // maxWidth: '75%',
+  height: '25vh',
   borderRadius: '10%',
   marginTop:'2px',
 }));
