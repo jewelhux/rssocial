@@ -72,8 +72,11 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 
 const ImageMessage = styled('img')(() => ({
   maxWidth: '75%',
+  height: '25vh',
+  objectFit: 'cover',
   borderRadius: '10%',
   marginTop:'2px',
+
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({

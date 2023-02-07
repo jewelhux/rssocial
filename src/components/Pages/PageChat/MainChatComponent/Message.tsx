@@ -36,7 +36,7 @@ function Message(props: { dataMessage: DataMessage }): ReactElement {
         </Box>
         {keyImage &&
         <Box display='flex' marginTop={1} sx={{ flexDirection: `${dataMessage.currentUser ? 'row-reverse' : 'row'}` }}>
-          <ImageMessage src={dataMessage.imgMassage} alt="image" />
+         { dataMessage.imgMassage && <ImageMessage src={dataMessage.imgMassage} alt="image" />}
         </Box>}
       </Box>
 
