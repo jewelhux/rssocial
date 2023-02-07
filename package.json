@@ -7,13 +7,17 @@
     "./backend"
   ],
   "scripts": {
-    "start:frontend": "npm run-script serve --prefix frontend",
-    "build:frontend": "npm run-script build --prefix frontend",
+    "start": "concurrently \"npm run start --prefix backend\" \"npm run serve --prefix frontend\"",
+    "start:frontend": "npm run serve --prefix frontend",
+    "build:frontend": "npm run build --prefix frontend",
+    "start:backend": "npm run start --prefix backend",
+    "start:watch:backend": "npm run start:watch --prefix backend",
     "prepare": "husky install"
   },
   "author": "Seniors team",
   "license": "ISC",
   "devDependencies": {
+    "concurrently": "^7.6.0",
     "husky": "^8.0.3"
   }
 }
