@@ -15,7 +15,7 @@ const ADMIN_PROFILE_DATA = {
 };
 
 const ADMIN_LOGIN_DATA = {
-  email: 'Jik@maybebaby.com',
+  email: 'jik@maybebaby.com',
   password: '123'
 };
 
