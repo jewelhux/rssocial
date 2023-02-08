@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import multer from "multer";
@@ -18,7 +19,10 @@ let mockDB = {
       email: "jik@maybebaby.com",
       password: "123",
       isAdmin: true,
-      friends: [1, 2],
+      friends: [
+        { id: 1, status: "accepted" },
+        { id: 2, status: "accepted" },
+      ],
       avatar: null,
       about: {
         age: 25,
@@ -34,7 +38,10 @@ let mockDB = {
       email: "syderi@github.com",
       password: "123",
       isAdmin: true,
-      friends: [0, 2],
+      friends: [
+        { id: 0, status: "accepted" },
+        { id: 2, status: "accepted" },
+      ],
       avatar: null,
       about: {
         age: 45,
@@ -50,7 +57,10 @@ let mockDB = {
       email: "ferka123@github.com",
       password: "123",
       isAdmin: true,
-      friends: [0, 1],
+      friends: [
+        { id: 0, status: "accepted" },
+        { id: 1, status: "accepted" },
+      ],
       avatar: null,
       about: {
         age: 30,
@@ -104,6 +114,7 @@ process.on("SIGINT", function () {
 });
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -124,9 +135,9 @@ const upload = multer({ storage: storage });
 app.post("/api/auth/register", (req, res) => {
   const { name, lastname, email, password } = req.body;
   if (!name || !lastname || !email || !password)
-    return res.status(400).send("data validation failed");
+    return res.status(400).send({ message: "Validation failed" });
   if (mockDB.users.find((el) => el.email === email))
-    return res.status(409).send("user already exist");
+    return res.status(409).send({ message: "User already exists" });
 
   const id = +new Date();
   mockDB.users.push({
@@ -146,18 +157,18 @@ app.post("/api/auth/register", (req, res) => {
   });
   res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
 
-  return res.status(201).send("account created");
+  return res.status(201).send({ message: "Account created" });
 });
 
 app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
-    return res.status(400).send("data validation failed");
+    return res.status(400).send({ message: "Validation failed" });
 
   const user = mockDB.users.find(
     (el) => el.email === email && el.password === password
   );
-  if (!user) return res.status(403).send("auth failed");
+  if (!user) return res.status(401).send({ message: "Authentication failed" });
 
   const token = jwt.sign(
     { userId: user.id, isAdmin: user.isAdmin },
@@ -168,14 +179,14 @@ app.post("/api/auth/login", (req, res) => {
   );
   res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
 
-  return res.status(200).send("login successfull");
+  return res.status(200).send({ message: "Login successful" });
 });
 
 // Middleware function to check the token
 const checkAuth = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
-    return res.status(401).send("Unauthorized access");
+    return res.status(401).send({ message: "Unauthorized access" });
   }
   try {
     const decoded = jwt.verify(token, secretKey);
@@ -183,19 +194,19 @@ const checkAuth = (req, res, next) => {
     next();
   } catch (error) {
     res.clearCookie("token");
-    return res.status(400).send("Token has expired");
+    return res.status(400).send({ message: "Token has expired" });
   }
 };
 
 const checkAdmin = (req, res, next) => {
   if (!req.user?.isAdmin) {
-    return res.status(401).send("Unauthorized access");
+    return res.status(401).send({ message: "Unauthorized access" });
   } else next();
 };
 
-app.get("/api/auth/logout", checkAuth, (req, res) => {
+app.post("/api/auth/logout", checkAuth, (req, res) => {
   res.clearCookie("token");
-  return res.status(200).send("loged out");
+  return res.status(200).send({ message: "User logged out" });
 });
 
 //user
@@ -203,7 +214,7 @@ app.get("/api/profile", checkAuth, (req, res) => {
   const { password, ...user } = mockDB.users.find(
     (el) => el.id === req.user.userId
   );
-  if (!user) return res.status(404).send("not found");
+  if (!user) return res.status(404).send({ message: "Not found" });
   return res.status(200).send(user);
 });
 
@@ -211,7 +222,7 @@ app.get("/api/profile", checkAuth, (req, res) => {
 app.put("/api/profile", checkAuth, upload.single("avatar"), (req, res) => {
   const image = req.file;
   const user = mockDB.users.find((el) => el.id === req.user.userId);
-  if (!user) return res.status(404).send("not found");
+  if (!user) return res.status(404).send({ message: "Not found" });
   if (req.body.age) user.about.age = req.body.age;
   if (req.body.status) user.about.status = req.body.status;
   if (req.body.interests) user.about.interests = req.body.interests;
@@ -222,11 +233,95 @@ app.put("/api/profile", checkAuth, upload.single("avatar"), (req, res) => {
   return res.status(200).send(rest);
 });
 
+app.get("/api/profile/all", checkAuth, (req, res) => {
+  const self = mockDB.users.find((el) => el.id === req.user.userId);
+  const users = mockDB.users
+    .filter((user) => user !== self)
+    .map((user) => {
+      const { id, name, lastname, avatar, about } = user;
+      const friend = self.friends.find((el) => el.id === id);
+      const friendStatus = friend?.status ?? "none";
+      return { id, name, lastname, avatar, about, friendStatus };
+    });
+  return res.status(200).send({ users });
+});
+
 app.get("/api/profile/:id", checkAuth, (req, res) => {
+  const self = mockDB.users.find((el) => el.id === req.user.userId);
   const user = mockDB.users.find((el) => el.id === Number(req.params.id));
-  if (!user) return res.status(404).send("not found");
-  const { name, lastname, avatar, about } = user;
-  return res.status(200).send({ name, lastname, avatar, about });
+  if (!user) return res.status(404).send({ message: "Not found" });
+
+  const friend = self.friends.find((el) => el.id === user.id);
+  const friendStatus = friend?.status ?? "none";
+  const { id, name, lastname, avatar, about } = user;
+  return res
+    .status(200)
+    .send({ id, name, lastname, avatar, about, friendStatus });
+});
+
+//friends
+app.get("/api/friends", checkAuth, (req, res) => {
+  const status = req.query.type || "accepted";
+  const user = mockDB.users.find((el) => el.id === Number(req.user.userId));
+  if (!user) return res.status(404).send({ message: "Not found" });
+  const friends = user.friends
+    .filter((friend) => friend.status === status)
+    .map((friend) => {
+      const friendUser = mockDB.users.find((el) => el.id === friend.id);
+      const { id, name, lastname, avatar, about } = friendUser;
+      return { id, name, lastname, avatar, about };
+    });
+
+  return res.status(200).send({ friends });
+});
+
+app.post("/api/friends", checkAuth, (req, res) => {
+  const { id, action } = req.body;
+  if (
+    typeof id !== "number" ||
+    id === req.user.userId ||
+    !["request", "approve", "delete"].includes(action)
+  )
+    return res.status(400).send({ message: "Bad request" });
+
+  const self = mockDB.users.find((el) => el.id === Number(req.user.userId));
+  const requested = mockDB.users.find((el) => el.id === Number(id));
+  if (!self || !requested)
+    return res.status(404).send({ message: "Not found" });
+
+  const selfFriend = self.friends.find((friend) => friend.id === id);
+  const requestedFriend = requested.friends.find(
+    (friend) => friend.id === Number(req.user.userId)
+  );
+
+  if (action === "request") {
+    if (selfFriend || requestedFriend)
+      return res.status(400).send({ message: "Already requested" });
+    self.friends.push({ id, status: "requested" });
+    requested.friends.push({ id: req.user.userId, status: "pending" });
+    return res.status(200).send({ message: "Request Processed" });
+  }
+  if (action === "approve") {
+    if (!selfFriend || !requestedFriend)
+      return res.status(400).send({ message: "Bad request" });
+    if (
+      selfFriend.status === "accepted" &&
+      requestedFriend.status === "accepted"
+    )
+      return res.status(400).send({ message: "Already approved" });
+    selfFriend.status = "accepted";
+    requestedFriend.status = "accepted";
+    return res.status(200).send({ message: "Request Processed" });
+  }
+  if (action === "delete") {
+    if (!selfFriend || !requestedFriend)
+      return res.status(400).send({ message: "Bad request" });
+    self.friends = self.friends.filter((friend) => friend !== selfFriend);
+    requested.friends = self.friends.filter(
+      (friend) => friend !== requestedFriend
+    );
+    return res.status(200).send({ message: "Request Processed" });
+  }
 });
 
 // posts
@@ -252,24 +347,24 @@ app.get("/api/posts", checkAuth, (req, res) => {
   res.status(200).send({ posts });
 });
 
-app.delete("/api/posts/:id", checkAuth, (req, res) => {
-  const index = mockDB.posts.findIndex((el) => el.id === Number(req.params.id));
-  if (index === -1) return res.status(404).send("not found");
-
-  if (mockDB.posts[index].userId !== req.user.userId && !req.user.isAdmin)
-    return res.status(401).send("Unathorized");
-
-  mockDB.posts.splice(index, 1);
-
-  return res.status(204).send();
-});
-
 app.get("/api/posts/all", checkAuth, (req, res) => {
   const posts = mockDB.posts.map((post) => {
     const user = mockDB.users.find((el) => el.id === post.userId);
     return { ...post, name: `${user.name} ${user.lastname}` };
   });
   res.status(200).send({ posts });
+});
+
+app.delete("/api/posts/:id", checkAuth, (req, res) => {
+  const index = mockDB.posts.findIndex((el) => el.id === Number(req.params.id));
+  if (index === -1) return res.status(404).send({ message: "Not found" });
+
+  if (mockDB.posts[index].userId !== req.user.userId && !req.user.isAdmin)
+    return res.status(403).send({ message: "Access forbidden" });
+
+  mockDB.posts.splice(index, 1);
+
+  return res.status(204).send();
 });
 
 app.listen(port, () => console.log(`server started on ${port}`));
