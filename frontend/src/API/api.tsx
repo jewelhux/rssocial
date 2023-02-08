@@ -7,14 +7,12 @@ async function loginUser() {
     headers: {
       'Content-Type': 'application/json'
     },
-    mode: 'no-cors',
     credentials: 'include'
   });
 }
 
 async function getUser() {
   const response = await fetch(`${USER}/1`, {
-    mode: 'no-cors',
     credentials: 'include'
   });
   return response.json();
