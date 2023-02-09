@@ -1,7 +1,7 @@
 import { apiSlice } from '../apiSlice';
 import { FriendProfile, FriendStatus, FriendRequest, GenericResponse } from './types';
 
-const friendsService = apiSlice.injectEndpoints({
+export const friendsService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getFriends: builder.query<{ friends: FriendProfile[] }, FriendStatus>({
       query(type) {

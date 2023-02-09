@@ -156,6 +156,7 @@ app.post("/api/auth/register", (req, res) => {
     expiresIn: "1h",
   });
   res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
+  res.cookie("logged_in", true, { maxAge: 3600000 });
 
   return res.status(201).send({ message: "Account created" });
 });
@@ -178,6 +179,7 @@ app.post("/api/auth/login", (req, res) => {
     }
   );
   res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
+  res.cookie("logged_in", true, { maxAge: 3600000 });
 
   return res.status(200).send({ message: "Login successful" });
 });
@@ -185,27 +187,26 @@ app.post("/api/auth/login", (req, res) => {
 // Middleware function to check the token
 const checkAuth = (req, res, next) => {
   const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).send({ message: "Unauthorized access" });
-  }
   try {
     const decoded = jwt.verify(token, secretKey);
     req.user = decoded;
     next();
   } catch (error) {
     res.clearCookie("token");
-    return res.status(400).send({ message: "Token has expired" });
+    res.clearCookie("logged_in");
+    return res.status(401).send({ message: "Unauthorized access" });
   }
 };
 
 const checkAdmin = (req, res, next) => {
   if (!req.user?.isAdmin) {
-    return res.status(401).send({ message: "Unauthorized access" });
+    return res.status(403).send({ message: "Access forbidden" });
   } else next();
 };
 
 app.post("/api/auth/logout", checkAuth, (req, res) => {
   res.clearCookie("token");
+  res.clearCookie("logged_in");
   return res.status(200).send({ message: "User logged out" });
 });
 

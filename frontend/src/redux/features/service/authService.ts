@@ -1,7 +1,7 @@
 import { apiSlice } from '../apiSlice';
 import { GenericResponse, LoginInput, RegistrationInput } from './types';
 
-const authService = apiSlice.injectEndpoints({
+export const authService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation<GenericResponse, RegistrationInput>({
       query(data) {

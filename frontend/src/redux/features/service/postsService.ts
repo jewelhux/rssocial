@@ -1,7 +1,7 @@
 import { apiSlice } from '../apiSlice';
 import { UserPost, GenericPost } from './types';
 
-const postsService = apiSlice.injectEndpoints({
+export const postsService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getOwnPosts: builder.query<{ posts: UserPost[] }, void>({
       query() {

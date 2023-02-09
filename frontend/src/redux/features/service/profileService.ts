@@ -1,7 +1,7 @@
 import { apiSlice } from '../apiSlice';
 import { GenericProfile, UserProfile } from './types';
 
-const profileService = apiSlice.injectEndpoints({
+export const profileService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getOwnProfile: builder.query<UserProfile, void>({
       query() {
