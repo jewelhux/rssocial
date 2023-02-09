@@ -114,7 +114,7 @@ process.on("SIGINT", function () {
 });
 
 const app = express();
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:8080" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -337,22 +337,33 @@ app.post("/api/posts", checkAuth, upload.single("image"), (req, res) => {
     image: image ? `http://localhost:3000/uploads/${image.filename}` : null,
   };
   mockDB.posts.push(post);
-  return res
-    .status(200)
-    .send({ ...post, name: `${user.name} ${user.lastname}` });
+  return res.status(200).send(post);
 });
 
 app.get("/api/posts", checkAuth, (req, res) => {
-  const posts = mockDB.posts.filter((post) => post.userId === req.user.userId);
+  const posts = mockDB.posts
+    .filter((post) => post.userId === req.user.userId)
+    .reverse();
   res.status(200).send({ posts });
 });
 
 app.get("/api/posts/all", checkAuth, (req, res) => {
-  const posts = mockDB.posts.map((post) => {
-    const user = mockDB.users.find((el) => el.id === post.userId);
-    return { ...post, name: `${user.name} ${user.lastname}` };
-  });
+  const posts = mockDB.posts
+    .map((post) => {
+      const user = mockDB.users.find((el) => el.id === post.userId);
+      return { ...post, name: `${user.name} ${user.lastname}` };
+    })
+    .reverse();
   res.status(200).send({ posts });
+});
+
+app.get("/api/posts/user:id", checkAuth, (req, res) => {
+  const user = mockDB.users.find((el) => el.id === Number(req.params.id));
+  if (!user) return res.status(404).send({ message: "Not found" });
+  const posts = mockDB.posts
+    .filter((post) => post.userId === user.id)
+    .reverse();
+  return res.status(200).send({ posts });
 });
 
 app.delete("/api/posts/:id", checkAuth, (req, res) => {
