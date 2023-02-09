@@ -12,6 +12,7 @@ import HeaderComponentMessage from './HeaderComponent/HeaderComponentMessage';
 import Switch from '@mui/material/Switch';
 import HeaderComponentFriend from './HeaderComponent/HeaderComponentFriend';
 import HeaderComponentSetting from './HeaderComponent/HeaderComponentSetting';
+import { useCookies } from 'react-cookie';
 
 type ModeDark = 'light' | 'dark';
 
@@ -22,6 +23,8 @@ export default function Header({
   modeDark: ModeDark;
   setmodeDark: Dispatch<SetStateAction<ModeDark>>;
 }) {
+  const [cookies] = useCookies(['logged_in']);
+
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
 
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -73,7 +76,7 @@ export default function Header({
 
           <Switch onChange={() => setmodeDark(modeDark === 'light' ? 'dark' : 'light')} />
           {/* ВХОД И РЕГИСТРАЦИЯ */}
-          <HeaderComponentLogin />
+          {!cookies.logged_in && <HeaderComponentLogin />}
 
           {/* СООБЩЕНИЯ И ПРОФИЛЬ */}
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

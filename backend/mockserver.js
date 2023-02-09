@@ -114,7 +114,7 @@ process.on("SIGINT", function () {
 });
 
 const app = express();
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:8080" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -156,6 +156,7 @@ app.post("/api/auth/register", (req, res) => {
     expiresIn: "1h",
   });
   res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
+  res.cookie("logged_in", true, { maxAge: 3600000 });
 
   return res.status(201).send({ message: "Account created" });
 });
@@ -178,6 +179,7 @@ app.post("/api/auth/login", (req, res) => {
     }
   );
   res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
+  res.cookie("logged_in", true, { maxAge: 3600000 });
 
   return res.status(200).send({ message: "Login successful" });
 });
@@ -185,27 +187,26 @@ app.post("/api/auth/login", (req, res) => {
 // Middleware function to check the token
 const checkAuth = (req, res, next) => {
   const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).send({ message: "Unauthorized access" });
-  }
   try {
     const decoded = jwt.verify(token, secretKey);
     req.user = decoded;
     next();
   } catch (error) {
     res.clearCookie("token");
-    return res.status(400).send({ message: "Token has expired" });
+    res.clearCookie("logged_in");
+    return res.status(401).send({ message: "Unauthorized access" });
   }
 };
 
 const checkAdmin = (req, res, next) => {
   if (!req.user?.isAdmin) {
-    return res.status(401).send({ message: "Unauthorized access" });
+    return res.status(403).send({ message: "Access forbidden" });
   } else next();
 };
 
 app.post("/api/auth/logout", checkAuth, (req, res) => {
   res.clearCookie("token");
+  res.clearCookie("logged_in");
   return res.status(200).send({ message: "User logged out" });
 });
 
@@ -337,22 +338,33 @@ app.post("/api/posts", checkAuth, upload.single("image"), (req, res) => {
     image: image ? `http://localhost:3000/uploads/${image.filename}` : null,
   };
   mockDB.posts.push(post);
-  return res
-    .status(200)
-    .send({ ...post, name: `${user.name} ${user.lastname}` });
+  return res.status(200).send(post);
 });
 
 app.get("/api/posts", checkAuth, (req, res) => {
-  const posts = mockDB.posts.filter((post) => post.userId === req.user.userId);
+  const posts = mockDB.posts
+    .filter((post) => post.userId === req.user.userId)
+    .reverse();
   res.status(200).send({ posts });
 });
 
 app.get("/api/posts/all", checkAuth, (req, res) => {
-  const posts = mockDB.posts.map((post) => {
-    const user = mockDB.users.find((el) => el.id === post.userId);
-    return { ...post, name: `${user.name} ${user.lastname}` };
-  });
+  const posts = mockDB.posts
+    .map((post) => {
+      const user = mockDB.users.find((el) => el.id === post.userId);
+      return { ...post, name: `${user.name} ${user.lastname}` };
+    })
+    .reverse();
   res.status(200).send({ posts });
+});
+
+app.get("/api/posts/user:id", checkAuth, (req, res) => {
+  const user = mockDB.users.find((el) => el.id === Number(req.params.id));
+  if (!user) return res.status(404).send({ message: "Not found" });
+  const posts = mockDB.posts
+    .filter((post) => post.userId === user.id)
+    .reverse();
+  return res.status(200).send({ posts });
 });
 
 app.delete("/api/posts/:id", checkAuth, (req, res) => {
