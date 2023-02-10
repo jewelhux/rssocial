@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   TextField,
   Box,
@@ -23,21 +23,40 @@ import {
 } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useLoginMutation, useRegisterMutation } from '../../../redux/features/service/authService';
+import useCookies from 'react-cookie/cjs/useCookies';
 
 function PageStart() {
-  const [isSing, setIsSing] = useState(true);
-  const [isCheckedRules, setIsCheckedRules] = useState(false);
-  const [isCheckedRememberUser, setIsCheckedRememberUser] = useState(false);
+  const [cookies] = useCookies(['logged_in']);
+  const location = useLocation();
+
+  const [createUser, { isLoading: isLoadingRegisredUser, isSuccess: isSuccessRegisredUser }] =
+    useRegisterMutation();
+
+  const [loginUser, { isLoading, isSuccess }] = useLoginMutation();
+
   const [openDialog, setOpenDialog] = useState(false);
+
+  useEffect(() => {
+    if (isSuccess) setOpenDialog(false);
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isSuccessRegisredUser) setOpenDialog(false);
+  }, [isSuccessRegisredUser]);
+
+  const [isLogin, setIsLogin] = useState(true);
+  const [isCheckedRules, setIsCheckedRules] = useState(false);
   const [isValidForm, setisValidForm] = useState({
-    firstName: false,
-    lastName: false,
+    name: false,
+    lastname: false,
     email: false,
     password: false
   });
   const [onSubmit, setOnSubmit] = useState({
-    firstName: '',
-    lastName: '',
+    name: '',
+    lastname: '',
     email: '',
     password: ''
   });
@@ -109,10 +128,6 @@ function PageStart() {
     }
   };
 
-  const handleRememberUser = () => {
-    setIsCheckedRememberUser(!isCheckedRememberUser);
-  };
-
   const handleCheckedRules = () => {
     setIsCheckedRules(!isCheckedRules);
   };
@@ -128,7 +143,7 @@ function PageStart() {
     if (e.target.name === 'password') {
       handleValidvalidPassword(e);
     }
-    if (e.target.name === 'firstName' || e.target.name === 'lastName') {
+    if (e.target.name === 'name' || e.target.name === 'lastname') {
       handleValidvalidName(e);
     }
   };
@@ -138,33 +153,31 @@ function PageStart() {
   };
 
   const handleClose = () => {
-    setOpenDialog(false);
+    if (!isLoading) setOpenDialog(false);
   };
+
+  if (cookies.logged_in || isSuccess || isSuccessRegisredUser)
+    return <Navigate to="/" state={{ from: location }} replace />;
 
   const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const isValidArray = Object.values(isValidForm);
-    // проверяем есть ли поле имени. Если есть значит выполняется вход
-    if (!onSubmit.firstName) {
-      const valid = isValidArray.slice(-2).every((el) => el);
-      if (valid) {
-        const response = true;
-        if (response) {
-          // ТУТ НЕОБХОДИМО ЗАКРЫТЬ ОКНО И ВОЙТИ С ПОЛЬЗОВАТЕЛЕМ,
-          // а также сохранить данные О ЖЕЛАНИИ ПОЛЬЗОВАТЕЛЯ ОСТАТСЯ В СИСТЕМЕ
-          return;
-        }
+    // проверяем есть ли поле имени. Если есть значит выполняется РЕЖИМ ВХОДА
+    if (!onSubmit.name) {
+      const validForm = isValidArray.slice(-2).every((el) => el);
+      if (validForm) {
+        loginUser({
+          email: onSubmit.email,
+          password: onSubmit.password
+        });
       }
     } else {
-      // ВХОД ОТ РЕГИСТРАЦИИ
-      const valid = isValidArray.every((el) => el);
-      if (valid && isCheckedRules) {
-        // ТУТ НЕОБХОДИМО ЗАКРЫТЬ ОКНО И ВОЙТИ С ПОЛЬЗОВАТЕЛЕМ
-        return;
+      // ВХОД ОТ РЕЖИМА РЕГИСТРАЦИИ
+      const validForm = isValidArray.every((el) => el);
+      if (validForm && isCheckedRules) {
+        createUser(onSubmit);
       }
     }
-    // ТУТ НЕОБХОДИМО ВЫВЕСТИ СООБЩЕНИЕ ЧТО ВХОД НЕ ВЫПОЛНЕН
     handleClickOpen();
   };
 
@@ -176,10 +189,17 @@ function PageStart() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{'Попытка ввода данных'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {isLoading || isLoadingRegisredUser ? 'Проверка даных' : 'Попытка ввода данных'}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Пожалуйста, проверьте вводимые данные
+            {isLogin &&
+              (isLoading ? 'Ожидайте ответа сервера' : 'Пожалуйста, проверьте вводимые данные')}
+            {!isLogin &&
+              (isLoadingRegisredUser
+                ? 'Ожидайте ответа сервера'
+                : 'Пользователь существует или некоректно введены данные')}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -212,53 +232,52 @@ function PageStart() {
               <LockIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              {isSing ? 'Вход в аккаунт' : 'Регистрация'}
+              {isLoading ? 'Идет загрузка' : isLogin ? 'Вход в аккаунт' : 'Регистрация'}
             </Typography>
             <Box component="form" noValidate sx={{ mt: 3 }} onSubmit={handleSubmitForm}>
               <Grid container spacing={2}>
-                {!isSing && (
+                {!isLogin && (
                   <>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        error={
-                          onSubmit.firstName === '' ? false : isValidForm.firstName ? false : true
-                        }
+                        error={onSubmit.name === '' ? false : isValidForm.name ? false : true}
                         helperText={
-                          onSubmit.firstName === ''
+                          onSubmit.name === ''
                             ? ' '
-                            : isValidForm.firstName
+                            : isValidForm.name
                             ? ' '
                             : 'Ошибочный ввод длина не менее трёх символов'
                         }
                         autoComplete="given-name"
-                        name="firstName"
-                        value={onSubmit.firstName}
+                        name="name"
+                        value={onSubmit.name}
                         onChange={handleOnChangeTextField}
                         required
                         fullWidth
-                        id="firstName"
+                        id="name"
                         label="Имя"
                         autoFocus
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
+                        disabled={isLoading}
                         error={
-                          onSubmit.lastName === '' ? false : isValidForm.lastName ? false : true
+                          onSubmit.lastname === '' ? false : isValidForm.lastname ? false : true
                         }
                         helperText={
-                          onSubmit.lastName === ''
+                          onSubmit.lastname === ''
                             ? ' '
-                            : isValidForm.lastName
+                            : isValidForm.lastname
                             ? ' '
                             : 'Ошибочный ввод длина не менее трёх символов'
                         }
                         required
                         fullWidth
-                        id="lastName"
+                        id="lastname"
                         label="Фамилия"
-                        name="lastName"
-                        value={onSubmit.lastName}
+                        name="lastname"
+                        value={onSubmit.lastname}
                         onChange={handleOnChangeTextField}
                         autoComplete="family-name"
                       />
@@ -267,6 +286,7 @@ function PageStart() {
                 )}
                 <Grid item xs={12}>
                   <TextField
+                    disabled={isLoading}
                     error={onSubmit.email === '' ? false : isValidForm.email ? false : true}
                     helperText={
                       onSubmit.email === '' ? ' ' : isValidForm.email ? ' ' : 'Ошибочный ввод email'
@@ -317,18 +337,7 @@ function PageStart() {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  {isSing ? (
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={isCheckedRememberUser}
-                          onChange={handleRememberUser}
-                          color="primary"
-                        />
-                      }
-                      label="Запомнить меня"
-                    />
-                  ) : (
+                  {!isLogin && (
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -342,29 +351,36 @@ function PageStart() {
                   )}
                 </Grid>
               </Grid>
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                {isSing ? 'Войти' : 'Зарегистрироваться'}
+              <Button
+                disabled={isLoading}
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                {isLogin ? 'Войти' : 'Зарегистрироваться'}
               </Button>
               <Button
+                disabled={isLoading}
                 fullWidth
                 sx={{ mt: 1, mb: 1 }}
                 onClick={() => {
-                  setIsSing(!isSing);
+                  setIsLogin(!isLogin);
                   setOnSubmit({
-                    firstName: '',
-                    lastName: '',
+                    name: '',
+                    lastname: '',
                     password: '',
                     email: ''
                   });
                   setisValidForm({
-                    firstName: false,
-                    lastName: false,
+                    name: false,
+                    lastname: false,
                     email: false,
                     password: false
                   });
                 }}
               >
-                {isSing ? 'Перейти к регистрации' : 'Перейти ко Входу'}
+                {isLogin ? 'Перейти к регистрации' : 'Перейти ко Входу'}
               </Button>
             </Box>
           </Box>
