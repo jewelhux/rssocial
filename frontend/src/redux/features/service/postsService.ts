@@ -8,7 +8,8 @@ export const postsService = apiSlice.injectEndpoints({
         return {
           url: '/posts'
         };
-      }
+      },
+      providesTags: ['Post']
     }),
     getAllPosts: builder.query<{ posts: GenericPost[] }, void>({
       query() {
@@ -31,7 +32,8 @@ export const postsService = apiSlice.injectEndpoints({
           method: 'POST',
           body: data
         };
-      }
+      },
+      invalidatesTags: ['Post']
     }),
     deletePostById: builder.mutation<void, number>({
       query(id) {
@@ -39,7 +41,8 @@ export const postsService = apiSlice.injectEndpoints({
           url: `/posts/${id}`,
           method: 'DELETE'
         };
-      }
+      },
+      invalidatesTags: ['Post']
     })
   })
 });

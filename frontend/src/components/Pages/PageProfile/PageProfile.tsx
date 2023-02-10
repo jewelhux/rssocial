@@ -1,11 +1,14 @@
 import { Container, Divider, Typography, Box } from '@mui/material';
 import { ReactElement } from 'react';
+import { useGetOwnPostsQuery } from '../../../redux/features/service/postsService';
 import ProfileComponentFeed from './MainProfileComponent/ProfileComponentFeed';
 import ProfileComponentInputFeed from './MainProfileComponent/ProfileComponentInpitFeed';
 import ProfileComponentMainInfo from './MainProfileComponent/ProfileComponentMainInfo';
 import ProfileComponentSecondaryInfo from './MainProfileComponent/ProfileComponentSecondaryInfo';
 
 function PageProfile(): ReactElement {
+  const { data } = useGetOwnPostsQuery();
+
   return (
     <Container sx={{ mb: 2, mt: 6, flexGrow: 1, padding: { xs: '0', md: '0 10px' } }}>
       <Box
@@ -42,9 +45,9 @@ function PageProfile(): ReactElement {
           <Box
             sx={{ display: 'flex', flexDirection: 'column', rowGap: '15px', alignSelf: 'center' }}
           >
-            <ProfileComponentFeed />
-            <ProfileComponentFeed />
-            <ProfileComponentFeed />
+            {data?.posts.map((post) => (
+              <ProfileComponentFeed key={post.id} post={post} />
+            ))}
           </Box>
         </Box>
         <Divider flexItem orientation="vertical" />
