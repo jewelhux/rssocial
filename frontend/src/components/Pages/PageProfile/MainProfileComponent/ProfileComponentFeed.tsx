@@ -9,8 +9,15 @@ import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ClearIcon from '@mui/icons-material/Clear';
+import { UserPost } from '../../../../redux/features/service/types';
+import { useGetOwnProfileQuery } from '../../../../redux/features/service/profileService';
+import { DEFAULT_IMAGE } from '../../../../utils/const';
+import { useDeletePostByIdMutation } from '../../../../redux/features/service/postsService';
 
-function ProfileComponentFeed() {
+function ProfileComponentFeed({ post }: { post: UserPost }) {
+  const { data: user } = useGetOwnProfileQuery();
+  const [deletePost] = useDeletePostByIdMutation();
+
   return (
     <Card sx={{ maxWidth: 600 }} variant="outlined">
       <CardHeader
@@ -18,30 +25,22 @@ function ProfileComponentFeed() {
           <Avatar
             sx={{ bgcolor: red[500] }}
             aria-label="recipe"
-            src="https://avatars.githubusercontent.com/u/38877564?v=4"
+            src={user?.avatar ?? DEFAULT_IMAGE}
             alt="jik"
           />
         }
         action={
-          <IconButton aria-label="settings">
+          <IconButton aria-label="settings" onClick={() => deletePost(post.id)}>
             <ClearIcon />
           </IconButton>
         }
-        title="User Name"
+        title={user && `${user?.name} ${user.lastname}`}
         subheader="September 14, 2016"
       />
-      <CardMedia
-        component="img"
-        height="194"
-        image="https://mir-znamenitostej.ru/wp-content/uploads/2019/08/%D0%9C%D1%8D%D0%B9%D0%B1%D0%B8-%D0%91%D1%8D%D0%B9%D0%B1%D0%B8-%D0%B1%D0%B8%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%8F-%D0%BB%D0%B8%D1%87%D0%BD%D0%B0%D1%8F-%D0%B6%D0%B8%D0%B7%D0%BD%D1%8C-%D0%BC%D1%83%D0%B6.jpg"
-        alt="Paella dish"
-      />
+      <CardMedia component="img" image={post?.image ?? DEFAULT_IMAGE} alt="Image-post" />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook together with your
-          guests. Add 1 cup of frozen peas along with the mussels, if you like. This impressive
-          paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup
-          of frozen peas along with the mussels, if you like.
+          {post?.text}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>

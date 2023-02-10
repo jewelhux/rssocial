@@ -5,8 +5,9 @@ import cookieParser from "cookie-parser";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from 'url';
 
-const __dirname = new URL(".", import.meta.url).pathname;
+const __dirname = path.dirname(fileURLToPath(import.meta.url)); 
 const port = 3000;
 const secretKey = "secret_key";
 
