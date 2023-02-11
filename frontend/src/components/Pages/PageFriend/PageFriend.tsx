@@ -1,61 +1,45 @@
 import { Box } from '@mui/material';
 import FriendComponentCard from './MainFriendComponent/FriendComponentCard';
-
-import * as React from 'react';
+import { useState } from 'react';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useGetFriendsQuery } from '../../../redux/features/service/friendsService';
 import { FriendStatus } from '../../../redux/features/service/types';
-import FriendRequestComponentCard from './MainFriendComponent/FriendRequestComponentCard';
 
 function PageFriend() {
-  const [valueTab, setValueTab] = React.useState('1');
+  const [tabName, setTabName] = useState<FriendStatus>(FriendStatus.accepted);
 
-  const handleChange = (event: React.SyntheticEvent, newValueTab: string) => {
-    setValueTab(newValueTab);
+  const handleChange = (event: React.SyntheticEvent, newtabName: FriendStatus) => {
+    setTabName(newtabName);
   };
 
-  const { data: dataFriendsPending, isLoading: isLoadingFriendsPending } = useGetFriendsQuery(
-    FriendStatus.pending,
-    {
-      skip: valueTab === '1'
-    }
-  );
-  const { data: dataFriendsAccepted, isLoading: isLoadingFriendsAccepted } = useGetFriendsQuery(
-    FriendStatus.accepted,
-    {
-      skip: valueTab === '2'
-    }
-  );
+  const { currentData, isError } = useGetFriendsQuery(tabName);
 
   return (
     <Box sx={{ width: '100%', typography: 'body1', flexGrow: 1 }}>
-      <TabContext value={valueTab}>
+      <TabContext value={tabName}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example" centered>
-            <Tab label="Мои друзья" value="1" />
-            <Tab label="Заявки в друзья" value="2" />
+            <Tab label="Мои друзья" value={FriendStatus.accepted} />
+            <Tab label="Заявки в друзья" value={FriendStatus.pending} />
           </TabList>
         </Box>
-        <TabPanel value="1">
-          {isLoadingFriendsAccepted
-            ? 'Ищю друзей...'
-            : dataFriendsAccepted?.friends.length
-            ? dataFriendsAccepted?.friends.map((friend, index) => (
-                <FriendComponentCard key={friend.id} prop={friend} index={index} />
-              ))
-            : 'Я сам себе лучший друг :)'}
-        </TabPanel>
-        <TabPanel value="2">
-          {isLoadingFriendsPending
-            ? 'Поиск новых друзей...'
-            : dataFriendsPending?.friends.length
-            ? dataFriendsPending?.friends.map((friend, index) => (
-                <FriendRequestComponentCard key={friend.id} prop={friend} index={index} />
-              ))
-            : 'Я уже дружишу с лучшими людьми :)'}
+        <TabPanel
+          value={tabName}
+          sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        >
+          {!currentData && !isError ? (
+            <CircularProgress />
+          ) : currentData?.friends.length ? (
+            currentData.friends.map((friend) => (
+              <FriendComponentCard key={friend.id} friend={friend} status={tabName} />
+            ))
+          ) : (
+            'Здесь пока пусто'
+          )}
         </TabPanel>
       </TabContext>
     </Box>
