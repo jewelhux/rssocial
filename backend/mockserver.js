@@ -5,9 +5,9 @@ import cookieParser from "cookie-parser";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url)); 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = 3000;
 const secretKey = "secret_key";
 
@@ -154,10 +154,10 @@ app.post("/api/auth/register", (req, res) => {
   });
 
   const token = jwt.sign({ userId: id, isAdmin: false }, secretKey, {
-    expiresIn: "1h",
+    expiresIn: "15h",
   });
-  res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
-  res.cookie("logged_in", true, { maxAge: 3600000 });
+  res.cookie("token", token, { httpOnly: true, maxAge: 54000000 });
+  res.cookie("logged_in", true, { maxAge: 54000000 });
 
   return res.status(201).send({ message: "Account created" });
 });
@@ -176,11 +176,11 @@ app.post("/api/auth/login", (req, res) => {
     { userId: user.id, isAdmin: user.isAdmin },
     secretKey,
     {
-      expiresIn: "1h",
+      expiresIn: "15h",
     }
   );
-  res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
-  res.cookie("logged_in", true, { maxAge: 3600000 });
+  res.cookie("token", token, { httpOnly: true, maxAge: 54000000 });
+  res.cookie("logged_in", true, { maxAge: 54000000 });
 
   return res.status(200).send({ message: "Login successful" });
 });

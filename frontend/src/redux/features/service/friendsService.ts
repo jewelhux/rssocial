@@ -9,7 +9,8 @@ export const friendsService = apiSlice.injectEndpoints({
           url: '/friends',
           params: { type }
         };
-      }
+      },
+      providesTags: ['Friends']
     }),
     friendRequest: builder.mutation<GenericResponse, FriendRequest>({
       query(body) {
@@ -18,7 +19,8 @@ export const friendsService = apiSlice.injectEndpoints({
           method: 'POST',
           body
         };
-      }
+      },
+      invalidatesTags: ['Friends']
     })
   })
 });

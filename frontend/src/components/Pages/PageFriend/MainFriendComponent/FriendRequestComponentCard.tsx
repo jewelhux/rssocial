@@ -1,20 +1,10 @@
 import { Typography, Button, CardMedia, Card, Box } from '@mui/material';
-import { FriendProfile, FriendRequestActions } from '../../../../redux/features/service/types';
+import { FriendProfile } from '../../../../redux/features/service/types';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { CustomButtinListFriend } from '../../../Common/CustomStyleComponents';
 import { Link } from 'react-router-dom';
-import { useFriendRequestMutation } from '../../../../redux/features/service/friendsService';
 
-function FriendComponentCard({ prop, index }: { prop: FriendProfile; index: number }) {
-  const [friendRequestMutation] = useFriendRequestMutation();
-
-  const handleDeleteFreind = (id: number) => {
-    friendRequestMutation({
-      id: id,
-      action: FriendRequestActions.delete
-    });
-  };
-
+function FriendRequestComponentCard({ prop, index }: { prop: FriendProfile; index: number }) {
   return (
     <Card
       variant="outlined"
@@ -53,25 +43,21 @@ function FriendComponentCard({ prop, index }: { prop: FriendProfile; index: numb
           gutterBottom
           sx={{ fontWeight: 600 }}
         >{`${prop.name} ${prop.lastname}`}</Typography>
-        <Typography gutterBottom>{`Возраст: ${prop.about.age || 'скрыт'}`}</Typography>
+        <Typography gutterBottom>{`Возраст: ${prop.about.age || 'не указан'}`}</Typography>
       </Box>
       <Box sx={{ display: 'flex', mt: 1, width: '30%', flexDirection: 'column' }}>
-        <Typography gutterBottom>{`Место работы: ${prop.about.work || 'скрыто'}`}</Typography>
-        <Typography gutterBottom>{`Интересы: ${prop.about.interests || 'скрыты'}`}</Typography>
+        <Typography gutterBottom>{`Место работы: ${prop.about.work || 'не указано'}`}</Typography>
+        <Typography gutterBottom>{`Интересы: ${prop.about.interests || 'не указаны'}`}</Typography>
       </Box>
       <CustomButtinListFriend>
-        <Button size="small" component={Link} to={`/profile/${prop.id}`}>
+        <Button component={Link} to={`/profile/${prop.id}`} size="small">
           Профиль
         </Button>
-        <Button size="small" component={Link} to={`/messages`}>
-          Написать
-        </Button>
-        <Button size="small" onClick={() => handleDeleteFreind(prop.id)}>
-          Удалить
-        </Button>
+        <Button size="small">Принять</Button>
+        <Button size="small">Отклонить</Button>
       </CustomButtinListFriend>
     </Card>
   );
 }
 
-export default FriendComponentCard;
+export default FriendRequestComponentCard;
