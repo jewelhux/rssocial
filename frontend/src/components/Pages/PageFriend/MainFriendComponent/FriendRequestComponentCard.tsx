@@ -1,10 +1,27 @@
 import { Typography, Button, CardMedia, Card, Box } from '@mui/material';
-import { FriendProfile } from '../../../../redux/features/service/types';
+import { FriendProfile, FriendRequestActions } from '../../../../redux/features/service/types';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { CustomButtinListFriend } from '../../../Common/CustomStyleComponents';
 import { Link } from 'react-router-dom';
+import { useFriendRequestMutation } from '../../../../redux/features/service/friendsService';
 
 function FriendRequestComponentCard({ prop, index }: { prop: FriendProfile; index: number }) {
+  const [friendRequestMutation] = useFriendRequestMutation();
+
+  const handleAddFreind = (id: number) => {
+    friendRequestMutation({
+      id: id,
+      action: FriendRequestActions.approve
+    });
+  };
+
+  const handleDeleteRequestFreind = (id: number) => {
+    friendRequestMutation({
+      id: id,
+      action: FriendRequestActions.delete
+    });
+  };
+
   return (
     <Card
       variant="outlined"
@@ -53,8 +70,12 @@ function FriendRequestComponentCard({ prop, index }: { prop: FriendProfile; inde
         <Button component={Link} to={`/profile/${prop.id}`} size="small">
           Профиль
         </Button>
-        <Button size="small">Принять</Button>
-        <Button size="small">Отклонить</Button>
+        <Button size="small" onClick={() => handleAddFreind(prop.id)}>
+          Принять
+        </Button>
+        <Button size="small" onClick={() => handleDeleteRequestFreind(prop.id)}>
+          Отклонить
+        </Button>
       </CustomButtinListFriend>
     </Card>
   );
