@@ -1,22 +1,52 @@
 import { Typography, Button, CardMedia, Card, Box } from '@mui/material';
+import { FriendProfile } from '../../../../redux/features/service/types';
+import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { CustomButtinListFriend } from '../../../Common/CustomStyleComponents';
 
-function FriendComponentCard() {
+function FriendComponentCard({ prop, index }: { prop: FriendProfile; index: number }) {
   return (
-    <Card variant="outlined" sx={{ display: 'flex', width: '100%', gap: '10px' }}>
-      <Box sx={{ maxWidth: '150px', flexGrow: '1' }}>
+    <Card
+      variant="outlined"
+      sx={{
+        display: 'flex',
+        ml: index % 2 === 0 ? 1 : 0,
+        width: '100%',
+        gap: '1%',
+        alignItems: 'centers',
+        marginBottom: '5px',
+        flexWrap: 'wrap',
+        padding: 1,
+        justifyContent: 'space-between'
+      }}
+    >
+      <Box
+        display={'flex'}
+        alignItems={'center'}
+        justifyContent={'center'}
+        sx={{ maxWidth: '140px', flexGrow: '1' }}
+      >
         <CardMedia
           component="img"
           alt="green iguana"
-          height="100"
-          image="https://www.theplace.ru/cache/archive/maybe_baby/img/maybe-baby7-gthumb-gwdata1600-gfitdatamax.jpg"
-          sx={{ objectPosition: 'top' }}
+          image={prop.avatar || DEFAULT_IMAGE}
+          sx={{
+            objectPosition: 'top',
+            objectFit: 'contain',
+            alignSelf: 'center',
+            width: '120px'
+          }}
         />
       </Box>
-      <Box sx={{ display: 'flex', flexGrow: '1', mt: 1 }}>
-        <Typography gutterBottom sx={{ overflow: 'hidden', maxWidth: '120px' }}>
-          Мейби Бейби
-        </Typography>
+      <Box sx={{ display: 'flex', mt: 1, width: '30%', flexDirection: 'column' }}>
+        <Typography
+          gutterBottom
+          sx={{ fontWeight: 600 }}
+        >{`${prop.name} ${prop.lastname}`}</Typography>
+        <Typography gutterBottom>{`Возраст: ${prop.about.age || 'скрыт'}`}</Typography>
+      </Box>
+      <Box sx={{ display: 'flex', mt: 1, width: '30%', flexDirection: 'column' }}>
+        <Typography gutterBottom>{`Место работы: ${prop.about.work || 'скрыто'}`}</Typography>
+        <Typography gutterBottom>{`Интересы: ${prop.about.interests || 'скрыты'}`}</Typography>
       </Box>
       <CustomButtinListFriend>
         <Button size="small">Профиль</Button>
