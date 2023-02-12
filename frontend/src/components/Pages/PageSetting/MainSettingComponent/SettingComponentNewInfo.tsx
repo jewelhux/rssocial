@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
 
 function SettingComponentNewInfo() {
-  const { data: dataUser, isError } = useGetOwnProfileQuery();
+  const { data: dataUser, isError, isLoading } = useGetOwnProfileQuery();
   const [sendProfileUser, { isLoading: isLoadingProfileUser }] = useUpdateOwnProfileMutation();
 
   const formData = new FormData();
@@ -89,7 +89,7 @@ function SettingComponentNewInfo() {
 
   return (
     <>
-      {!dataUser && !isError ? (
+      {(!dataUser && !isError) || isLoading ? (
         <CircularProgress />
       ) : (
         <>
@@ -99,6 +99,7 @@ function SettingComponentNewInfo() {
             variant="filled"
             value={ageUser}
             onChange={handleAgeUser}
+            disabled={isLoadingProfileUser}
           />
           <FormControl variant="filled" sx={{ width: '100%' }}>
             <InputLabel id="demo-simple-select-filled-label">Статус</InputLabel>
@@ -108,6 +109,7 @@ function SettingComponentNewInfo() {
               id="demo-simple-select-filled"
               value={statusUser}
               onChange={handleChangeStatusUser}
+              disabled={isLoadingProfileUser}
             >
               <MenuItem value={RelationshipUserStatus.notIndicated}>
                 {RelationshipUserStatus.notIndicated}
@@ -133,6 +135,7 @@ function SettingComponentNewInfo() {
             variant="filled"
             value={interestsUser}
             onChange={handleInterestsUser}
+            disabled={isLoadingProfileUser}
           />
           <TextField
             type={'text'}
@@ -141,6 +144,7 @@ function SettingComponentNewInfo() {
             variant="filled"
             value={workUser}
             onChange={handleWorkUser}
+            disabled={isLoadingProfileUser}
           />
 
           <input
@@ -151,7 +155,7 @@ function SettingComponentNewInfo() {
             accept=".jpg, .jpeg, .png"
             onInput={handleAvatarUser}
           />
-          <Button sx={{ width: '100%', padding: 0 }}>
+          <Button sx={{ width: '100%', padding: 0 }} disabled={isLoadingProfileUser}>
             <label style={{ cursor: 'pointer', width: '100%' }} htmlFor="file">
               Загрузите новое фото
             </label>
