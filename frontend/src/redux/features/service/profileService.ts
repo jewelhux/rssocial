@@ -8,7 +8,8 @@ export const profileService = apiSlice.injectEndpoints({
         return {
           url: '/profile'
         };
-      }
+      },
+      providesTags: ['Profile']
     }),
     updateOwnProfile: builder.mutation<UserProfile, FormData>({
       query(data) {
@@ -17,7 +18,8 @@ export const profileService = apiSlice.injectEndpoints({
           method: 'PUT',
           body: data
         };
-      }
+      },
+      invalidatesTags: ['Profile']
     }),
     getAllProfiles: builder.query<{ users: GenericProfile[] }, void>({
       query() {

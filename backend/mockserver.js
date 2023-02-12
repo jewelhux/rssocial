@@ -5,9 +5,9 @@ import cookieParser from "cookie-parser";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url)); 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = 3000;
 const secretKey = "secret_key";
 
@@ -27,7 +27,7 @@ let mockDB = {
       avatar: null,
       about: {
         age: 25,
-        status: "не женат",
+        status: "не указан",
         interests: "maybe baby",
         work: "Вкусно и точка",
       },
@@ -46,7 +46,7 @@ let mockDB = {
       avatar: null,
       about: {
         age: 45,
-        status: "женат",
+        status: "в отношениях",
         interests: "programming",
         work: "Вкусно и точка",
       },
@@ -65,7 +65,7 @@ let mockDB = {
       avatar: null,
       about: {
         age: 30,
-        status: "не женат",
+        status: "никого не ищу",
         interests: "skateboarding",
         work: "продавец фломастеров",
       },
