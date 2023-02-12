@@ -15,7 +15,16 @@ function PageSetting() {
         textAlign: 'center'
       }}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '15px',
+          width: '90%',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
         <SettingComponentNewInfo />
       </Box>
     </Container>

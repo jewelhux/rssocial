@@ -1,6 +1,5 @@
 import {
   Button,
-  CardMedia,
   CircularProgress,
   FormControl,
   InputLabel,
@@ -27,20 +26,24 @@ function SettingComponentNewInfo() {
   const [statusUser, setStatusUser] = useState('');
   const [interestsUser, setInterestsUser] = useState('');
   const [workUser, setWorkUser] = useState('');
-  const [avatarUser, setAvatarkUser] = useState<File | null>(null);
+  const [avatarUser, setAvatarUser] = useState<File | null>(null);
+  const [avatarUserServer, setAvatarUserServer] = useState<string | null>(null);
 
   useEffect(() => {
     if (dataUser?.about.status) {
-      setStatusUser(dataUser?.about.status);
+      setStatusUser(dataUser.about.status);
     }
     if (dataUser?.about.age) {
-      setAgeUser(dataUser?.about.age.toString());
+      setAgeUser(dataUser.about.age.toString());
     }
     if (dataUser?.about.interests) {
-      setInterestsUser(dataUser?.about.interests);
+      setInterestsUser(dataUser.about.interests);
     }
     if (dataUser?.about.work) {
-      setWorkUser(dataUser?.about.work);
+      setWorkUser(dataUser.about.work);
+    }
+    if (dataUser?.avatar) {
+      setAvatarUserServer(dataUser.avatar);
     }
   }, [dataUser]);
 
@@ -72,8 +75,10 @@ function SettingComponentNewInfo() {
 
   const handleAvatarUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setAvatarkUser(event.target.files[0]);
-      formData.append('avatar', event.target.files[0]);
+      const file = event.target.files[0];
+      setAvatarUser(file);
+      setAvatarUserServer(null);
+      formData.append('avatar', file);
     }
     event.target.value = '';
   };
@@ -100,6 +105,7 @@ function SettingComponentNewInfo() {
             value={ageUser}
             onChange={handleAgeUser}
             disabled={isLoadingProfileUser}
+            sx={{ width: '100%' }}
           />
           <FormControl variant="filled" sx={{ width: '100%' }}>
             <InputLabel id="demo-simple-select-filled-label">Статус</InputLabel>
@@ -136,6 +142,7 @@ function SettingComponentNewInfo() {
             value={interestsUser}
             onChange={handleInterestsUser}
             disabled={isLoadingProfileUser}
+            sx={{ width: '100%' }}
           />
           <TextField
             type={'text'}
@@ -145,6 +152,7 @@ function SettingComponentNewInfo() {
             value={workUser}
             onChange={handleWorkUser}
             disabled={isLoadingProfileUser}
+            sx={{ width: '100%' }}
           />
 
           <input
@@ -160,11 +168,16 @@ function SettingComponentNewInfo() {
               Загрузите новое фото
             </label>
           </Button>
-          <CardMedia
-            component="img"
-            image={dataUser?.avatar ?? DEFAULT_IMAGE}
+          <img
+            src={
+              avatarUserServer
+                ? avatarUserServer
+                : avatarUser
+                ? URL.createObjectURL(avatarUser)
+                : DEFAULT_IMAGE
+            }
             alt="Image-avatar"
-            sx={{ width: '250px' }}
+            style={{ width: '280px' }}
           />
           <Button
             variant="outlined"
