@@ -1,7 +1,5 @@
-import { Box, Button, Container } from '@mui/material';
-import SettingComponentOldInfo from './MainSettingComponent/SettingComponentOldInfo';
+import { Box, Container } from '@mui/material';
 import SettingComponentNewInfo from './MainSettingComponent/SettingComponentNewInfo';
-import SettingComponentPhoto from './MainSettingComponent/SettingComponentPhoto';
 
 function PageSetting() {
   return (
@@ -17,14 +15,17 @@ function PageSetting() {
         textAlign: 'center'
       }}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <SettingComponentOldInfo />
-
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '15px',
+          width: '90%',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
         <SettingComponentNewInfo />
-
-        <SettingComponentPhoto />
-
-        <Button variant="outlined">Сохранить настройки</Button>
       </Box>
     </Container>
   );
