@@ -25,15 +25,17 @@ function ProfileComponentInputFeed() {
   };
 
   const handleTextAdd = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value) {
-      setText(event.target.value);
-    }
+    setText(event.target.value);
+    event.target.value = '';
   };
 
   const handleSubmith = () => {
     formData.append('text', text);
     if (image) formData.append('image', image);
     sendPost(formData);
+
+    handleImageRemove();
+    setText('');
   };
 
   return (
@@ -44,6 +46,7 @@ function ProfileComponentInputFeed() {
         id="outlined-basic"
         label="Ваше сообщение..."
         variant="outlined"
+        value={text}
         sx={{ flexGrow: '1', width: { xs: '240px', sm: '100%' } }}
         onChange={handleTextAdd}
       />
@@ -69,7 +72,11 @@ function ProfileComponentInputFeed() {
             )}
           </Box>
         </Box>
-        <Button variant="outlined" onClick={handleSubmith} disabled={isLoading}>
+        <Button
+          variant="outlined"
+          onClick={handleSubmith}
+          disabled={isLoading || (!text && !image)}
+        >
           Отправить
         </Button>
       </Box>
