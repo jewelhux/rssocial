@@ -1,27 +1,84 @@
 import { Typography, Button, CardMedia, Card, Box } from '@mui/material';
+import {
+  FriendProfile,
+  FriendRequestActions,
+  FriendStatus
+} from '../../../../redux/features/service/types';
+import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { CustomButtinListFriend } from '../../../Common/CustomStyleComponents';
+import { Link } from 'react-router-dom';
+import { useFriendRequestMutation } from '../../../../redux/features/service/friendsService';
 
-function FriendComponentCard() {
+function FriendComponentCard({ friend, status }: { friend: FriendProfile; status: FriendStatus }) {
+  const [friendRequest, { isLoading, isSuccess }] = useFriendRequestMutation();
+
   return (
-    <Card variant="outlined" sx={{ display: 'flex', width: '100%', gap: '10px' }}>
-      <Box sx={{ maxWidth: '150px', flexGrow: '1' }}>
+    <Card
+      variant="outlined"
+      sx={{
+        display: 'flex',
+        width: '100%',
+        gap: '1%',
+        alignItems: 'centers',
+        marginBottom: '5px',
+        flexWrap: 'wrap',
+        padding: 1,
+        justifyContent: 'space-between'
+      }}
+    >
+      <Box
+        display={'flex'}
+        alignItems={'center'}
+        justifyContent={'center'}
+        sx={{ maxWidth: '140px', flexGrow: '1' }}
+      >
         <CardMedia
           component="img"
           alt="green iguana"
-          height="100"
-          image="https://www.theplace.ru/cache/archive/maybe_baby/img/maybe-baby7-gthumb-gwdata1600-gfitdatamax.jpg"
-          sx={{ objectPosition: 'top' }}
+          image={friend.avatar || DEFAULT_IMAGE}
+          sx={{
+            objectPosition: 'top',
+            objectFit: 'contain',
+            alignSelf: 'center',
+            width: '120px'
+          }}
         />
       </Box>
-      <Box sx={{ display: 'flex', flexGrow: '1', mt: 1 }}>
-        <Typography gutterBottom sx={{ overflow: 'hidden', maxWidth: '120px' }}>
-          Мейби Бейби
-        </Typography>
+      <Box sx={{ display: 'flex', mt: 1, width: '30%', flexDirection: 'column' }}>
+        <Typography
+          gutterBottom
+          sx={{ fontWeight: 600 }}
+        >{`${friend.name} ${friend.lastname}`}</Typography>
+        <Typography gutterBottom>{`Возраст: ${friend.about.age || 'скрыт'}`}</Typography>
+      </Box>
+      <Box sx={{ display: 'flex', mt: 1, width: '30%', flexDirection: 'column' }}>
+        <Typography gutterBottom>{`Место работы: ${friend.about.work || 'скрыто'}`}</Typography>
+        <Typography gutterBottom>{`Интересы: ${friend.about.interests || 'скрыты'}`}</Typography>
       </Box>
       <CustomButtinListFriend>
-        <Button size="small">Профиль</Button>
-        <Button size="small">Написать</Button>
-        <Button size="small">Удалить</Button>
+        <Button size="small" component={Link} to={`/profile/${friend.id}`}>
+          Профиль
+        </Button>
+        {status === FriendStatus.accepted ? (
+          <Button size="small" component={Link} to={`/messages`}>
+            Написать
+          </Button>
+        ) : (
+          <Button
+            disabled={isLoading || isSuccess}
+            size="small"
+            onClick={() => friendRequest({ id: friend.id, action: FriendRequestActions.approve })}
+          >
+            Принять
+          </Button>
+        )}
+        <Button
+          disabled={isLoading || isSuccess}
+          size="small"
+          onClick={() => friendRequest({ id: friend.id, action: FriendRequestActions.delete })}
+        >
+          {status === FriendStatus.accepted ? 'Удалить' : 'Отклонить'}
+        </Button>
       </CustomButtinListFriend>
     </Card>
   );
