@@ -6,13 +6,14 @@ import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ClearIcon from '@mui/icons-material/Clear';
 import { UserPost } from '../../../../redux/features/service/types';
 import { useGetOwnProfileQuery } from '../../../../redux/features/service/profileService';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { useDeletePostByIdMutation } from '../../../../redux/features/service/postsService';
+import { CURRENT_DATE, CURRENT_TIME } from '../../../../utils/utils';
 
 function ProfileComponentFeed({ post }: { post: UserPost }) {
   const { data: user } = useGetOwnProfileQuery();
@@ -23,7 +24,7 @@ function ProfileComponentFeed({ post }: { post: UserPost }) {
       <CardHeader
         avatar={
           <Avatar
-            sx={{ bgcolor: red[500] }}
+            sx={{ bgcolor: grey[500] }}
             aria-label="recipe"
             src={user?.avatar ?? DEFAULT_IMAGE}
             alt="jik"
@@ -35,7 +36,7 @@ function ProfileComponentFeed({ post }: { post: UserPost }) {
           </IconButton>
         }
         title={user && `${user?.name} ${user.lastname}`}
-        subheader="September 14, 2016"
+        subheader={`${CURRENT_DATE} в ${CURRENT_TIME}`}
       />
       <CardMedia component="img" image={post?.image ?? DEFAULT_IMAGE} alt="Image-post" />
       <CardContent>

@@ -6,42 +6,26 @@ import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ClearIcon from '@mui/icons-material/Clear';
+import { GenericPost } from '../../../../redux/features/service/types';
+import { DEFAULT_IMAGE } from '../../../../utils/const';
+import { CURRENT_DATE, CURRENT_TIME } from '../../../../utils/utils';
 
-function FeedComponentFeed() {
+function FeedComponentFeed({ post }: { post: GenericPost }) {
   return (
     <Card sx={{ maxWidth: 600 }} variant="outlined">
       <CardHeader
         avatar={
-          <Avatar
-            sx={{ bgcolor: red[500] }}
-            aria-label="recipe"
-            src="https://avatars.githubusercontent.com/u/38877564?v=4"
-            alt="jik"
-          />
+          <Avatar sx={{ bgcolor: grey[500] }} aria-label="recipe" src={DEFAULT_IMAGE} alt="jik" />
         }
-        action={
-          <IconButton aria-label="settings">
-            <ClearIcon />
-          </IconButton>
-        }
-        title="User Name"
-        subheader="September 14, 2016"
+        title={post?.name ?? `Name Name`}
+        subheader={`${CURRENT_DATE} в ${CURRENT_TIME}`}
       />
-      <CardMedia
-        component="img"
-        height="194"
-        image="https://mir-znamenitostej.ru/wp-content/uploads/2019/08/%D0%9C%D1%8D%D0%B9%D0%B1%D0%B8-%D0%91%D1%8D%D0%B9%D0%B1%D0%B8-%D0%B1%D0%B8%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%8F-%D0%BB%D0%B8%D1%87%D0%BD%D0%B0%D1%8F-%D0%B6%D0%B8%D0%B7%D0%BD%D1%8C-%D0%BC%D1%83%D0%B6.jpg"
-        alt="Paella dish"
-      />
+      <CardMedia component="img" image={post?.image ?? DEFAULT_IMAGE} alt="Image-post" />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook together with your
-          guests. Add 1 cup of frozen peas along with the mussels, if you like. This impressive
-          paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup
-          of frozen peas along with the mussels, if you like.
+          {post?.text}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>

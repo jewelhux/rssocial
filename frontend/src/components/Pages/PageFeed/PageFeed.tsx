@@ -1,7 +1,10 @@
 import { Box, Typography, Container } from '@mui/material';
+import { useGetAllPostsQuery } from '../../../redux/features/service/postsService';
 import FeedComponentFeed from './MainFeedComponent/FeedComponentFeed';
 
 function PageFeed() {
+  const { data } = useGetAllPostsQuery();
+
   return (
     <Container
       sx={{
@@ -18,10 +21,9 @@ function PageFeed() {
       <Typography variant="h5">Добро пожаловаьть в социальную сеть RSSocial</Typography>
       <Typography>Последние посты пользователей:</Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <FeedComponentFeed />
-        <FeedComponentFeed />
-        <FeedComponentFeed />
-        <FeedComponentFeed />
+        {data?.posts.map((post) => (
+          <FeedComponentFeed key={post.id} post={post} />
+        ))}
       </Box>
     </Container>
   );
