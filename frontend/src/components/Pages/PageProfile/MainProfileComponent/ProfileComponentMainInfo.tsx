@@ -3,9 +3,11 @@ import { Box, Typography, Button, Skeleton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useGetOwnProfileQuery } from '../../../../redux/features/service/profileService';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
+import { useLogoutMutation } from '../../../../redux/features/service/authService';
 
 function ProfileComponentMainInfo(): ReactElement {
   const { data: user, isFetching, isLoading } = useGetOwnProfileQuery();
+  const [logoutUser] = useLogoutMutation();
 
   return (
     <Box
@@ -46,7 +48,13 @@ function ProfileComponentMainInfo(): ReactElement {
       <Button color="info" variant="contained">
         Написать сообщение
       </Button>
-      <Button color="inherit" variant="outlined">
+      <Button
+        component={Link}
+        to="/"
+        color="inherit"
+        variant="outlined"
+        onClick={() => logoutUser()}
+      >
         Выход
       </Button>
     </Box>
