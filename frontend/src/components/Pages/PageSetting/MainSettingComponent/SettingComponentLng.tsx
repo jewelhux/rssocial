@@ -1,19 +1,31 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material/Select';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SiteLanguage } from '../../../../utils/enum';
 import { useTranslation } from 'react-i18next';
 
 function SettingComponentLng() {
-  const [lang, setLang] = useState<string | SiteLanguage>(SiteLanguage.russian);
+  const [storageLang, setStorageLang] = useState(localStorage.getItem('lang'));
+  const [lang, setLang] = useState<string | SiteLanguage>(
+    storageLang === 'en' ? SiteLanguage.english : SiteLanguage.russian
+  );
+
   const { t, i18n } = useTranslation();
 
-  const changeLanguage = (language: string | SiteLanguage) => {
-    i18n.changeLanguage(language);
-  };
+  useEffect(() => {
+    if (storageLang) {
+      localStorage.setItem('lang', storageLang);
+      i18n.changeLanguage(storageLang);
+    }
+  }, [i18n, storageLang]);
 
   const handleChangeLang = (event: SelectChangeEvent) => {
     setLang(event.target.value);
+    if (event.target.value === SiteLanguage.russian) {
+      setStorageLang('ru');
+    } else {
+      setStorageLang('en');
+    }
   };
 
   return (
@@ -26,12 +38,8 @@ function SettingComponentLng() {
         value={lang}
         onChange={handleChangeLang}
       >
-        <MenuItem value={SiteLanguage.russian} onClick={() => changeLanguage('ru')}>
-          {SiteLanguage.russian}
-        </MenuItem>
-        <MenuItem value={SiteLanguage.english} onClick={() => changeLanguage('en')}>
-          {SiteLanguage.english}
-        </MenuItem>
+        <MenuItem value={SiteLanguage.russian}>{SiteLanguage.russian}</MenuItem>
+        <MenuItem value={SiteLanguage.english}>{SiteLanguage.english}</MenuItem>
       </Select>
     </FormControl>
   );
