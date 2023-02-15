@@ -15,80 +15,26 @@ import {
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
-import { DataMessage } from '../../../../utils/Type';
 import ChatComponentUsersChating from './ChatComponentUsersChating';
-import Message from './Message';
+import ChatMessage from './Message';
+import {
+  useGetMessagesQuery,
+  useSendMessageMutation
+} from '../../../../redux/features/service/chatService';
+import { useSearchParams } from 'react-router-dom';
 
 function ChatComponentDialogBox(): ReactElement {
+  const [searchParams] = useSearchParams();
+  const [profile, setProfile] = useState<number>(Number(searchParams.get('newmessage') ?? -1));
+
   const chatContainerRef = useRef<HTMLElement>(null);
 
-  const [scroll, setscroll] = useState(false);
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
   const [newMessage, setNewMessage] = useState<string>('');
 
-  const [dataMessage, setDataMessage] = useState<DataMessage[]>([
-    {
-      currentUser: true,
-      message: 'Это первое сообщение Евгения',
-      imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
-      imgMassage: '',
-      timeOfCreateMassage: new Date(2023, 1, 2, 21, 0, 0, 0).getTime()
-    },
-    {
-      currentUser: false,
-      message: 'Это первый ответ Ильи',
-      imgSrc: 'https://avatars.githubusercontent.com/u/38877564?v=4',
-      imgMassage: '',
-      timeOfCreateMassage: new Date(2023, 1, 2, 21, 5, 0, 0).getTime()
-    },
-    {
-      currentUser: true,
-      message: 'Давай работай, хватит сидеть чаты читать',
-      imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
-      imgMassage: '',
-      timeOfCreateMassage: new Date(2023, 1, 2, 21, 8, 0, 0).getTime()
-    },
-    {
-      currentUser: false,
-      message: 'Да я как папо Карло работаю',
-      imgSrc: 'https://avatars.githubusercontent.com/u/38877564?v=4',
-      imgMassage: '',
-      timeOfCreateMassage: new Date(2023, 1, 2, 21, 50, 0, 0).getTime()
-    },
-    {
-      currentUser: true,
-      message: 'Ну тогда Ок. Значт больше отдыхай',
-      imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
-      imgMassage: '',
-      timeOfCreateMassage: new Date(2023, 1, 2, 22, 8, 0, 0).getTime()
-    },
-    {
-      currentUser: false,
-      message: 'Ага это правлиьно.',
-      imgSrc: 'https://avatars.githubusercontent.com/u/38877564?v=4',
-      imgMassage: '',
-      timeOfCreateMassage: new Date(2023, 1, 3, 10, 35, 0, 0).getTime()
-    },
-    {
-      currentUser: true,
-      message: 'А как у тебя твоя девка. Ты её добавил?',
-      imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
-      imgMassage:
-        'https://cdn.forbes.ru/forbes-static/750x422/new/2021/12/GettyImages-1204843675-61c4216fd8046.jpg',
-      timeOfCreateMassage: new Date(2023, 1, 2, 22, 18, 0, 0).getTime()
-    }
-  ]);
-
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTo({
-        top: chatContainerRef.current.scrollHeight,
-        behavior: 'smooth'
-      });
-    }
-  }, [scroll]);
+  const [sendMessage] = useSendMessageMutation();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -108,28 +54,11 @@ function ChatComponentDialogBox(): ReactElement {
   };
 
   const handleNewUserMessage = () => {
-    if (!newMessage.trim() && !file) {
-      setNewMessage('');
-      setFile(null);
-      return;
-    }
-    if (newMessage.trim() || file) {
-      setDataMessage((prev) => [
-        ...prev,
-        {
-          currentUser: true,
-          message: newMessage || 'Лови картинку',
-          imgSrc: 'https://avatars.githubusercontent.com/u/107023048?v=4',
-          imgMassage: file?.name
-            ? 'https://mirpozitiva.ru/wp-content/uploads/2019/11/1472042719_15.jpg'
-            : '',
-          timeOfCreateMassage: Date.now()
-        }
-      ]);
-      setscroll(!scroll);
-      setNewMessage('');
-      setFile(null);
-    }
+    const formData = new FormData();
+    if (file) formData.append('image', file);
+    formData.append('text', newMessage);
+    formData.append('profile', profile.toString());
+    sendMessage(formData);
   };
 
   // Изменение текста сообщения
@@ -143,21 +72,27 @@ function ChatComponentDialogBox(): ReactElement {
     }
   };
 
+  const { data } = useGetMessagesQuery(profile, { skip: profile === -1 });
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  }, [data]);
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '75vh', width: '100%' }}>
       <Box sx={{ display: 'flex', width: '100%', flexGrow: 1, minHeight: '50%' }}>
-        <ChatComponentUsersChating />
+        <ChatComponentUsersChating profile={profile} setProfile={setProfile} />
 
         <Box ref={chatContainerRef} sx={{ flexGrow: 1, height: '100%', overflow: 'auto' }}>
           <Divider />
-          {dataMessage.map((el) => {
-            return (
-              <Message
-                key={`${el.timeOfCreateMassage.toString()} + ${Date.now().toString()})`}
-                dataMessage={el}
-              />
-            );
-          })}
+          {data?.messages.map((message) => (
+            <ChatMessage key={message.date} message={message} own={message.userId !== profile} />
+          ))}
           <Divider />
         </Box>
       </Box>

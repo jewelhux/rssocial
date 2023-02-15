@@ -2,10 +2,14 @@ import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import ioCookieParser from "socket.io-cookie-parser";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = 3000;
@@ -81,12 +85,6 @@ let mockDB = {
     },
     {
       id: 1,
-      userId: 0,
-      image: null,
-      text: "This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along with the mussels, if you like. This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along with the mussels, if you like.",
-    },
-    {
-      id: 1,
       userId: 2,
       image: null,
       text: "Ferka post",
@@ -96,6 +94,31 @@ let mockDB = {
       userId: 1,
       image: null,
       text: "Syderi post",
+    },
+  ],
+  conversations: [
+    {
+      id: 2424,
+      participants: [
+        { id: 0, lastIndex: 0 },
+        { id: 1, lastIndex: -1 },
+      ],
+      lastUpdate: 1676376266008,
+      messages: [
+        {
+          date: 1676376073988,
+          text: "Hello there",
+          userId: 0,
+          image:
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTONo5SwAXmbHd6ShcH2jk-9zTYMlsAyQDCew&usqp=CAU",
+        },
+        {
+          date: 1676376266008,
+          text: "General Kenobi",
+          userId: 0,
+          image: "https://i.imgflip.com/4i355u.png",
+        },
+      ],
     },
   ],
 };
@@ -115,6 +138,9 @@ process.on("SIGINT", function () {
 });
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer);
+
 app.use(cors({ credentials: true, origin: "http://localhost:8080" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -380,4 +406,191 @@ app.delete("/api/posts/:id", checkAuth, (req, res) => {
   return res.status(204).send();
 });
 
-app.listen(port, () => console.log(`server started on ${port}`));
+//chat
+
+io.use(ioCookieParser());
+
+io.use((socket, next) => {
+  const token = socket.request.cookies.token;
+  try {
+    const decoded = jwt.verify(token, secretKey);
+    socket.user = decoded;
+    next();
+  } catch {
+    next(new Error({ message: "Unauthorized access" }));
+  }
+});
+
+io.on("connection", (socket) => {
+  socket.join(socket.user.userId);
+  socket.broadcast.emit("userStatus", { id: socket.user.userId, online: true });
+  socket.on("disconnect", () =>
+    socket.broadcast.emit("userStatus", {
+      id: socket.user.userId,
+      online: false,
+    })
+  );
+});
+
+const getConvResponse = (conv, userId) => {
+  const { id: opponentId } = conv.participants.find(
+    (participant) => participant.id !== userId
+  );
+  const { lastIndex } = conv.participants.find(
+    (participant) => participant.id === userId
+  );
+  const opponent = mockDB.users.find((el) => el.id === opponentId);
+  const lastMessage = conv.messages.at(-1);
+  return {
+    id: opponentId,
+    name: `${opponent.name} ${opponent.lastname}`,
+    avatar: opponent.avatar,
+    lastIndex,
+    lastUpdate: conv.lastUpdate,
+    online: Boolean(io.sockets.adapter.rooms.get(opponentId)),
+    lastMessage: lastMessage?.text
+      ? lastMessage.text
+      : lastMessage?.src
+      ? "Image"
+      : "",
+  };
+};
+
+app.get("/api/chat/conversations", checkAuth, (req, res) => {
+  const newChatProfile = Number(req.query.newchat);
+  const conversations = mockDB.conversations
+    .filter((conv) =>
+      conv.participants.find(
+        (participant) => participant.id === req.user.userId
+      )
+    )
+    .map((conv) => getConvResponse(conv, req.user.userId));
+
+  if (
+    !isNaN(newChatProfile) &&
+    newChatProfile !== req.user.userId &&
+    conversations.every((conv) => conv.id !== newChatProfile)
+  ) {
+    const opponent = mockDB.users.find((user) => user.id === newChatProfile);
+    if (opponent)
+      conversations.push({
+        id: opponent.id,
+        name: `${opponent.name} ${opponent.lastname}`,
+        avatar: opponent.avatar,
+        lastIndex: 0,
+        lastUpdate: +new Date(),
+        online: Boolean(io.sockets.adapter.rooms.get(opponent.id)),
+        lastMessage: "",
+      });
+  }
+  res.status(200).send({ conversations });
+});
+
+app.get("/api/chat/messages", checkAuth, (req, res) => {
+  const profile = Number(req.query.profile);
+
+  const conv = mockDB.conversations.find((conv) =>
+    conv.participants.every(
+      (el) => [profile, req.user.userId].indexOf(el.id) > -1
+    )
+  );
+  const messages = conv?.messages ?? [];
+  res.status(200).send({ messages });
+});
+
+app.post(
+  "/api/chat/messages",
+  checkAuth,
+  upload.single("image"),
+  (req, res) => {
+    const image = req.file;
+    const text = req.body.text;
+    const profile = Number(req.body.profile);
+
+    if (
+      !typeof profile === "number" ||
+      !(text || image) ||
+      profile === req.user.userId ||
+      !mockDB.users.find((user) => user.id === profile)
+    )
+      return res.status(400).send({ message: "Bad request" });
+
+    const conv = mockDB.conversations.find((conv) =>
+      conv.participants.every(
+        (el) => [profile, req.user.userId].indexOf(el.id) > -1
+      )
+    );
+
+    const message = {
+      date: +new Date(),
+      text,
+      image: image ? `http://localhost:3000/uploads/${image.filename}` : null,
+      userId: req.user.userId,
+      conversationId: req.user.userId,
+    };
+
+    if (conv) {
+      conv.messages.push(message);
+      io.to(profile).emit("newMessage", message);
+    } else {
+      const newConv = {
+        id: +new Date(),
+        participants: [
+          { id: req.user.userId, lastIndex: 0 },
+          { id: profile, lastIndex: 0 },
+        ],
+        lastUpdate: +new Date(),
+        messages: [message],
+      };
+      mockDB.conversations.push(newConv);
+      io.to(profile).emit("addConversation", getConvResponse(newConv, profile));
+    }
+
+    io.to(req.user.userId).emit("newMessage", {
+      ...message,
+      conversationId: profile,
+    });
+
+    return res.status(200).send({ message: "success" });
+  }
+);
+
+// app.post("/api/chat/conversations", checkAuth, (req, res) => {
+//   const userId = Number(req.user.userId);
+//   const opponentId = Number(req.body.profile);
+//   const opponent = mockDB.users.find((el) => el.id === opponentId);
+//   if (!opponent) return res.status(400).send({ message: "Bad request" });
+//   const conv = mockDB.conversations.find(
+//     (conv) =>
+//       conv.participants[0].id + conv.participants[1].id === userId + opponentId
+//   );
+//   if (!conv) {
+//     const id = +new Date();
+//     const newConv = {
+//       id,
+//       participants: [
+//         { id: userId, lastIndex: 0 },
+//         { id: opponentId, lastIndex: -1 },
+//       ],
+//       lastUpdate: +new Date(),
+//       messages: [],
+//     };
+//     mockDB.conversations.push(newConv);
+//     io.to();
+//     return res
+//       .status(200)
+//       .send({ new: true, id, conversation: getConvResponse(newConv, userId) });
+//   }
+//   const user = conv.participants.find(
+//     (participant) => participant.id === userId
+//   );
+//   if (user?.lastIndex === -1) {
+//     user.lastIndex = 0;
+//     return res
+//     .status(200)
+//     .send({ new: true, id, conversation: getConvResponse(conv, userId) });
+//   }
+//   return res.status(200).send({ new: false, id: conv.id });
+// });
+
+httpServer.listen(port, () => console.log(`server started on ${port}`));

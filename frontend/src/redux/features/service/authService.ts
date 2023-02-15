@@ -1,4 +1,5 @@
 import { apiSlice } from '../apiSlice';
+import { socket } from './socket';
 import { GenericResponse, LoginInput, RegistrationInput } from './types';
 
 export const authService = apiSlice.injectEndpoints({
@@ -10,6 +11,9 @@ export const authService = apiSlice.injectEndpoints({
           method: 'POST',
           body: data
         };
+      },
+      onQueryStarted(arg, { queryFulfilled }) {
+        queryFulfilled.then(() => socket.connect());
       }
     }),
     login: builder.mutation<GenericResponse, LoginInput>({
@@ -19,6 +23,9 @@ export const authService = apiSlice.injectEndpoints({
           method: 'POST',
           body: data
         };
+      },
+      onQueryStarted(arg, { queryFulfilled }) {
+        queryFulfilled.then(() => socket.connect());
       }
     }),
     logout: builder.mutation<GenericResponse, void>({
@@ -27,6 +34,9 @@ export const authService = apiSlice.injectEndpoints({
           url: '/auth/logout',
           method: 'POST'
         };
+      },
+      onQueryStarted(arg, { queryFulfilled }) {
+        queryFulfilled.then(() => socket.disconnect());
       }
     })
   })

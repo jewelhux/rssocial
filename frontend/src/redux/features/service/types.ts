@@ -68,3 +68,21 @@ export interface FriendRequest {
   id: number;
   action: FriendRequestActions;
 }
+
+export interface Conversation {
+  id: number;
+  name: string;
+  avatar: null | string;
+  online: boolean;
+  lastIndex: number;
+  lastUpdate: number;
+  lastMessage: string;
+}
+
+export interface Message {
+  date: number;
+  text: string;
+  image: string | null;
+  userId: number;
+  conversationId: number;
+}

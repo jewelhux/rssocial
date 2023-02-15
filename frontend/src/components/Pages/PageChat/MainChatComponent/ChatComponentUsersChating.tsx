@@ -1,38 +1,60 @@
 import { ReactElement, useContext } from 'react';
-import { List, Box } from '@mui/material';
+import { List, Box, Avatar, ListItem, ListItemText, useMediaQuery, useTheme } from '@mui/material';
 import { Context } from '../../../Context/context';
-import { DataOfUsers } from '../../../../utils/Type';
-import UserInChat from './UserInchat';
+import { useGetConversationsQuery } from '../../../../redux/features/service/chatService';
+import { StyledBadge } from '../../../Common/CustomStyleComponents';
+import { DEFAULT_IMAGE } from '../../../../utils/const';
+import { useSearchParams } from 'react-router-dom';
 
-function ChatComponentUsersChating(): ReactElement {
+function ChatComponentUsersChating({
+  profile,
+  setProfile
+}: {
+  profile: number;
+  setProfile: React.Dispatch<React.SetStateAction<number>>;
+}): ReactElement {
+  const [searchParams] = useSearchParams();
+  const newChat = searchParams.get('newmessage')
+    ? Number(searchParams.get('newmessage'))
+    : undefined;
   const { isOpenUsers } = useContext(Context);
-
-  const dataOfUsers: DataOfUsers[] = [
-    {
-      isOnlineUser: true,
-      nameOfUser: 'JIK',
-      imgOfUser: 'https://avatars.githubusercontent.com/u/38877564?v=4'
-    },
-    {
-      isOnlineUser: false,
-      nameOfUser: 'Ferka',
-      imgOfUser: 'https://avatars.githubusercontent.com/u/74072987?v=4'
-    },
-    {
-      isOnlineUser: true,
-      nameOfUser: 'Syderi',
-      imgOfUser: 'https://avatars.githubusercontent.com/u/107023048?v=4'
-    }
-  ];
+  const theme = useTheme();
+  const isMatchMoreScreen = useMediaQuery(theme.breakpoints.up('sm'));
+  const { data } = useGetConversationsQuery(newChat);
 
   return (
     <Box
       sx={{ display: `${isOpenUsers ? 'flex' : 'none'}`, flexDirection: 'column', maxWidth: '30%' }}
     >
       <List sx={{ flexGrow: 1, overflowY: 'scroll', overflowX: 'hidden' }}>
-        {dataOfUsers.map((user) => {
-          return <UserInChat key={user.imgOfUser + user.nameOfUser} dataOfUsers={user} />;
-        })}
+        {data &&
+          [...data.conversations]
+            .sort((a, b) => b.lastUpdate - a.lastUpdate)
+            .map((conversation) => (
+              <ListItem
+                key={conversation.id}
+                onClick={() => setProfile(conversation.id)}
+                sx={{
+                  cursor: 'pointer',
+                  backgroundColor: conversation.id === profile ? 'red' : 'white'
+                }}
+              >
+                <StyledBadge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  variant="dot"
+                  isonlineuser={conversation.online.toString()}
+                >
+                  <Avatar alt="image" src={conversation.avatar ?? DEFAULT_IMAGE} />
+                </StyledBadge>
+                {isMatchMoreScreen && (
+                  <ListItemText>
+                    <div>{conversation.name}</div>
+                    <div style={{ fontSize: '12px' }}>{conversation.lastMessage}</div>
+                  </ListItemText>
+                )}
+              </ListItem>
+            ))}
       </List>
     </Box>
   );

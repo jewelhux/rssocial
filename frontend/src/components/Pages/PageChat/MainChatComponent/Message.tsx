@@ -2,56 +2,48 @@ import { Box, Typography } from '@mui/material';
 import { ReactElement } from 'react';
 import { ImageMessage, SmallAvatar } from '../../../Common/CustomStyleComponents';
 import TimeAgo from './TimeAgo';
-import { DataMessage } from '../../../../utils/Type';
+import { Message } from '../../../../redux/features/service/types';
+import { useGetProfileByIdQuery } from '../../../../redux/features/service/profileService';
+import { DEFAULT_IMAGE } from '../../../../utils/const';
 
-function Message(props: { dataMessage: DataMessage }): ReactElement {
-  const { dataMessage } = props;
-
-  const keyImage = dataMessage.imgMassage.length === 0 ? false : true;
-
+function ChatMessage({ message, own }: { message: Message; own: boolean }): ReactElement {
+  const { data } = useGetProfileByIdQuery(message.userId);
   return (
     <Box padding={1} display="flex" sx={{ flexDirection: 'column' }}>
       <Box display="flex" sx={{ flexDirection: 'column' }}>
-        <Box
-          display="flex"
-          marginTop={1}
-          sx={{ flexDirection: `${dataMessage.currentUser ? 'row-reverse' : 'row'}` }}
-        >
-          <SmallAvatar alt="image" src={dataMessage.imgSrc} />
+        <Box display="flex" marginTop={1} sx={{ flexDirection: `${own ? 'row-reverse' : 'row'}` }}>
+          <SmallAvatar alt="image" src={data?.avatar ?? DEFAULT_IMAGE} />
           <Typography
             sx={{
               margin: '0 10px',
               borderRadius: '10px',
-              backgroundColor: `${dataMessage.currentUser ? '#1876f9' : '#c1c3c7'}`,
-              color: `${dataMessage.currentUser ? 'white' : 'black'}`,
+              backgroundColor: `${own ? '#1876f9' : '#c1c3c7'}`,
+              color: `${own ? 'white' : 'black'}`,
               padding: 1,
               hyphens: 'auto',
               maxWidth: '65%',
               wordBreak: 'break-word'
             }}
           >
-            {dataMessage.message}
+            {message.text}
           </Typography>
         </Box>
-        {keyImage && (
+        {message.image && (
           <Box
             display="flex"
             marginTop={1}
-            sx={{ flexDirection: `${dataMessage.currentUser ? 'row-reverse' : 'row'}` }}
+            sx={{ flexDirection: `${own ? 'row-reverse' : 'row'}` }}
           >
-            {dataMessage.imgMassage && <ImageMessage src={dataMessage.imgMassage} alt="image" />}
+            <ImageMessage src={message.image} alt="image" />
           </Box>
         )}
       </Box>
 
-      <Box
-        display="flex"
-        sx={{ fontSize: 14, flexDirection: `${dataMessage.currentUser ? 'row-reverse' : 'row'}` }}
-      >
-        <TimeAgo time={dataMessage.timeOfCreateMassage} />
+      <Box display="flex" sx={{ fontSize: 14, flexDirection: `${own ? 'row-reverse' : 'row'}` }}>
+        <TimeAgo time={message.date} />
       </Box>
     </Box>
   );
 }
 
-export default Message;
+export default ChatMessage;
