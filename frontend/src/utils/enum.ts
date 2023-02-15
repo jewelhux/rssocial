@@ -5,3 +5,8 @@ export enum RelationshipUserStatus {
   notLookingForAnyone = 'никого не ищу',
   inARelationship = 'в отношениях'
 }
+
+export enum SiteLanguage {
+  russian = 'Русский ',
+  english = 'English'
+}

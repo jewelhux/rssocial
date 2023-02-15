@@ -1,4 +1,5 @@
-import { Box, Container } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
+import SettingComponentLng from './MainSettingComponent/SettingComponentLng';
 import SettingComponentNewInfo from './MainSettingComponent/SettingComponentNewInfo';
 
 function PageSetting() {
@@ -25,6 +26,9 @@ function PageSetting() {
           alignItems: 'center'
         }}
       >
+        <Typography>Системные настрйоки:</Typography>
+        <SettingComponentLng />
+        <Typography>Личные данные:</Typography>
         <SettingComponentNewInfo />
       </Box>
     </Container>
