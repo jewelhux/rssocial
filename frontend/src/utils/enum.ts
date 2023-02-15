@@ -10,3 +10,8 @@ export enum SiteLanguage {
   russian = 'Русский ',
   english = 'English'
 }
+
+export enum SiteDarkTheme {
+  light = 'light',
+  dark = 'dark'
+}

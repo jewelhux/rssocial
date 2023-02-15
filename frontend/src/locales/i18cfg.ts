@@ -42,12 +42,17 @@ i18n.use(initReactI18next).init({
           chapterSystem: 'System Settings',
           chapterHuman: 'Personal data',
           settingLng: 'Language selection',
+          settingDarkTheme: 'Theme selection',
           infoAge: 'Age',
           infoJob: 'Job',
           infoInterests: 'Interests',
           infoStatus: 'Marital status',
           btnAddPhoto: 'Upload a new photo',
           btnSave: 'Save Settings'
+        },
+        settingDarkThemeSelect: {
+          lightTheme: 'Light',
+          darkTheme: 'DarK'
         },
         startLng: {
           titleLogin: 'Log in to your account',
@@ -106,12 +111,17 @@ i18n.use(initReactI18next).init({
           chapterSystem: 'Системные настройки',
           chapterHuman: 'Личные данные',
           settingLng: 'Выбор языка',
+          settingDarkTheme: 'Выбор темы',
           infoAge: 'Возраст',
           infoJob: 'Место работы',
           infoInterests: 'Интересы',
           infoStatus: 'Семейное положение',
           btnAddPhoto: 'Загрузить новое фото',
           btnSave: 'Сохранить настройки'
+        },
+        settingDarkThemeSelect: {
+          lightTheme: 'Светлая',
+          darkTheme: 'Тёмная'
         },
         startLng: {
           titleLogin: 'Вход в аккаунт',

@@ -1,4 +1,4 @@
-import { useState, Dispatch, SetStateAction } from 'react';
+import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,20 +9,11 @@ import HeaderComponentLogo from './HeaderComponent/HeaderComponentLogo';
 import HeaderComponentMobileMenu from './HeaderComponent/HeaderComponentMobileMenu';
 import HeaderComponentProfile from './HeaderComponent/HeaderComponentProfile';
 import HeaderComponentMessage from './HeaderComponent/HeaderComponentMessage';
-import Switch from '@mui/material/Switch';
 import HeaderComponentFriend from './HeaderComponent/HeaderComponentFriend';
 import HeaderComponentSetting from './HeaderComponent/HeaderComponentSetting';
 import { useCookies } from 'react-cookie';
 
-type ModeDark = 'light' | 'dark';
-
-export default function Header({
-  modeDark,
-  setmodeDark
-}: {
-  modeDark: ModeDark;
-  setmodeDark: Dispatch<SetStateAction<ModeDark>>;
-}) {
+export default function Header() {
   const [cookies] = useCookies(['logged_in']);
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
@@ -74,7 +65,6 @@ export default function Header({
           {/* БЛОК ДЛЯ ОТСТУПА */}
           <Box sx={{ flexGrow: 1 }} />
 
-          <Switch onChange={() => setmodeDark(modeDark === 'light' ? 'dark' : 'light')} />
           {/* ВХОД И РЕГИСТРАЦИЯ */}
           {!cookies.logged_in && <HeaderComponentLogin />}
 

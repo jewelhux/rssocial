@@ -1,5 +1,6 @@
 import { Box, Container, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import SettingComponentDarkTheme from './MainSettingComponent/SettingComponentDarkTheme';
 import SettingComponentLng from './MainSettingComponent/SettingComponentLng';
 import SettingComponentNewInfo from './MainSettingComponent/SettingComponentNewInfo';
 
@@ -30,6 +31,7 @@ function PageSetting() {
         }}
       >
         <Typography>{t('settingLng.chapterSystem')}:</Typography>
+        <SettingComponentDarkTheme />
         <SettingComponentLng />
         <Typography>{t('settingLng.chapterHuman')}:</Typography>
         <SettingComponentNewInfo />
