@@ -4,10 +4,12 @@ import { Link } from 'react-router-dom';
 import { useGetOwnProfileQuery } from '../../../../redux/features/service/profileService';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { useLogoutMutation } from '../../../../redux/features/service/authService';
+import { useTranslation } from 'react-i18next';
 
 function ProfileComponentMainInfo(): ReactElement {
   const { data: user, isFetching, isLoading } = useGetOwnProfileQuery();
   const [logoutUser] = useLogoutMutation();
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -33,29 +35,27 @@ function ProfileComponentMainInfo(): ReactElement {
             src={user?.avatar ?? DEFAULT_IMAGE}
           />
         )}
-        {/* <Skeleton variant="circular" width={40} height={40} />
-        <img width={'100%'} alt="UserAvatar" src={user?.avatar ?? DEFAULT_IMAGE} /> */}
       </Box>
       <Typography variant="h5" sx={{ textAlign: 'center', width: '100%' }}>
         {user && `${user?.name} ${user.lastname}`}
       </Typography>
       <Button component={Link} to="/friend" color="inherit" variant="outlined">
-        Мои друзья
+        {t('profileLng.btnFriend')}
       </Button>
       <Button component={Link} to="/setting" color="inherit" variant="outlined">
-        Настройки
+        {t('profileLng.btnSetting')}
       </Button>
       <Button color="info" variant="contained">
-        Написать сообщение
+        {t('profileLng.btnMessage')}
       </Button>
       <Button
         component={Link}
-        to="/"
+        to="/auth"
         color="inherit"
         variant="outlined"
         onClick={() => logoutUser()}
       >
-        Выход
+        {t('profileLng.btnOut')}
       </Button>
     </Box>
   );

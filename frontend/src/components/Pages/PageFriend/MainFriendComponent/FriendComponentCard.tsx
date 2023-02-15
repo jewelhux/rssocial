@@ -8,9 +8,11 @@ import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { CustomButtinListFriend } from '../../../Common/CustomStyleComponents';
 import { Link } from 'react-router-dom';
 import { useFriendRequestMutation } from '../../../../redux/features/service/friendsService';
+import { useTranslation } from 'react-i18next';
 
 function FriendComponentCard({ friend, status }: { friend: FriendProfile; status: FriendStatus }) {
   const [friendRequest, { isLoading, isSuccess }] = useFriendRequestMutation();
+  const { t } = useTranslation();
 
   return (
     <Card
@@ -49,19 +51,25 @@ function FriendComponentCard({ friend, status }: { friend: FriendProfile; status
           gutterBottom
           sx={{ fontWeight: 600 }}
         >{`${friend.name} ${friend.lastname}`}</Typography>
-        <Typography gutterBottom>{`Возраст: ${friend.about.age || 'скрыт'}`}</Typography>
+        <Typography gutterBottom>{`${t('friendLng.infoAge')}: ${
+          friend.about.age || t('friendLng.hidden')
+        }`}</Typography>
       </Box>
       <Box sx={{ display: 'flex', mt: 1, width: '30%', flexDirection: 'column' }}>
-        <Typography gutterBottom>{`Место работы: ${friend.about.work || 'скрыто'}`}</Typography>
-        <Typography gutterBottom>{`Интересы: ${friend.about.interests || 'скрыты'}`}</Typography>
+        <Typography gutterBottom>{`${t('friendLng.infoJob')}: ${
+          friend.about.work || t('friendLng.hidden')
+        }`}</Typography>
+        <Typography gutterBottom>{`${t('friendLng.infoInterests')}: ${
+          friend.about.interests || t('friendLng.hidden')
+        }`}</Typography>
       </Box>
       <CustomButtinListFriend>
         <Button size="small" component={Link} to={`/profile/${friend.id}`}>
-          Профиль
+          {t('friendLng.btnProfile')}
         </Button>
         {status === FriendStatus.accepted ? (
           <Button size="small" component={Link} to={`/messages`}>
-            Написать
+            {t('friendLng.btnMessage')}
           </Button>
         ) : (
           <Button
@@ -69,7 +77,7 @@ function FriendComponentCard({ friend, status }: { friend: FriendProfile; status
             size="small"
             onClick={() => friendRequest({ id: friend.id, action: FriendRequestActions.approve })}
           >
-            Принять
+            {t('friendLng.btnAdd')}
           </Button>
         )}
         <Button
@@ -77,7 +85,7 @@ function FriendComponentCard({ friend, status }: { friend: FriendProfile; status
           size="small"
           onClick={() => friendRequest({ id: friend.id, action: FriendRequestActions.delete })}
         >
-          {status === FriendStatus.accepted ? 'Удалить' : 'Отклонить'}
+          {status === FriendStatus.accepted ? t('friendLng.btnDelete') : t('friendLng.btnReject')}
         </Button>
       </CustomButtinListFriend>
     </Card>
