@@ -1,9 +1,11 @@
 import { Box, Typography, Container } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useGetAllPostsQuery } from '../../../redux/features/service/postsService';
 import FeedComponentFeed from './MainFeedComponent/FeedComponentFeed';
 
 function PageFeed() {
   const { data } = useGetAllPostsQuery();
+  const { t } = useTranslation();
 
   return (
     <Container
@@ -18,8 +20,8 @@ function PageFeed() {
         textAlign: 'center'
       }}
     >
-      <Typography variant="h5">Добро пожаловаьть в социальную сеть RSSocial</Typography>
-      <Typography>Последние посты пользователей:</Typography>
+      <Typography variant="h5">{t('feedLng.title')}</Typography>
+      <Typography>{t('feedLng.lastpost')}</Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
         {data?.posts.map((post) => (
           <FeedComponentFeed key={post.id} post={post} />

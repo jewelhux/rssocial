@@ -26,8 +26,10 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useLoginMutation, useRegisterMutation } from '../../../redux/features/service/authService';
 import useCookies from 'react-cookie/cjs/useCookies';
+import { useTranslation } from 'react-i18next';
 
 function PageStart() {
+  const { t } = useTranslation();
   const [cookies] = useCookies(['logged_in']);
   const location = useLocation();
 
@@ -190,21 +192,17 @@ function PageStart() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {isLoading || isLoadingRegisredUser ? 'Проверка даных' : 'Попытка ввода данных'}
+          {isLoading || isLoadingRegisredUser ? t('startLng.wait') : t('startLng.wait')}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {isLogin &&
-              (isLoading ? 'Ожидайте ответа сервера' : 'Пожалуйста, проверьте вводимые данные')}
-            {!isLogin &&
-              (isLoadingRegisredUser
-                ? 'Ожидайте ответа сервера'
-                : 'Пользователь существует или некоректно введены данные')}
+            {isLogin && (isLoading ? t('startLng.wait') : 'Пожалуйста, проверьте вводимые данные')}
+            {!isLogin && (isLoadingRegisredUser ? t('startLng.wait') : t('startLng.incorrectData'))}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary" autoFocus>
-            Закрыть
+            {t('startLng.close')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -232,7 +230,11 @@ function PageStart() {
               <LockIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              {isLoading ? 'Идет загрузка' : isLogin ? 'Вход в аккаунт' : 'Регистрация'}
+              {isLoading
+                ? 'Идет загрузка'
+                : isLogin
+                ? t('startLng.titleLogin')
+                : t('startLng.titleRegistration')}
             </Typography>
             <Box component="form" noValidate sx={{ mt: 3 }} onSubmit={handleSubmitForm}>
               <Grid container spacing={2}>
@@ -246,7 +248,7 @@ function PageStart() {
                             ? ' '
                             : isValidForm.name
                             ? ' '
-                            : 'Ошибочный ввод длина не менее трёх символов'
+                            : t('startLng.messageError')
                         }
                         autoComplete="given-name"
                         name="name"
@@ -255,7 +257,7 @@ function PageStart() {
                         required
                         fullWidth
                         id="name"
-                        label="Имя"
+                        label={t('startLng.firstName')}
                         autoFocus
                       />
                     </Grid>
@@ -270,12 +272,12 @@ function PageStart() {
                             ? ' '
                             : isValidForm.lastname
                             ? ' '
-                            : 'Ошибочный ввод длина не менее трёх символов'
+                            : t('startLng.messageError')
                         }
                         required
                         fullWidth
                         id="lastname"
-                        label="Фамилия"
+                        label={t('startLng.secondName')}
                         name="lastname"
                         value={onSubmit.lastname}
                         onChange={handleOnChangeTextField}
@@ -289,12 +291,16 @@ function PageStart() {
                     disabled={isLoading}
                     error={onSubmit.email === '' ? false : isValidForm.email ? false : true}
                     helperText={
-                      onSubmit.email === '' ? ' ' : isValidForm.email ? ' ' : 'Ошибочный ввод email'
+                      onSubmit.email === ''
+                        ? ' '
+                        : isValidForm.email
+                        ? ' '
+                        : t('startLng.messageError')
                     }
                     required
                     fullWidth
                     id="email"
-                    label="Email"
+                    label={t('startLng.mail')}
                     name="email"
                     value={onSubmit.email}
                     onChange={handleOnChangeTextField}
@@ -305,10 +311,10 @@ function PageStart() {
                   <FormControl fullWidth>
                     <InputLabel htmlFor="outlined-adornment-password">
                       {onSubmit.password === ''
-                        ? 'Password*'
+                        ? t('startLng.password')
                         : isValidForm.password
-                        ? 'Password*'
-                        : 'Ошибка'}
+                        ? t('startLng.password')
+                        : t('startLng.messageError')}
                     </InputLabel>
                     <OutlinedInput
                       endAdornment={
@@ -329,7 +335,7 @@ function PageStart() {
                       name="password"
                       value={onSubmit.password}
                       onChange={handleOnChangeTextField}
-                      label="Password"
+                      label={t('startLng.password')}
                       type={showPassword ? 'text' : 'password'}
                       id="password"
                       autoComplete="new-password"
@@ -346,7 +352,7 @@ function PageStart() {
                           color="primary"
                         />
                       }
-                      label="Я принимаю правила, которых нет"
+                      label={t('startLng.checkRules')}
                     />
                   )}
                 </Grid>
@@ -358,7 +364,7 @@ function PageStart() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                {isLogin ? 'Войти' : 'Зарегистрироваться'}
+                {isLogin ? t('startLng.btnLogin') : t('startLng.btnRegistration')}
               </Button>
               <Button
                 disabled={isLoading}
@@ -380,7 +386,7 @@ function PageStart() {
                   });
                 }}
               >
-                {isLogin ? 'Перейти к регистрации' : 'Перейти ко Входу'}
+                {isLogin ? t('startLng.btnToRegistration') : t('startLng.btnToLogin')}
               </Button>
             </Box>
           </Box>

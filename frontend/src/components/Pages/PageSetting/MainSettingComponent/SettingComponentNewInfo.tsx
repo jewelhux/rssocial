@@ -15,8 +15,10 @@ import type { SelectChangeEvent } from '@mui/material/Select';
 import { RelationshipUserStatus } from '../../../../utils/enum';
 import { useEffect, useState } from 'react';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
+import { useTranslation } from 'react-i18next';
 
 function SettingComponentNewInfo() {
+  const { t } = useTranslation();
   const { data: dataUser, isError, isLoading } = useGetOwnProfileQuery();
   const [sendProfileUser, { isLoading: isLoadingProfileUser }] = useUpdateOwnProfileMutation();
 
@@ -100,7 +102,7 @@ function SettingComponentNewInfo() {
         <>
           <TextField
             type="number"
-            label="Возраст"
+            label={t('settingLng.infoAge')}
             variant="filled"
             value={ageUser}
             onChange={handleAgeUser}
@@ -108,7 +110,9 @@ function SettingComponentNewInfo() {
             sx={{ width: '100%' }}
           />
           <FormControl variant="filled" sx={{ width: '100%' }}>
-            <InputLabel id="demo-simple-select-filled-label">Статус</InputLabel>
+            <InputLabel id="demo-simple-select-filled-label">
+              {t('settingLng.infoStatus')}
+            </InputLabel>
             <Select
               sx={{ textAlign: 'left' }}
               labelId="demo-simple-select-filled-label"
@@ -137,7 +141,7 @@ function SettingComponentNewInfo() {
 
           <TextField
             type={'text'}
-            label="Интересы"
+            label={t('settingLng.infoInterests')}
             variant="filled"
             value={interestsUser}
             onChange={handleInterestsUser}
@@ -147,7 +151,7 @@ function SettingComponentNewInfo() {
           <TextField
             type={'text'}
             id="standard-basic"
-            label="Место работы"
+            label={t('settingLng.infoJob')}
             variant="filled"
             value={workUser}
             onChange={handleWorkUser}
@@ -165,7 +169,7 @@ function SettingComponentNewInfo() {
           />
           <Button sx={{ width: '100%', padding: 0 }} disabled={isLoadingProfileUser}>
             <label style={{ cursor: 'pointer', width: '100%' }} htmlFor="file">
-              Загрузите новое фото
+              {t('settingLng.btnAddPhoto')}
             </label>
           </Button>
           <img
@@ -184,7 +188,7 @@ function SettingComponentNewInfo() {
             onClick={handleSendProfileUser}
             disabled={isLoadingProfileUser}
           >
-            Сохранить настройки
+            {t('settingLng.btnSave')}
           </Button>
         </>
       )}

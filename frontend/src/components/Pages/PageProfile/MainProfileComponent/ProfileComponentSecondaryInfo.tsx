@@ -1,9 +1,11 @@
 import { ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGetOwnProfileQuery } from '../../../../redux/features/service/profileService';
 import { CustomGrid, CustomGridItem } from '../../../Common/CustomStyleComponents';
 
 function ProfileComponentSecondaryInfo(): ReactElement {
   const { data: user } = useGetOwnProfileQuery();
+  const { t } = useTranslation();
 
   return (
     <CustomGrid
@@ -14,16 +16,16 @@ function ProfileComponentSecondaryInfo(): ReactElement {
       }}
     >
       <CustomGridItem variant="outlined">
-        <b>Возраст: </b> {user?.about.age ?? ''}
+        <b>{t('profileLng.infoAge')}: </b> {user?.about.age ?? ''}
       </CustomGridItem>
       <CustomGridItem variant="outlined">
-        <b>Семейное положение: </b> {user?.about.status ?? ''}
+        <b>{t('profileLng.infoStatus')}: </b> {user?.about.status ?? ''}
       </CustomGridItem>
       <CustomGridItem variant="outlined">
-        <b>Интересы: </b> {user?.about.interests ?? ''}
+        <b>{t('profileLng.infoInterests')}: </b> {user?.about.interests ?? ''}
       </CustomGridItem>
       <CustomGridItem variant="outlined">
-        <b>Место работы: </b>
+        <b>{t('profileLng.infoJob')}: </b>
         {user?.about.work ?? ''}
       </CustomGridItem>
     </CustomGrid>

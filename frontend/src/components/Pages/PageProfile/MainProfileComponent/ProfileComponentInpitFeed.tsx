@@ -4,12 +4,14 @@ import { partText } from '../../../../utils/utils';
 import { CustomCreatePost } from '../../../Common/CustomStyleComponents';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAddPostMutation } from '../../../../redux/features/service/postsService';
+import { useTranslation } from 'react-i18next';
 
 function ProfileComponentInputFeed() {
   const [sendPost, { isLoading }] = useAddPostMutation();
   const [text, setText] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
   const formData = new FormData();
+  const { t } = useTranslation();
 
   const handleImageAdd = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -44,7 +46,7 @@ function ProfileComponentInputFeed() {
         multiline
         rows={2}
         id="outlined-basic"
-        label="Ваше сообщение..."
+        label={t('profileLng.inputPostText')}
         variant="outlined"
         value={text}
         sx={{ flexGrow: '1', width: { xs: '240px', sm: '100%' } }}
@@ -62,7 +64,7 @@ function ProfileComponentInputFeed() {
           />
           <Button sx={{ width: '100%', padding: 0 }}>
             <label style={{ cursor: 'pointer', width: '100%' }} htmlFor="file">
-              Выберите фото
+              {t('profileLng.btnAddPhoto')}
             </label>
           </Button>
           <Box sx={{ display: 'flex' }}>
@@ -77,7 +79,7 @@ function ProfileComponentInputFeed() {
           onClick={handleSubmith}
           disabled={isLoading || (!text && !image)}
         >
-          Отправить
+          {t('profileLng.btnAddPost')}
         </Button>
       </Box>
     </CustomCreatePost>

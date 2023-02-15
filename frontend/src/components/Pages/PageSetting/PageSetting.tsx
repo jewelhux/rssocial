@@ -1,8 +1,11 @@
 import { Box, Container, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import SettingComponentLng from './MainSettingComponent/SettingComponentLng';
 import SettingComponentNewInfo from './MainSettingComponent/SettingComponentNewInfo';
 
 function PageSetting() {
+  const { t } = useTranslation();
+
   return (
     <Container
       sx={{
@@ -26,9 +29,9 @@ function PageSetting() {
           alignItems: 'center'
         }}
       >
-        <Typography>Системные настрйоки:</Typography>
+        <Typography>{t('settingLng.chapterSystem')}:</Typography>
         <SettingComponentLng />
-        <Typography>Личные данные:</Typography>
+        <Typography>{t('settingLng.chapterHuman')}:</Typography>
         <SettingComponentNewInfo />
       </Box>
     </Container>

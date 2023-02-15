@@ -8,9 +8,11 @@ import TabPanel from '@mui/lab/TabPanel';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useGetFriendsQuery } from '../../../redux/features/service/friendsService';
 import { FriendStatus } from '../../../redux/features/service/types';
+import { useTranslation } from 'react-i18next';
 
 function PageFriend() {
   const [tabName, setTabName] = useState<FriendStatus>(FriendStatus.accepted);
+  const { t } = useTranslation();
 
   const handleChange = (event: React.SyntheticEvent, newtabName: FriendStatus) => {
     setTabName(newtabName);
@@ -23,8 +25,8 @@ function PageFriend() {
       <TabContext value={tabName}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example" centered>
-            <Tab label="Мои друзья" value={FriendStatus.accepted} />
-            <Tab label="Заявки в друзья" value={FriendStatus.pending} />
+            <Tab label={t('friendLng.myFriend')} value={FriendStatus.accepted} />
+            <Tab label={t('friendLng.myRequests')} value={FriendStatus.pending} />
           </TabList>
         </Box>
         <TabPanel
@@ -38,7 +40,7 @@ function PageFriend() {
               <FriendComponentCard key={friend.id} friend={friend} status={tabName} />
             ))
           ) : (
-            'Здесь пока пусто'
+            t('friendLng.empty')
           )}
         </TabPanel>
       </TabContext>

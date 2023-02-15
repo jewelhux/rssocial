@@ -1,6 +1,8 @@
 import { Container, Divider, Typography, Box } from '@mui/material';
 import { ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGetOwnPostsQuery } from '../../../redux/features/service/postsService';
+import { UserPost } from '../../../redux/features/service/types';
 import ProfileComponentFeed from './MainProfileComponent/ProfileComponentFeed';
 import ProfileComponentInputFeed from './MainProfileComponent/ProfileComponentInpitFeed';
 import ProfileComponentMainInfo from './MainProfileComponent/ProfileComponentMainInfo';
@@ -8,6 +10,7 @@ import ProfileComponentSecondaryInfo from './MainProfileComponent/ProfileCompone
 
 function PageProfile(): ReactElement {
   const { data } = useGetOwnPostsQuery();
+  const { t } = useTranslation();
 
   return (
     <Container sx={{ mb: 2, mt: 6, flexGrow: 1, padding: { xs: '0', md: '0 10px' } }}>
@@ -38,14 +41,14 @@ function PageProfile(): ReactElement {
               marginTop: '50px'
             }}
           >
-            <Typography>Лента новостей пользователя:</Typography>
+            <Typography>{t('profileLng.feedUser')}:</Typography>
             <ProfileComponentInputFeed />
           </Box>
 
           <Box
             sx={{ display: 'flex', flexDirection: 'column', rowGap: '15px', alignSelf: 'center' }}
           >
-            {data?.posts.map((post) => (
+            {data?.posts.map((post: UserPost) => (
               <ProfileComponentFeed key={post.id} post={post} />
             ))}
           </Box>
