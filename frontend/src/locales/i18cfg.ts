@@ -54,6 +54,13 @@ i18n.use(initReactI18next).init({
           lightTheme: 'Light',
           darkTheme: 'DarK'
         },
+        settingStatus: {
+          notIndicated: 'not indicated',
+          itIsComplicated: 'it is complicated',
+          inSearch: 'in search',
+          notLookingForAnyone: 'not looking for anyone',
+          inARelationship: 'in a relationship'
+        },
         startLng: {
           titleLogin: 'Log in to your account',
           password: 'Password',
@@ -122,6 +129,13 @@ i18n.use(initReactI18next).init({
         settingDarkThemeSelect: {
           lightTheme: 'Светлая',
           darkTheme: 'Тёмная'
+        },
+        settingStatus: {
+          notIndicated: 'не указан',
+          itIsComplicated: 'всё сложно',
+          inSearch: 'в поиске',
+          notLookingForAnyone: 'никого не ищу',
+          inARelationship: 'в отношениях'
         },
         startLng: {
           titleLogin: 'Вход в аккаунт',

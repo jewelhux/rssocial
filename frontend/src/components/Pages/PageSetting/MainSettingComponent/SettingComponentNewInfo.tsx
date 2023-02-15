@@ -122,19 +122,19 @@ function SettingComponentNewInfo() {
               disabled={isLoadingProfileUser}
             >
               <MenuItem value={RelationshipUserStatus.notIndicated}>
-                {RelationshipUserStatus.notIndicated}
+                {t('settingStatus.notIndicated')}
               </MenuItem>
               <MenuItem value={RelationshipUserStatus.itIsComplicated}>
-                {RelationshipUserStatus.itIsComplicated}
+                {t('settingStatus.itIsComplicated')}
               </MenuItem>
               <MenuItem value={RelationshipUserStatus.inSearch}>
-                {RelationshipUserStatus.inSearch}
+                {t('settingStatus.inSearch')}
               </MenuItem>
               <MenuItem value={RelationshipUserStatus.notLookingForAnyone}>
-                {RelationshipUserStatus.notLookingForAnyone}
+                {t('settingStatus.notLookingForAnyone')}
               </MenuItem>
               <MenuItem value={RelationshipUserStatus.inARelationship}>
-                {RelationshipUserStatus.inARelationship}
+                {t('settingStatus.inARelationship')}
               </MenuItem>
             </Select>
           </FormControl>
