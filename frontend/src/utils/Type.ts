@@ -11,3 +11,9 @@ export type DataOfUsers = {
   nameOfUser: string;
   imgOfUser: string;
 };
+export type ModeDark = 'light' | 'dark';
+
+export type ThemeContextType = {
+  modeDark: ModeDark;
+  setModeDark: (mode: 'light' | 'dark') => void;
+};
