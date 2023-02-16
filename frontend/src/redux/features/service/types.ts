@@ -74,7 +74,7 @@ export interface Conversation {
   name: string;
   avatar: null | string;
   online: boolean;
-  lastIndex: number;
+  unreadCount: number;
   lastUpdate: number;
   lastMessage: string;
 }
@@ -85,4 +85,5 @@ export interface Message {
   image: string | null;
   userId: number;
   conversationId: number;
+  own?: boolean;
 }

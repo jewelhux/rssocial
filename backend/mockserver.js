@@ -424,12 +424,26 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   socket.join(socket.user.userId);
   socket.broadcast.emit("userStatus", { id: socket.user.userId, online: true });
+
   socket.on("disconnect", () =>
     socket.broadcast.emit("userStatus", {
       id: socket.user.userId,
       online: false,
     })
   );
+
+  socket.on("reportRead", (profile) => {
+    const conv = mockDB.conversations.find((conv) =>
+      conv.participants.every(
+        (el) => [profile, socket.user.userId].indexOf(el.id) > -1
+      )
+    );
+    if (conv) {
+      const user = conv.participants.find((el) => el.id === socket.user.userId);
+      if (user) user.lastIndex = conv.messages.length;
+      socket.emit("updateRead", profile);
+    }
+  });
 });
 
 const getConvResponse = (conv, userId) => {
@@ -445,7 +459,7 @@ const getConvResponse = (conv, userId) => {
     id: opponentId,
     name: `${opponent.name} ${opponent.lastname}`,
     avatar: opponent.avatar,
-    lastIndex,
+    unreadCount: conv.messages.length - lastIndex,
     lastUpdate: conv.lastUpdate,
     online: Boolean(io.sockets.adapter.rooms.get(opponentId)),
     lastMessage: lastMessage?.text
@@ -477,7 +491,7 @@ app.get("/api/chat/conversations", checkAuth, (req, res) => {
         id: opponent.id,
         name: `${opponent.name} ${opponent.lastname}`,
         avatar: opponent.avatar,
-        lastIndex: 0,
+        unreadCount: 0,
         lastUpdate: +new Date(),
         online: Boolean(io.sockets.adapter.rooms.get(opponent.id)),
         lastMessage: "",
@@ -531,6 +545,8 @@ app.post(
 
     if (conv) {
       conv.messages.push(message);
+      const user = conv.participants.find((el) => el.id === req.user.userId);
+      user.lastIndex += 1;
       io.to(profile).emit("newMessage", message);
     } else {
       const newConv = {
@@ -549,48 +565,11 @@ app.post(
     io.to(req.user.userId).emit("newMessage", {
       ...message,
       conversationId: profile,
+      own: true,
     });
 
     return res.status(200).send({ message: "success" });
   }
 );
-
-// app.post("/api/chat/conversations", checkAuth, (req, res) => {
-//   const userId = Number(req.user.userId);
-//   const opponentId = Number(req.body.profile);
-//   const opponent = mockDB.users.find((el) => el.id === opponentId);
-//   if (!opponent) return res.status(400).send({ message: "Bad request" });
-//   const conv = mockDB.conversations.find(
-//     (conv) =>
-//       conv.participants[0].id + conv.participants[1].id === userId + opponentId
-//   );
-//   if (!conv) {
-//     const id = +new Date();
-//     const newConv = {
-//       id,
-//       participants: [
-//         { id: userId, lastIndex: 0 },
-//         { id: opponentId, lastIndex: -1 },
-//       ],
-//       lastUpdate: +new Date(),
-//       messages: [],
-//     };
-//     mockDB.conversations.push(newConv);
-//     io.to();
-//     return res
-//       .status(200)
-//       .send({ new: true, id, conversation: getConvResponse(newConv, userId) });
-//   }
-//   const user = conv.participants.find(
-//     (participant) => participant.id === userId
-//   );
-//   if (user?.lastIndex === -1) {
-//     user.lastIndex = 0;
-//     return res
-//     .status(200)
-//     .send({ new: true, id, conversation: getConvResponse(conv, userId) });
-//   }
-//   return res.status(200).send({ new: false, id: conv.id });
-// });
 
 httpServer.listen(port, () => console.log(`server started on ${port}`));

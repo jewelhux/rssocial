@@ -35,8 +35,11 @@ export const authService = apiSlice.injectEndpoints({
           method: 'POST'
         };
       },
-      onQueryStarted(arg, { queryFulfilled }) {
-        queryFulfilled.then(() => socket.disconnect());
+      onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        queryFulfilled.then(() => {
+          socket.disconnect();
+          dispatch(apiSlice.util.resetApiState());
+        });
       }
     })
   })

@@ -9,10 +9,11 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   useGetConversationsQuery,
-  useGetMessagesQuery
+  useGetMessagesQuery,
+  useReportReadMutation
 } from '../../../redux/features/service/chatService';
 import ChatConversation from './MainChatComponent/ChatConversation';
 import ChatSendForm from './MainChatComponent/ChatSendForm';
@@ -64,10 +65,33 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 function PageChat() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(window.innerWidth > 600 ? true : false);
   const [profile, setProfile] = useState<number>(-1);
   const { data: convData } = useGetConversationsQuery();
   const { data: msgData } = useGetMessagesQuery(profile, { skip: profile === -1 });
+  const [reportRead] = useReportReadMutation();
+  const chatContainerRef = useRef<HTMLElement>(null);
+
+  const handleConversationClick = (id: number) => {
+    setProfile(id);
+    if (open && window.innerWidth <= 600) setOpen(false);
+  };
+
+  useEffect(() => {
+    const container = chatContainerRef.current;
+    if (convData && msgData && container) {
+      const unreadCount = convData.conversations.find((el) => el.id === profile)?.unreadCount || 1;
+      Array.from(container.children).at(-unreadCount)?.scrollIntoView();
+      const handleScroll = () => {
+        if (container.scrollTop >= container.scrollHeight - container.offsetHeight - 50) {
+          container.removeEventListener('scroll', handleScroll);
+          reportRead(profile);
+        }
+      };
+      container.addEventListener('scroll', handleScroll, { passive: true });
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+  }, [msgData, convData, profile, reportRead]);
 
   return (
     <Box
@@ -104,13 +128,16 @@ function PageChat() {
               conversation={conversation}
               open={open}
               selected={profile === conversation.id}
-              handleClick={() => setProfile(conversation.id)}
+              handleClick={() => handleConversationClick(conversation.id)}
             />
           ))}
         </List>
       </Drawer>
       <Box component="main" sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-        <Box sx={{ overflowY: 'scroll', overflowX: 'hidden', p: 2, width: '100%', flex: 1 }}>
+        <Box
+          sx={{ overflowY: 'scroll', overflowX: 'hidden', p: 2, width: '100%', flex: 1 }}
+          ref={chatContainerRef}
+        >
           {msgData?.messages.map((message) => (
             <ChatMessage key={message.date} message={message} own={message.userId !== profile} />
           ))}

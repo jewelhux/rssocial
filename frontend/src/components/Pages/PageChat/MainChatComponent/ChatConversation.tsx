@@ -1,8 +1,19 @@
 import { ReactElement } from 'react';
-import { Avatar, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Avatar, ListItem, ListItemButton, ListItemText, styled } from '@mui/material';
 import { StyledBadge } from '../../../Common/CustomStyleComponents';
 import { Conversation } from '../../../../redux/features/service/types';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
+
+const UnreadCounter = styled('div')`
+  display: flex;
+  font-size: 0.9rem;
+  justify-content: center;
+  align-items: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background-color: ${(props) => props.theme.palette.divider};
+`;
 
 function ChatConversation({
   conversation,
@@ -39,6 +50,7 @@ function ChatConversation({
           secondary={conversation.lastMessage}
           sx={{ opacity: open ? 1 : 0 }}
         />
+        {conversation.unreadCount > 0 && <UnreadCounter>{conversation.unreadCount}</UnreadCounter>}
       </ListItemButton>
     </ListItem>
   );

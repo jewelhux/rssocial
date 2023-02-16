@@ -93,6 +93,7 @@ const MessageImage = styled('img')`
 function ChatMessage({ message, own }: { message: Message; own: boolean }): ReactElement {
   const { data: profile } = useGetProfileByIdQuery(message.userId);
   const isNotMobile = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+
   return (
     <Box padding={1} display="flex" sx={{ flexDirection: 'column' }}>
       <MessageWrapper own={own}>
