@@ -7,6 +7,7 @@ import PageFriend from './components/Pages/PageFriend/PageFriend';
 import PageSetting from './components/Pages/PageSetting/PageSetting';
 import Layout from './components/Layout';
 import RequireAuth from './components/Common/RequireAuth';
+import PageSearch from './components/Pages/PageSearch/PageSearch';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/profile" element={<PageProfile />} />
           <Route path="/friend" element={<PageFriend />} />
           <Route path="/setting" element={<PageSetting />} />
+          <Route path="/search" element={<PageSearch />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
