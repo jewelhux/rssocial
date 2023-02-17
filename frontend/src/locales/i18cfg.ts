@@ -16,13 +16,15 @@ i18n.use(initReactI18next).init({
           myRequests: 'Application to friends',
           btnProfile: 'Profile',
           btnMessage: 'Message',
-          btnDelete: 'Delete',
+          btnDelete: 'Unfriend',
+          btnRevoke: 'Cancel application',
           btnAdd: 'Add',
+          btnRequest: 'Add to friends',
           btnReject: 'Reject',
           infoAge: 'Age',
           infoJob: 'Job',
           infoInterests: 'Interests',
-          hidden: 'Hidden'
+          hidden: 'Not entered'
         },
         profileLng: {
           infoAge: 'Age',
@@ -33,10 +35,13 @@ i18n.use(initReactI18next).init({
           btnFriend: 'My friends',
           btnSetting: 'Settings',
           btnMessage: 'Message',
+          btnMyMessages: 'My messages',
           btnOut: 'Log out',
           btnAddPhoto: 'Select a photo',
           btnAddPost: 'Send',
-          inputPostText: 'Your message...'
+          inputPostText: 'Your message...',
+          noUser: 'No such user',
+          removeAdmin: 'Remove as Admin'
         },
         settingLng: {
           chapterSystem: 'System Settings',
@@ -92,13 +97,15 @@ i18n.use(initReactI18next).init({
           myRequests: 'Заявка в друзья',
           btnProfile: 'Профиль',
           btnMessage: 'Написать',
-          btnDelete: 'Удалить',
+          btnDelete: 'Удалить из друзей',
           btnAdd: 'Принять',
+          btnRequest: 'Добавить в друзья',
           btnReject: 'Отклонить',
           infoAge: 'Возраст',
           infoJob: 'Место работы',
           infoInterests: 'Интересы',
-          hidden: 'Сыкрыто'
+          hidden: 'Не указано',
+          btnRevoke: 'Отменить заявку'
         },
         profileLng: {
           infoAge: 'Возраст',
@@ -109,10 +116,13 @@ i18n.use(initReactI18next).init({
           btnFriend: 'Мои друзья',
           btnSetting: 'Настройки',
           btnMessage: 'Написать',
+          btnMyMessages: 'Мои Сообщения',
           btnOut: 'Выход',
           btnAddPhoto: 'Выберите фото',
           btnAddPost: 'Отправить',
-          inputPostText: 'Ваше сообщение...'
+          inputPostText: 'Ваше сообщение...',
+          noUser: 'Такого пользователья не существует',
+          removeAdmin: 'Удалить как админ'
         },
         settingLng: {
           chapterSystem: 'Системные настройки',

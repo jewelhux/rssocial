@@ -8,7 +8,7 @@ import {
   TextField
 } from '@mui/material';
 import {
-  useGetOwnProfileQuery,
+  useGetProfileQuery,
   useUpdateOwnProfileMutation
 } from '../../../../redux/features/service/profileService';
 import type { SelectChangeEvent } from '@mui/material/Select';
@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 
 function SettingComponentNewInfo() {
   const { t } = useTranslation();
-  const { data: dataUser, isError, isLoading } = useGetOwnProfileQuery();
+  const { data: dataUser, isError, isLoading } = useGetProfileQuery();
   const [sendProfileUser, { isLoading: isLoadingProfileUser }] = useUpdateOwnProfileMutation();
 
   const formData = new FormData();

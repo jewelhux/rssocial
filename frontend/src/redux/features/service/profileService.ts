@@ -1,17 +1,19 @@
 import { apiSlice } from '../apiSlice';
-import { GenericProfile, UserProfile } from './types';
+import { GenericProfile } from './types';
 
 export const profileService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getOwnProfile: builder.query<UserProfile, void>({
-      query() {
+    getProfile: builder.query<GenericProfile, number | void>({
+      query(id) {
         return {
-          url: '/profile'
+          url: '/profile',
+          params: { id }
         };
       },
-      providesTags: ['Profile']
+      providesTags: (result, error, arg) =>
+        typeof arg === 'number' ? [{ type: 'Profile', id: arg }, 'Profile'] : ['Profile']
     }),
-    updateOwnProfile: builder.mutation<UserProfile, FormData>({
+    updateOwnProfile: builder.mutation<GenericProfile, FormData>({
       query(data) {
         return {
           url: '/profile',
@@ -28,20 +30,9 @@ export const profileService = apiSlice.injectEndpoints({
           params: { search }
         };
       }
-    }),
-    getProfileById: builder.query<GenericProfile, number>({
-      query(id) {
-        return {
-          url: `/profile/${id}`
-        };
-      }
     })
   })
 });
 
-export const {
-  useGetOwnProfileQuery,
-  useGetAllProfilesQuery,
-  useGetProfileByIdQuery,
-  useUpdateOwnProfileMutation
-} = profileService;
+export const { useGetProfileQuery, useGetAllProfilesQuery, useUpdateOwnProfileMutation } =
+  profileService;

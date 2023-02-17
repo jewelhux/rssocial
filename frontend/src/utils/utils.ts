@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import ru from 'date-fns/locale/ru';
+import { ru, enUS } from 'date-fns/locale';
 
 const partText = (text: string) => {
   const first = text.slice(0, 5);
@@ -8,7 +8,10 @@ const partText = (text: string) => {
   return `${first}...${second}`;
 };
 
-const CURRENT_DATE = format(new Date(), 'PPP', { locale: ru });
-const CURRENT_TIME = format(new Date(), 'p', { locale: ru });
+const formatDate = (date: Date, lang: string) => {
+  const locale = lang === 'en' ? enUS : ru;
+  const at = lang === 'en' ? ' at ' : ' в ';
+  return format(date, 'PPP', { locale }) + at + format(new Date(), 'p', { locale });
+};
 
-export { partText, CURRENT_DATE, CURRENT_TIME };
+export { partText, formatDate };
