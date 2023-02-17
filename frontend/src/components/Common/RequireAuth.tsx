@@ -1,15 +1,11 @@
-import { useCookies } from 'react-cookie';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useLoginCheckQuery } from '../../redux/features/service/authService';
 
 function RequireAuth(): React.ReactElement {
-  const [cookies] = useCookies(['logged_in']);
+  const { data: isLoggedIn } = useLoginCheckQuery();
   const location = useLocation();
 
-  return cookies.logged_in ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/auth" state={{ from: location }} replace />
-  );
+  return isLoggedIn ? <Outlet /> : <Navigate to="/auth" state={{ from: location }} replace />;
 }
 
 export default RequireAuth;

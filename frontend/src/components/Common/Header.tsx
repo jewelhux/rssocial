@@ -11,10 +11,10 @@ import HeaderComponentProfile from './HeaderComponent/HeaderComponentProfile';
 import HeaderComponentMessage from './HeaderComponent/HeaderComponentMessage';
 import HeaderComponentFriend from './HeaderComponent/HeaderComponentFriend';
 import HeaderComponentSetting from './HeaderComponent/HeaderComponentSetting';
-import { useCookies } from 'react-cookie';
+import { useLoginCheckQuery } from '../../redux/features/service/authService';
 
 export default function Header() {
-  const [cookies] = useCookies(['logged_in']);
+  const { data: isLoggedIn } = useLoginCheckQuery();
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -60,27 +60,30 @@ export default function Header() {
           <HeaderComponentLogo />
 
           {/* ПОИСК */}
-          <HeaderComponentSearch />
+          {isLoggedIn && <HeaderComponentSearch />}
 
           {/* БЛОК ДЛЯ ОТСТУПА */}
           <Box sx={{ flexGrow: 1 }} />
 
           {/* ВХОД И РЕГИСТРАЦИЯ */}
-          {!cookies.logged_in && <HeaderComponentLogin />}
+          {!isLoggedIn && <HeaderComponentLogin />}
 
           {/* СООБЩЕНИЯ И ПРОФИЛЬ */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <HeaderComponentMessage />
-            <HeaderComponentProfile />
-            <HeaderComponentFriend />
-            <HeaderComponentSetting />
-          </Box>
-
-          {/* МЕНЮ ТРЕХ ТОЧЕК */}
-          <HeaderComponentMobileMenu
-            mobileMenuId={mobileMenuId}
-            handleMobileMenuOpen={handleMobileMenuOpen}
-          />
+          {isLoggedIn && (
+            <>
+              <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                <HeaderComponentMessage />
+                <HeaderComponentProfile />
+                <HeaderComponentFriend />
+                <HeaderComponentSetting />
+              </Box>
+              {/* МЕНЮ ТРЕХ ТОЧЕК */}
+              <HeaderComponentMobileMenu
+                mobileMenuId={mobileMenuId}
+                handleMobileMenuOpen={handleMobileMenuOpen}
+              />
+            </>
+          )}
         </Toolbar>
       </AppBar>
       {renderMobileMenu}

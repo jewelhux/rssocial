@@ -1,3 +1,4 @@
+import { getCookie } from 'typescript-cookie';
 import { apiSlice } from '../apiSlice';
 import { socket } from './socket';
 import { GenericResponse, LoginInput, RegistrationInput } from './types';
@@ -14,7 +15,8 @@ export const authService = apiSlice.injectEndpoints({
       },
       onQueryStarted(arg, { queryFulfilled }) {
         queryFulfilled.then(() => socket.connect());
-      }
+      },
+      invalidatesTags: ['Login']
     }),
     login: builder.mutation<GenericResponse, LoginInput>({
       query(data) {
@@ -26,7 +28,8 @@ export const authService = apiSlice.injectEndpoints({
       },
       onQueryStarted(arg, { queryFulfilled }) {
         queryFulfilled.then(() => socket.connect());
-      }
+      },
+      invalidatesTags: ['Login']
     }),
     logout: builder.mutation<GenericResponse, void>({
       query() {
@@ -41,8 +44,15 @@ export const authService = apiSlice.injectEndpoints({
           dispatch(apiSlice.util.resetApiState());
         });
       }
+    }),
+    loginCheck: builder.query<boolean, void>({
+      queryFn: () => {
+        return { data: getCookie('logged_in') === 'true' };
+      },
+      providesTags: ['Login']
     })
   })
 });
 
-export const { useLoginMutation, useRegisterMutation, useLogoutMutation } = authService;
+export const { useLoginMutation, useRegisterMutation, useLogoutMutation, useLoginCheckQuery } =
+  authService;
