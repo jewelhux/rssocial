@@ -72,10 +72,11 @@ i18n.use(initReactI18next).init({
           checkRules: "I accept rules that don't exist",
           btnRegistration: 'Register',
           btnToLogin: 'Go to login',
-          messageError: 'Erroneous input',
+          messageError: 'Error...',
           wait: 'Wait...',
           close: 'Close',
           incorrectData: `The user doesn't exist or the data is entered incorrectly`,
+          incorrectDataLogin: 'Please check your input',
           mail: 'Email'
         }
       }
@@ -148,10 +149,11 @@ i18n.use(initReactI18next).init({
           checkRules: 'Я принимаю правила которых нет',
           btnRegistration: 'Зарегистрироваться',
           btnToLogin: 'Перейти к входу',
-          messageError: 'Ошибочный ввод',
+          messageError: 'Ошибка...',
           wait: 'Ожидайте...',
           close: 'Закрыть',
           incorrectData: 'Пользователь существует или некоректно введены данные',
+          incorrectDataLogin: 'Пожалуйста, проверьте вводимые данные',
           mail: 'Почта'
         }
       }
