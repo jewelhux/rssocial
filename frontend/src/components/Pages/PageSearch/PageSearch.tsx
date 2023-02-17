@@ -12,22 +12,21 @@ function PageSearch() {
   const nameQuery = searchParams.get('name') || '';
   const { t } = useTranslation();
 
-  const { currentData, isError } = useGetAllProfilesQuery();
+  const { data, isLoading } = useGetAllProfilesQuery(nameQuery);
 
   return (
     <Box sx={{ width: '100%', typography: 'body1', flexGrow: 1 }}>
       <Box
         sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}
       >
-        {!currentData && !isError ? (
+        {isLoading ? (
           <CircularProgress />
-        ) : currentData?.users.length ? (
-          currentData.users.map((user) => <SearchComponentUserCard key={user.id} user={user} />)
+        ) : data?.users.length ? (
+          data.users.map((user) => <SearchComponentUserCard key={user.id} user={user} />)
         ) : (
           t('friendLng.empty')
         )}
       </Box>
-      {nameQuery}
     </Box>
   );
 }

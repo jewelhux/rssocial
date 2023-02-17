@@ -61,6 +61,9 @@ function SearchComponentUserCard({ user }: { user: FriendProfile }) {
         <Button size="small" component={Link} to={`/profile/${user.id}`}>
           {t('friendLng.btnProfile')}
         </Button>
+        <Button size="small" component={Link} to={'/messages'} state={{ profile: user.id }}>
+          {t('friendLng.btnMessage')}
+        </Button>
       </CustomButtinListFriend>
     </Card>
   );
