@@ -1,7 +1,7 @@
 import { Avatar, Box, Typography, useMediaQuery } from '@mui/material';
 import { ReactElement } from 'react';
 import { Message } from '../../../../redux/features/service/types';
-import { useGetProfileByIdQuery } from '../../../../redux/features/service/profileService';
+import { useGetProfileQuery } from '../../../../redux/features/service/profileService';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { styled } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
@@ -91,7 +91,7 @@ const MessageImage = styled('img')`
 `;
 
 function ChatMessage({ message, own }: { message: Message; own: boolean }): ReactElement {
-  const { data: profile } = useGetProfileByIdQuery(message.userId);
+  const { data: profile } = useGetProfileQuery(message.userId);
   const isNotMobile = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   return (

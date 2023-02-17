@@ -78,6 +78,7 @@ let mockDB = {
   posts: [
     {
       id: 1676376266008,
+      date: 1676376216008,
       userId: 1,
       image:
         "https://mir-znamenitostej.ru/wp-content/uploads/2019/08/%D0%9C%D1%8D%D0%B9%D0%B1%D0%B8-%D0%91%D1%8D%D0%B9%D0%B1%D0%B8-%D0%B1%D0%B8%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%8F-%D0%BB%D0%B8%D1%87%D0%BD%D0%B0%D1%8F-%D0%B6%D0%B8%D0%B7%D0%BD%D1%8C-%D0%BC%D1%83%D0%B6.jpg",
@@ -85,12 +86,14 @@ let mockDB = {
     },
     {
       id: 1676376266009,
+      date: 1676376264008,
       userId: 3,
       image: null,
       text: "Ferka post",
     },
     {
       id: 1676376266010,
+      date: 1676316266008,
       userId: 2,
       image: null,
       text: "Syderi post",
@@ -239,11 +242,22 @@ app.post("/api/auth/logout", checkAuth, (req, res) => {
 
 //user
 app.get("/api/profile", checkAuth, (req, res) => {
-  const { password, ...user } = mockDB.users.find(
-    (el) => el.id === req.user.userId
-  );
+  const userId = Number(req.query.id || req.user.userId);
+  const user = mockDB.users.find((el) => el.id === userId);
   if (!user) return res.status(404).send({ message: "Not found" });
-  return res.status(200).send(user);
+
+  const { password, friends, email, isAdmin, ...profileData } = user;
+  if (userId === req.user.userId) {
+    profileData.friendStatus = "none";
+    profileData.isAdmin = isAdmin;
+    profileData.isOwn = true;
+  } else {
+    const self = mockDB.users.find((el) => el.id === req.user.userId);
+    const friend = self.friends.find((el) => el.id === user.id);
+    profileData.friendStatus = friend?.status ?? "none";
+  }
+
+  return res.status(200).send(profileData);
 });
 
 //update profile
@@ -257,8 +271,7 @@ app.put("/api/profile", checkAuth, upload.single("avatar"), (req, res) => {
   if (req.body.work) user.about.work = req.body.work;
 
   if (image) user.avatar = `http://localhost:3000/uploads/${image.filename}`;
-  const { password, ...rest } = user;
-  return res.status(200).send(rest);
+  return res.status(200).send({ message: "success" });
 });
 
 app.get("/api/profile/all", checkAuth, (req, res) => {
@@ -287,19 +300,6 @@ app.get("/api/profile/all", checkAuth, (req, res) => {
       return { id, name, lastname, avatar, about, friendStatus };
     });
   return res.status(200).send({ users });
-});
-
-app.get("/api/profile/:id", checkAuth, (req, res) => {
-  const self = mockDB.users.find((el) => el.id === req.user.userId);
-  const user = mockDB.users.find((el) => el.id === Number(req.params.id));
-  if (!user) return res.status(404).send({ message: "Not found" });
-
-  const friend = self.friends.find((el) => el.id === user.id);
-  const friendStatus = friend?.status ?? "none";
-  const { id, name, lastname, avatar, about } = user;
-  return res
-    .status(200)
-    .send({ id, name, lastname, avatar, about, friendStatus });
 });
 
 //friends
@@ -375,6 +375,7 @@ app.post("/api/posts", checkAuth, upload.single("image"), (req, res) => {
 
   const post = {
     id: +new Date(),
+    date: +new Date(),
     userId: req.user.userId,
     text,
     image: image ? `http://localhost:3000/uploads/${image.filename}` : null,
@@ -384,9 +385,10 @@ app.post("/api/posts", checkAuth, upload.single("image"), (req, res) => {
 });
 
 app.get("/api/posts", checkAuth, (req, res) => {
-  const posts = mockDB.posts
-    .filter((post) => post.userId === req.user.userId)
-    .reverse();
+  const userId = Number(req.query.id || req.user.userId);
+  if (isNaN(userId)) return res.status(400).send({ message: "Bad request" });
+
+  const posts = mockDB.posts.filter((post) => post.userId === userId).reverse();
   res.status(200).send({ posts });
 });
 
@@ -394,19 +396,14 @@ app.get("/api/posts/all", checkAuth, (req, res) => {
   const posts = mockDB.posts
     .map((post) => {
       const user = mockDB.users.find((el) => el.id === post.userId);
-      return { ...post, name: `${user.name} ${user.lastname}` };
+      return {
+        ...post,
+        name: `${user.name} ${user.lastname}`,
+        avatar: user.avatar,
+      };
     })
     .reverse();
   res.status(200).send({ posts });
-});
-
-app.get("/api/posts/user:id", checkAuth, (req, res) => {
-  const user = mockDB.users.find((el) => el.id === Number(req.params.id));
-  if (!user) return res.status(404).send({ message: "Not found" });
-  const posts = mockDB.posts
-    .filter((post) => post.userId === user.id)
-    .reverse();
-  return res.status(200).send({ posts });
 });
 
 app.delete("/api/posts/:id", checkAuth, (req, res) => {

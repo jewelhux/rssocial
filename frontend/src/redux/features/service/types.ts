@@ -17,7 +17,8 @@ export interface RegistrationInput {
 export enum FriendStatus {
   accepted = 'accepted',
   pending = 'pending',
-  requested = 'requested'
+  requested = 'requested',
+  none = 'none'
 }
 
 export interface Friend {
@@ -25,17 +26,13 @@ export interface Friend {
   status: FriendStatus;
 }
 
-export interface UserProfile extends Omit<GenericProfile, 'friendStatus'> {
-  email: string;
-  isAdmin: string;
-  friends: Friend[];
-}
-
 export interface GenericProfile {
   id: number;
   name: string;
   lastname: string;
   avatar: string | null;
+  isAdmin?: boolean;
+  isOwn?: boolean;
   friendStatus: FriendStatus;
   about: {
     age?: number;
@@ -49,11 +46,13 @@ export interface UserPost {
   id: number;
   image: null | string;
   text: string;
+  date: number;
+  userId: number;
 }
 
 export interface GenericPost extends UserPost {
-  userId: number;
   name: string;
+  avatar: null | string;
 }
 
 export type FriendProfile = Omit<GenericProfile, 'friendStatus'>;

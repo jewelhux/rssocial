@@ -18,6 +18,7 @@ function App() {
         <Route element={<RequireAuth />}>
           <Route path="/messages" element={<PageChat />} />
           <Route path="/profile" element={<PageProfile />} />
+          <Route path="/profile/:id" element={<PageProfile />} />
           <Route path="/friend" element={<PageFriend />} />
           <Route path="/setting" element={<PageSetting />} />
           <Route path="/search" element={<PageSearch />} />

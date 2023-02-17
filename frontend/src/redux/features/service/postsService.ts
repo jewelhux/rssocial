@@ -3,10 +3,11 @@ import { UserPost, GenericPost } from './types';
 
 export const postsService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getOwnPosts: builder.query<{ posts: UserPost[] }, void>({
-      query() {
+    getUserPosts: builder.query<{ posts: UserPost[] }, number | void>({
+      query(id) {
         return {
-          url: '/posts'
+          url: '/posts',
+          params: { id }
         };
       },
       providesTags: ['Post']
@@ -16,14 +17,8 @@ export const postsService = apiSlice.injectEndpoints({
         return {
           url: '/posts/all'
         };
-      }
-    }),
-    getPostsByUserId: builder.mutation<{ posts: UserPost[] }, number>({
-      query(id) {
-        return {
-          url: `/posts/user${id}`
-        };
-      }
+      },
+      providesTags: ['Post']
     }),
     addPost: builder.mutation<UserPost, FormData>({
       query(data) {
@@ -51,6 +46,5 @@ export const {
   useAddPostMutation,
   useDeletePostByIdMutation,
   useGetAllPostsQuery,
-  useGetOwnPostsQuery,
-  useGetPostsByUserIdMutation
+  useGetUserPostsQuery
 } = postsService;

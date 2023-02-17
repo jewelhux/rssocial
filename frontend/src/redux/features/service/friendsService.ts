@@ -20,7 +20,7 @@ export const friendsService = apiSlice.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Friends']
+      invalidatesTags: (result, error, arg) => ['Friends', { type: 'Profile', id: arg.id }]
     })
   })
 });

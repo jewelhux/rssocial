@@ -1,15 +1,25 @@
 import { ReactElement } from 'react';
-import { Box, Typography, Button, Skeleton } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { useGetOwnProfileQuery } from '../../../../redux/features/service/profileService';
+import { useGetProfileQuery } from '../../../../redux/features/service/profileService';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { useLogoutMutation } from '../../../../redux/features/service/authService';
 import { useTranslation } from 'react-i18next';
+import { FriendRequestActions, FriendStatus } from '../../../../redux/features/service/types';
+import { useFriendRequestMutation } from '../../../../redux/features/service/friendsService';
 
-function ProfileComponentMainInfo(): ReactElement {
-  const { data: user, isFetching, isLoading } = useGetOwnProfileQuery();
+function ProfileComponentMainInfo({ id }: { id?: number }): ReactElement {
+  const { data: profile } = useGetProfileQuery(id);
   const [logoutUser] = useLogoutMutation();
+  const [friendRequest] = useFriendRequestMutation();
   const { t } = useTranslation();
+
+  const approve = (profileId: number) =>
+    friendRequest({ id: profileId, action: FriendRequestActions.approve });
+  const request = (profileId: number) =>
+    friendRequest({ id: profileId, action: FriendRequestActions.request });
+  const remove = (profileId: number) =>
+    friendRequest({ id: profileId, action: FriendRequestActions.delete });
 
   return (
     <Box
@@ -24,39 +34,72 @@ function ProfileComponentMainInfo(): ReactElement {
       }}
     >
       <Box sx={{ maxWidth: '250px', height: '250px' }}>
-        {isFetching || isLoading ? (
-          <Skeleton variant="rectangular" width={'100%'} height={'100%'} />
-        ) : (
-          <img
-            width={'100%'}
-            height={'100%'}
-            alt="UserAvatar"
-            style={{ objectFit: 'cover' }}
-            src={user?.avatar ?? DEFAULT_IMAGE}
-          />
-        )}
+        <img
+          width={'100%'}
+          height={'100%'}
+          alt="UserAvatar"
+          style={{ objectFit: 'cover' }}
+          src={profile?.avatar ?? DEFAULT_IMAGE}
+        />
       </Box>
       <Typography variant="h5" sx={{ textAlign: 'center', width: '100%' }}>
-        {user && `${user?.name} ${user.lastname}`}
+        {profile && `${profile?.name} ${profile.lastname}`}
       </Typography>
-      <Button component={Link} to="/friend" color="inherit" variant="outlined">
-        {t('profileLng.btnFriend')}
-      </Button>
-      <Button component={Link} to="/setting" color="inherit" variant="outlined">
-        {t('profileLng.btnSetting')}
-      </Button>
-      <Button color="info" variant="contained">
-        {t('profileLng.btnMessage')}
-      </Button>
-      <Button
-        component={Link}
-        to="/auth"
-        color="inherit"
-        variant="outlined"
-        onClick={() => logoutUser()}
-      >
-        {t('profileLng.btnOut')}
-      </Button>
+      {profile?.isOwn ? (
+        <>
+          <Button component={Link} to="/friend" color="inherit" variant="outlined">
+            {t('profileLng.btnFriend')}
+          </Button>
+          <Button component={Link} to="/setting" color="inherit" variant="outlined">
+            {t('profileLng.btnSetting')}
+          </Button>
+          <Button component={Link} to="/messages" variant="contained">
+            {t('profileLng.btnMyMessages')}
+          </Button>
+          <Button
+            component={Link}
+            to="/auth"
+            color="inherit"
+            variant="outlined"
+            onClick={() => logoutUser()}
+          >
+            {t('profileLng.btnOut')}
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            component={Link}
+            to="/messages"
+            variant="contained"
+            state={{ profile: profile?.id }}
+          >
+            {t('profileLng.btnMessage')}
+          </Button>
+          {profile?.friendStatus === FriendStatus.none ? (
+            <Button variant="outlined" onClick={() => request(profile.id)}>
+              {t('friendLng.btnRequest')}
+            </Button>
+          ) : profile?.friendStatus === FriendStatus.pending ? (
+            <>
+              <Button variant="outlined" onClick={() => approve(profile.id)}>
+                {t('friendLng.btnRequest')}
+              </Button>
+              <Button variant="outlined" onClick={() => remove(profile.id)}>
+                {t('friendLng.btnReject')}
+              </Button>
+            </>
+          ) : profile?.friendStatus === FriendStatus.requested ? (
+            <Button variant="outlined" onClick={() => remove(profile.id)}>
+              {t('friendLng.btnRevoke')}
+            </Button>
+          ) : (
+            <Button variant="outlined" onClick={() => profile && remove(profile.id)}>
+              {t('friendLng.btnDelete')}
+            </Button>
+          )}
+        </>
+      )}
     </Box>
   );
 }

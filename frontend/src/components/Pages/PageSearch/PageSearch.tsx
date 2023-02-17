@@ -18,6 +18,7 @@ function PageSearch() {
     <Box sx={{ width: '100%', typography: 'body1', flexGrow: 1 }}>
       <Box
         sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}
+        p={2}
       >
         {isLoading ? (
           <CircularProgress />
