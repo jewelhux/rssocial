@@ -32,6 +32,10 @@ const config = {
         test: /\.(ts|tsx)$/i,
         loader: 'ts-loader',
         exclude: ['/node_modules/']
+      },
+      {
+        test: /\.mp3$/i,
+        type: 'asset/resource'
       }
     ]
   },
