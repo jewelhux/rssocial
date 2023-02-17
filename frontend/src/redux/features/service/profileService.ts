@@ -21,10 +21,11 @@ export const profileService = apiSlice.injectEndpoints({
       },
       invalidatesTags: ['Profile']
     }),
-    getAllProfiles: builder.query<{ users: GenericProfile[] }, void>({
-      query() {
+    getAllProfiles: builder.query<{ users: GenericProfile[] }, string | void>({
+      query(search) {
         return {
-          url: '/profile/all'
+          url: '/profile/all',
+          params: { search }
         };
       }
     }),

@@ -17,6 +17,7 @@ import {
 } from '../../../redux/features/service/chatService';
 import ChatConversation from './MainChatComponent/ChatConversation';
 import ChatSendForm from './MainChatComponent/ChatSendForm';
+import { useLocation } from 'react-router-dom';
 const drawerWidth = 300;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -66,8 +67,10 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 function PageChat() {
   const [open, setOpen] = useState(window.innerWidth > 600 ? true : false);
-  const [profile, setProfile] = useState<number>(-1);
-  const { data: convData } = useGetConversationsQuery();
+  const location = useLocation();
+  const [profile, setProfile] = useState<number>(location.state?.profile ?? -1);
+  location.state = {};
+  const { data: convData } = useGetConversationsQuery(profile);
   const { data: msgData } = useGetMessagesQuery(profile, { skip: profile === -1 });
   const [reportRead] = useReportReadMutation();
   const chatContainerRef = useRef<HTMLElement>(null);
@@ -89,6 +92,7 @@ function PageChat() {
         }
       };
       container.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll();
       return () => container.removeEventListener('scroll', handleScroll);
     }
   }, [msgData, convData, profile, reportRead]);

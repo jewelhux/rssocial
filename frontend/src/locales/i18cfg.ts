@@ -15,7 +15,7 @@ i18n.use(initReactI18next).init({
           myFriend: 'My friends',
           myRequests: 'Application to friends',
           btnProfile: 'Profile',
-          btnMessage: 'To write',
+          btnMessage: 'Message',
           btnDelete: 'Delete',
           btnAdd: 'Add',
           btnReject: 'Reject',
@@ -31,9 +31,9 @@ i18n.use(initReactI18next).init({
           infoStatus: 'Marital status',
           feedUser: "User's News feed",
           btnFriend: 'My friends',
-          btnSetting: 'Setting',
-          btnMessage: 'To write',
-          btnOut: 'Exit',
+          btnSetting: 'Settings',
+          btnMessage: 'Message',
+          btnOut: 'Log out',
           btnAddPhoto: 'Select a photo',
           btnAddPost: 'Send',
           inputPostText: 'Your message...'
@@ -52,7 +52,7 @@ i18n.use(initReactI18next).init({
         },
         settingDarkThemeSelect: {
           lightTheme: 'Light',
-          darkTheme: 'DarK'
+          darkTheme: 'Dark'
         },
         settingStatus: {
           notIndicated: 'not indicated',
@@ -71,11 +71,11 @@ i18n.use(initReactI18next).init({
           secondName: 'Surname',
           checkRules: "I accept rules that don't exist",
           btnRegistration: 'Register',
-          btnToLogin: 'Go to the entrance',
+          btnToLogin: 'Go to login',
           messageError: 'Erroneous input',
           wait: 'Wait...',
           close: 'Close',
-          incorrectData: 'The user exists or the data is entered incorrectly',
+          incorrectData: `The user doesn't exist or the data is entered incorrectly`,
           mail: 'Email'
         }
       }

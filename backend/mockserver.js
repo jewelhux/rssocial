@@ -18,15 +18,15 @@ const secretKey = "secret_key";
 let mockDB = {
   users: [
     {
-      id: 0,
+      id: 1,
       name: "Илья",
       lastname: "Жиков",
       email: "jik@maybebaby.com",
       password: "123",
       isAdmin: true,
       friends: [
-        { id: 1, status: "accepted" },
         { id: 2, status: "accepted" },
+        { id: 3, status: "accepted" },
       ],
       avatar: null,
       about: {
@@ -37,15 +37,15 @@ let mockDB = {
       },
     },
     {
-      id: 1,
+      id: 2,
       name: "Женя",
       lastname: "Сидеров",
       email: "syderi@github.com",
       password: "123",
       isAdmin: true,
       friends: [
-        { id: 0, status: "accepted" },
-        { id: 2, status: "accepted" },
+        { id: 1, status: "accepted" },
+        { id: 3, status: "accepted" },
       ],
       avatar: null,
       about: {
@@ -56,15 +56,15 @@ let mockDB = {
       },
     },
     {
-      id: 2,
+      id: 3,
       name: "Кирилл",
       lastname: "Ферко",
       email: "ferka123@github.com",
       password: "123",
       isAdmin: true,
       friends: [
-        { id: 0, status: "accepted" },
         { id: 1, status: "accepted" },
+        { id: 2, status: "accepted" },
       ],
       avatar: null,
       about: {
@@ -77,45 +77,45 @@ let mockDB = {
   ],
   posts: [
     {
-      id: 0,
-      userId: 0,
+      id: 1676376266008,
+      userId: 1,
       image:
         "https://mir-znamenitostej.ru/wp-content/uploads/2019/08/%D0%9C%D1%8D%D0%B9%D0%B1%D0%B8-%D0%91%D1%8D%D0%B9%D0%B1%D0%B8-%D0%B1%D0%B8%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%8F-%D0%BB%D0%B8%D1%87%D0%BD%D0%B0%D1%8F-%D0%B6%D0%B8%D0%B7%D0%BD%D1%8C-%D0%BC%D1%83%D0%B6.jpg",
       text: "This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along with the mussels, if you like. This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along with the mussels, if you like.",
     },
     {
-      id: 1,
-      userId: 2,
+      id: 1676376266009,
+      userId: 3,
       image: null,
       text: "Ferka post",
     },
     {
-      id: 2,
-      userId: 1,
+      id: 1676376266010,
+      userId: 2,
       image: null,
       text: "Syderi post",
     },
   ],
   conversations: [
     {
-      id: 2424,
+      id: 1676376266008,
       participants: [
-        { id: 0, lastIndex: 0 },
-        { id: 1, lastIndex: -1 },
+        { id: 1, lastIndex: 0 },
+        { id: 3, lastIndex: 0 },
       ],
       lastUpdate: 1676376266008,
       messages: [
         {
           date: 1676376073988,
           text: "Hello there",
-          userId: 0,
+          userId: 1,
           image:
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTONo5SwAXmbHd6ShcH2jk-9zTYMlsAyQDCew&usqp=CAU",
         },
         {
           date: 1676376266008,
           text: "General Kenobi",
-          userId: 0,
+          userId: 3,
           image: "https://i.imgflip.com/4i355u.png",
         },
       ],
@@ -262,9 +262,24 @@ app.put("/api/profile", checkAuth, upload.single("avatar"), (req, res) => {
 });
 
 app.get("/api/profile/all", checkAuth, (req, res) => {
+  const searchQuery = req.query.search;
   const self = mockDB.users.find((el) => el.id === req.user.userId);
   const users = mockDB.users
-    .filter((user) => user !== self)
+    .filter((user) => {
+      return (
+        user !== self &&
+        (!searchQuery ||
+          searchQuery
+            ?.toLowerCase()
+            .split(" ")
+            .slice(0, 2)
+            .every(
+              (word) =>
+                user.name.toLowerCase().startsWith(word) ||
+                user.lastname.toLowerCase().startsWith(word)
+            ))
+      );
+    })
     .map((user) => {
       const { id, name, lastname, avatar, about } = user;
       const friend = self.friends.find((el) => el.id === id);
