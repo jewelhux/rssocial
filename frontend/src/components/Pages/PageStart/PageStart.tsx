@@ -192,11 +192,11 @@ function PageStart() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {isLoading || isLoadingRegisredUser ? t('startLng.wait') : t('startLng.wait')}
+          {isLoading || isLoadingRegisredUser ? t('startLng.wait') : t('startLng.messageError')}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {isLogin && (isLoading ? t('startLng.wait') : 'Пожалуйста, проверьте вводимые данные')}
+            {isLogin && (isLoading ? t('startLng.wait') : t('startLng.incorrectDataLogin'))}
             {!isLogin && (isLoadingRegisredUser ? t('startLng.wait') : t('startLng.incorrectData'))}
           </DialogContentText>
         </DialogContent>
