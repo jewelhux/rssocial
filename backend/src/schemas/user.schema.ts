@@ -6,7 +6,7 @@ export const registerUserSchema = object({
     lastname: string({ required_error: 'Last name is required' }),
     email: string({ required_error: 'Email is required' }).email('Invalid email'),
     password: string({ required_error: 'Password is required' })
-      .min(8, 'Min password length is 16 characters')
+      .min(8, 'Min password length is 8 characters')
       .max(16, 'Max password length is 16 characters')
   })
 });

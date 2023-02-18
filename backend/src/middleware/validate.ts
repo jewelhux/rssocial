@@ -13,7 +13,13 @@ export const validate =
 
       next();
     } catch (error) {
-      if (error instanceof ZodError) next(new CustomError(error.message, 400));
+      if (error instanceof ZodError)
+        return next(
+          new CustomError(
+            error.errors.map((e) => e.message),
+            400
+          )
+        );
       next(error);
     }
   };

@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response, CookieOptions } from 'express';
-import jwt from 'jsonwebtoken';
-import { MongooseError } from 'mongoose';
+import { sign } from 'jsonwebtoken';
 import { LoginInput, RegisterInput } from '../schemas/user.schema';
 import userModel from '../models/user.model';
 import { config } from '../config/config';
-import CustomError from '../util/customError';
+import CustomError, { hasCode } from '../util/customError';
 
 const accessTokenCookie: CookieOptions = {
   maxAge: config.accessTokenExp,
@@ -20,13 +19,9 @@ export const registerUser = async (
   next: NextFunction
 ) => {
   try {
-    if (!process.env.JWT_SECRET) {
-      console.log('No JWT secret defined');
-      return next(new CustomError());
-    }
     const user = await userModel.create(req.body);
 
-    const token = jwt.sign({ userId: user.id, isAdmin: false }, process.env.JWT_SECRET, {
+    const token = sign({ sub: user.id }, process.env.JWT_SECRET as string, {
       expiresIn: config.accessTokenExp
     });
     res.cookie('token', token, accessTokenCookie);
@@ -36,12 +31,11 @@ export const registerUser = async (
       status: 'success',
       message: 'Account created'
     });
-  } catch (error) {
-    console.log(error); // tut nuzhno razobratsya
-    if (error instanceof MongooseError) {
+  } catch (e) {
+    if (hasCode(e) && e.code === 11000) {
       return next(new CustomError('Email already exist', 409));
     }
-    next(error);
+    next(e);
   }
 };
 
@@ -51,18 +45,14 @@ export const loginUser = async (
   next: NextFunction
 ) => {
   try {
-    if (!process.env.JWT_SECRET) {
-      console.log('No JWT secret defined');
-      return next(new CustomError());
-    }
     const { email, password } = req.body;
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email }).select('+password');
 
     if (!user || !(await user.verifyPassword(password))) {
       return next(new CustomError('Login or password are incorrect', 401));
     }
 
-    const token = jwt.sign({ userId: user.id, isAdmin: false }, process.env.JWT_SECRET, {
+    const token = sign({ sub: user.id }, process.env.JWT_SECRET as string, {
       expiresIn: config.accessTokenExp
     });
     res.cookie('token', token, accessTokenCookie);
@@ -77,7 +67,7 @@ export const loginUser = async (
   }
 };
 
-export const logoutUser = (res: Response) => {
+export const logoutUser = (req: Request, res: Response) => {
   res.clearCookie('token');
   res.clearCookie('logged_in');
   return res.status(200).send({
