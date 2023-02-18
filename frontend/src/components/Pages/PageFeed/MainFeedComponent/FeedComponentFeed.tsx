@@ -13,10 +13,12 @@ import { formatDate } from '../../../../utils/utils';
 import { useGetProfileQuery } from '../../../../redux/features/service/profileService';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useDeletePostByIdMutation } from '../../../../redux/features/service/postsService';
+import { useLoginCheckQuery } from '../../../../redux/features/service/authService';
 
 function FeedComponentFeed({ post }: { post: GenericPost }) {
+  const { data: isLoggedIn } = useLoginCheckQuery();
   const { i18n, t } = useTranslation();
-  const { data: self } = useGetProfileQuery();
+  const { data: self } = useGetProfileQuery(undefined, { skip: !isLoggedIn });
   const [deletePost] = useDeletePostByIdMutation();
   return (
     <Card sx={{ maxWidth: 600 }} variant="outlined">
@@ -30,6 +32,7 @@ function FeedComponentFeed({ post }: { post: GenericPost }) {
           />
         }
         action={
+          isLoggedIn &&
           (self?.id === post.userId || self?.isAdmin) && (
             <IconButton aria-label="settings" onClick={() => deletePost(post.id)}>
               {self?.id !== post.userId && self?.isAdmin && (

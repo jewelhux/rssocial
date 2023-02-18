@@ -12,6 +12,7 @@ export const chatService = apiSlice.injectEndpoints({
           params: { newchat: profile }
         };
       },
+      providesTags: ['Chat'],
       transformResponse(response: { conversations: Conversation[] }) {
         return {
           conversations: response.conversations.sort((a, b) => b.lastUpdate - a.lastUpdate)
@@ -79,6 +80,7 @@ export const chatService = apiSlice.injectEndpoints({
           params: { profile }
         };
       },
+      providesTags: ['Chat'],
       async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
         const handleNewMessage = (message: Message) => {
           if (message.conversationId === arg) {

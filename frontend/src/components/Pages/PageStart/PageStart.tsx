@@ -24,13 +24,16 @@ import {
 import LockIcon from '@mui/icons-material/Lock';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useLoginMutation, useRegisterMutation } from '../../../redux/features/service/authService';
-import useCookies from 'react-cookie/cjs/useCookies';
+import {
+  useLoginCheckQuery,
+  useLoginMutation,
+  useRegisterMutation
+} from '../../../redux/features/service/authService';
 import { useTranslation } from 'react-i18next';
 
 function PageStart() {
+  const { data: isLoggedIn } = useLoginCheckQuery();
   const { t } = useTranslation();
-  const [cookies] = useCookies(['logged_in']);
   const location = useLocation();
 
   const [createUser, { isLoading: isLoadingRegisredUser, isSuccess: isSuccessRegisredUser }] =
@@ -158,9 +161,6 @@ function PageStart() {
     if (!isLoading) setOpenDialog(false);
   };
 
-  if (cookies.logged_in || isSuccess || isSuccessRegisredUser)
-    return <Navigate to="/" state={{ from: location }} replace />;
-
   const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isValidArray = Object.values(isValidForm);
@@ -182,6 +182,9 @@ function PageStart() {
     }
     handleClickOpen();
   };
+
+  if (isLoggedIn || isSuccess || isSuccessRegisredUser)
+    return <Navigate to="/" state={{ from: location }} replace />;
 
   return (
     <>

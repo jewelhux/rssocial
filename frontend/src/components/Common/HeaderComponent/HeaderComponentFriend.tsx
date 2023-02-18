@@ -1,10 +1,12 @@
 import { ReactElement } from 'react';
-import { Box, Badge, MenuItem } from '@mui/material';
+import { Badge, Box, MenuItem } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 import { Link } from 'react-router-dom';
 import { IHeaderLink } from '../../../utils/interfaces';
+import { useTranslation } from 'react-i18next';
 
 function HeaderComponentFriend({ title }: IHeaderLink): ReactElement {
+  const { t } = useTranslation();
   return (
     <MenuItem
       component={Link}
@@ -12,11 +14,11 @@ function HeaderComponentFriend({ title }: IHeaderLink): ReactElement {
       sx={{ padding: '3', display: 'flex', columnGap: '15px' }}
     >
       <Box>
-        <Badge color="error">
+        <Badge>
           <PeopleIcon />
         </Badge>
       </Box>
-      {title && <p>{title}</p>}
+      {title && <p>{t(title)}</p>}
     </MenuItem>
   );
 }

@@ -6,6 +6,19 @@ i18n.use(initReactI18next).init({
   resources: {
     en: {
       translation: {
+        header: {
+          search: 'Search...',
+          messages: 'Messages',
+          profile: 'Profile',
+          friends: 'Friends',
+          settings: 'Settings',
+          logout: 'Log out',
+          login: 'Login'
+        },
+        chat: {
+          placeholder: 'Your text...',
+          title: 'Conversations'
+        },
         feedLng: {
           title: 'Welcome to the social network RSSocial',
           lastpost: 'Recent user posts:'
@@ -88,9 +101,22 @@ i18n.use(initReactI18next).init({
     },
     ru: {
       translation: {
+        header: {
+          search: 'Поиск...',
+          messages: 'Сообщения',
+          profile: 'Профиль',
+          friends: 'Друзья',
+          settings: 'Настройки',
+          logout: 'Выход',
+          login: 'Вход'
+        },
         feedLng: {
           title: 'Добро пожаловать в социальную сеть RSSocial',
           lastpost: 'Последние посты пользователей:'
+        },
+        chat: {
+          placeholder: 'Ваш текст...',
+          title: 'Разговоры'
         },
         friendLng: {
           empty: 'Пусто...',
@@ -98,7 +124,7 @@ i18n.use(initReactI18next).init({
           myRequests: 'Заявка в друзья',
           btnProfile: 'Профиль',
           btnMessage: 'Написать',
-          btnDelete: 'Удалить из друзей',
+          btnDelete: 'Удалить',
           btnAdd: 'Принять',
           btnRequest: 'Добавить в друзья',
           btnReject: 'Отклонить',

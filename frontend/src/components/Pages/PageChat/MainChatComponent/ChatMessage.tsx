@@ -6,7 +6,8 @@ import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { styled } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import { formatDistance } from 'date-fns';
-import { ru } from 'date-fns/locale';
+import { ru, enUS } from 'date-fns/locale';
+import { useTranslation } from 'react-i18next';
 
 const SpeechBubble = styled('div')<{ own: boolean }>`
   border-radius: 1.15rem;
@@ -91,6 +92,7 @@ const MessageImage = styled('img')`
 `;
 
 function ChatMessage({ message, own }: { message: Message; own: boolean }): ReactElement {
+  const { i18n } = useTranslation();
   const { data: profile } = useGetProfileQuery(message.userId);
   const isNotMobile = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
@@ -105,7 +107,10 @@ function ChatMessage({ message, own }: { message: Message; own: boolean }): Reac
           </BubbleContainer>
         </MessageContainer>
         <Typography fontSize={12} mt={1}>
-          {formatDistance(new Date(message.date), new Date(), { addSuffix: true, locale: ru })}
+          {formatDistance(new Date(message.date), new Date(), {
+            addSuffix: true,
+            locale: i18n.language === 'en' ? enUS : ru
+          })}
         </Typography>
       </MessageWrapper>
     </Box>
