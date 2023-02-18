@@ -5,9 +5,9 @@ export const addPostSchema = object({
     image: string(),
     text: string()
   })
-    .strict()
+    .partial()
     .refine(
-      (data) => data.image.length > 0 || data.text.length > 0,
+      (data) => (data.image && data.image.length > 0) || (data.text && data.text.length > 0),
       'Either image or text should be filled in.'
     )
 });

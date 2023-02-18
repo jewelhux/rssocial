@@ -1,8 +1,5 @@
 export default class CustomError extends Error {
-  constructor(
-    public errorMessage: string | string[] = 'Internal error',
-    public statusCode: number = 500
-  ) {
+  constructor(public errorMessage: string = 'Internal error', public statusCode: number = 500) {
     super();
   }
 

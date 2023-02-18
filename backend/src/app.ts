@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import path from 'path';
 import express, { Response, Request } from 'express';
 import morgan from 'morgan';
 import { createServer } from 'http';
@@ -7,6 +8,7 @@ import cors from 'cors';
 import connectDB from './config/db';
 import errorHandler from './middleware/errorHandler';
 import authRouter from './routes/auth.routes';
+import postRouter from './routes/post.routes';
 import postModel from './models/post.model';
 import { User } from './models/user.model';
 
@@ -22,8 +24,11 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 app.use(cors({ credentials: true, origin: process.env.CLIENT_ORIGIN }));
 
+app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
+
 // routes
 app.use('/api/auth', authRouter);
+app.use('/api/posts', postRouter);
 
 app.get('/api/test', async (req: Request, res: Response) => {
   const posts = await postModel.find().populate<{ user: User }>('user');

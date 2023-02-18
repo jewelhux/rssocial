@@ -25,7 +25,7 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const getPostsById = async (
+export const getPostsByUser = async (
   req: Request<object, object, object, { id?: string }>,
   res: Response,
   next: NextFunction
@@ -68,9 +68,8 @@ export const deletePost = async (
     const { id, isAdmin } = res.locals.user;
 
     const post = await postModel.findById(req.params.id);
-
     if (!post) return next(new CustomError('Not found', 404));
-    if (post.user !== id || !isAdmin) return next(new CustomError('Forbidden', 403));
+    if (post.user.toString() !== id && !isAdmin) return next(new CustomError('Forbidden', 403));
 
     post.delete();
 

@@ -14,12 +14,7 @@ export const validate =
       next();
     } catch (error) {
       if (error instanceof ZodError)
-        return next(
-          new CustomError(
-            error.errors.map((e) => e.message),
-            400
-          )
-        );
+        return next(new CustomError(error.errors.map((e) => e.message).join(', '), 400));
       next(error);
     }
   };
