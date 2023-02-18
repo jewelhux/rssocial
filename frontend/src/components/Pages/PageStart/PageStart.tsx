@@ -161,9 +161,6 @@ function PageStart() {
     if (!isLoading) setOpenDialog(false);
   };
 
-  if (isLoggedIn || isSuccess || isSuccessRegisredUser)
-    return <Navigate to="/" state={{ from: location }} replace />;
-
   const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isValidArray = Object.values(isValidForm);
@@ -185,6 +182,9 @@ function PageStart() {
     }
     handleClickOpen();
   };
+
+  if (isLoggedIn || isSuccess || isSuccessRegisredUser)
+    return <Navigate to="/" state={{ from: location }} replace />;
 
   return (
     <>

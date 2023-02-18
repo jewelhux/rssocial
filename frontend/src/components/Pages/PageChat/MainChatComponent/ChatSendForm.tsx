@@ -1,6 +1,7 @@
 import { PhotoCamera, Close, Send } from '@mui/icons-material';
 import { FormControl, IconButton, Stack, styled, TextField } from '@mui/material';
 import { ReactElement, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSendMessageMutation } from '../../../../redux/features/service/chatService';
 
 const ImagePreview = styled('img')`
@@ -11,6 +12,7 @@ const ImagePreview = styled('img')`
 `;
 
 function ChatSendForm({ profile }: { profile: number }): ReactElement {
+  const { t } = useTranslation();
   const [sendMessage, { isSuccess }] = useSendMessageMutation();
   const [image, setImage] = useState<File | null>(null);
   const [text, setText] = useState<string>('');
@@ -55,7 +57,7 @@ function ChatSendForm({ profile }: { profile: number }): ReactElement {
     <FormControl fullWidth>
       <Stack direction="row" p={2} alignItems={'center'}>
         <TextField
-          label="Ваш текст..."
+          label={t('chat.placeholder')}
           variant="outlined"
           fullWidth
           multiline

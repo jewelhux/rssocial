@@ -70,7 +70,7 @@ function PageChat() {
   const location = useLocation();
   const [profile, setProfile] = useState<number>(location.state?.profile ?? -1);
   location.state = {};
-  const { data: convData } = useGetConversationsQuery(profile);
+  const { data: convData } = useGetConversationsQuery(profile === -1 ? undefined : profile);
   const { data: msgData } = useGetMessagesQuery(profile, { skip: profile === -1 });
   const [reportRead] = useReportReadMutation();
   const chatContainerRef = useRef<HTMLElement>(null);
@@ -125,7 +125,7 @@ function PageChat() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List sx={{ overflowY: 'scroll', overflowX: 'hidden', p: 0 }}>
+        <List sx={{ overflowY: 'auto', overflowX: 'hidden', p: 0 }}>
           {convData?.conversations.map((conversation) => (
             <ChatConversation
               key={conversation.id}
@@ -139,7 +139,7 @@ function PageChat() {
       </Drawer>
       <Box component="main" sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
         <Box
-          sx={{ overflowY: 'scroll', overflowX: 'hidden', p: 2, width: '100%', flex: 1 }}
+          sx={{ overflowY: 'auto', overflowX: 'hidden', p: 2, width: '100%', flex: 1 }}
           ref={chatContainerRef}
         >
           {msgData?.messages.map((message) => (

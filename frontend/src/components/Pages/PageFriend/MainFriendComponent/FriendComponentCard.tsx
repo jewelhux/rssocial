@@ -68,7 +68,7 @@ function FriendComponentCard({ friend, status }: { friend: FriendProfile; status
           {t('friendLng.btnProfile')}
         </Button>
         {status === FriendStatus.accepted ? (
-          <Button size="small" component={Link} to={`/messages`}>
+          <Button size="small" component={Link} to={`/messages`} state={{ profile: friend.id }}>
             {t('friendLng.btnMessage')}
           </Button>
         ) : (

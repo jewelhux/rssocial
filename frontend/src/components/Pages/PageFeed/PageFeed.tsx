@@ -4,9 +4,8 @@ import { useGetAllPostsQuery } from '../../../redux/features/service/postsServic
 import FeedComponentFeed from './MainFeedComponent/FeedComponentFeed';
 
 function PageFeed() {
-  const { data } = useGetAllPostsQuery();
+  const { data } = useGetAllPostsQuery(undefined, { refetchOnMountOrArgChange: true });
   const { t } = useTranslation();
-
   return (
     <Container
       sx={{

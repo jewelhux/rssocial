@@ -392,7 +392,7 @@ app.get("/api/posts", checkAuth, (req, res) => {
   res.status(200).send({ posts });
 });
 
-app.get("/api/posts/all", checkAuth, (req, res) => {
+app.get("/api/posts/all", (req, res) => {
   const posts = mockDB.posts
     .map((post) => {
       const user = mockDB.users.find((el) => el.id === post.userId);

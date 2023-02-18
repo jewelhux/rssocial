@@ -11,6 +11,7 @@ import HeaderComponentProfile from './HeaderComponent/HeaderComponentProfile';
 import HeaderComponentMessage from './HeaderComponent/HeaderComponentMessage';
 import HeaderComponentFriend from './HeaderComponent/HeaderComponentFriend';
 import HeaderComponentSetting from './HeaderComponent/HeaderComponentSetting';
+import HeaderComponentLogout from './HeaderComponent/HeaderComponentLogout';
 import { useLoginCheckQuery } from '../../redux/features/service/authService';
 
 export default function Header() {
@@ -43,12 +44,13 @@ export default function Header() {
         horizontal: 'right'
       }}
       open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
+      onClick={handleMobileMenuClose}
     >
-      <HeaderComponentMessage title={'Messages'} />
-      <HeaderComponentProfile title={'Profile'} />
-      <HeaderComponentFriend title={'Friend'} />
-      <HeaderComponentSetting title={'Setting'} />
+      <HeaderComponentMessage title={'header.messages'} />
+      <HeaderComponentProfile title={'header.profile'} />
+      <HeaderComponentFriend title={'header.friends'} />
+      <HeaderComponentSetting title={'header.settings'} />
+      <HeaderComponentLogout title={'header.logout'} />
     </Menu>
   );
 
@@ -76,6 +78,7 @@ export default function Header() {
                 <HeaderComponentProfile />
                 <HeaderComponentFriend />
                 <HeaderComponentSetting />
+                <HeaderComponentLogout />
               </Box>
               {/* МЕНЮ ТРЕХ ТОЧЕК */}
               <HeaderComponentMobileMenu

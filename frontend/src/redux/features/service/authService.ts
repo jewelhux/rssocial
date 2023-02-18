@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { getCookie } from 'typescript-cookie';
 import { apiSlice } from '../apiSlice';
 import { socket } from './socket';
@@ -13,10 +14,13 @@ export const authService = apiSlice.injectEndpoints({
           body: data
         };
       },
-      onQueryStarted(arg, { queryFulfilled }) {
-        queryFulfilled.then(() => socket.connect());
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          socket.connect();
+        } catch {}
       },
-      invalidatesTags: ['Login']
+      invalidatesTags: ['Login', 'Chat', 'Friends', 'Post', 'Profile']
     }),
     login: builder.mutation<GenericResponse, LoginInput>({
       query(data) {
@@ -26,10 +30,13 @@ export const authService = apiSlice.injectEndpoints({
           body: data
         };
       },
-      onQueryStarted(arg, { queryFulfilled }) {
-        queryFulfilled.then(() => socket.connect());
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          socket.connect();
+        } catch {}
       },
-      invalidatesTags: ['Login']
+      invalidatesTags: ['Login', 'Chat', 'Friends', 'Post', 'Profile']
     }),
     logout: builder.mutation<GenericResponse, void>({
       query() {
@@ -38,12 +45,13 @@ export const authService = apiSlice.injectEndpoints({
           method: 'POST'
         };
       },
-      onQueryStarted(arg, { queryFulfilled, dispatch }) {
-        queryFulfilled.then(() => {
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
           socket.disconnect();
-          dispatch(apiSlice.util.resetApiState());
-        });
-      }
+        } catch {}
+      },
+      invalidatesTags: ['Login']
     }),
     loginCheck: builder.query<boolean, void>({
       queryFn: () => {
