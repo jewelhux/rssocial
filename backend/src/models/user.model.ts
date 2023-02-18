@@ -1,6 +1,7 @@
-import { getModelForClass, modelOptions, pre, prop } from '@typegoose/typegoose';
+import { getModelForClass, modelOptions, pre, prop, index } from '@typegoose/typegoose';
 import bcrypt from 'bcryptjs';
 
+@index({ email: 1 })
 @pre<User>('save', async function onSave(next) {
   this.id = this._id;
   if (this.isNew) this.password = await bcrypt.hash(this.password, 12);
@@ -12,6 +13,9 @@ import bcrypt from 'bcryptjs';
   }
 })
 export class User {
+  @prop()
+  id: string;
+
   @prop({ required: true })
   name: string;
 
@@ -41,6 +45,10 @@ export class User {
 
   @prop()
   work?: string;
+
+  verifyPassword(password: string) {
+    return bcrypt.compare(password, this.password);
+  }
 }
 
 const userModel = getModelForClass(User);
