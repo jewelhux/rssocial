@@ -17,7 +17,7 @@ export const checkAuth = async (req: Request, res: Response, next: NextFunction)
       return next(new CustomError('Invalid token', 401));
     }
 
-    const user = await userModel.findById(decoded.sub).lean();
+    const user = await userModel.findById(decoded.sub).select('+isAdmin').lean();
     if (!user) {
       return next(new CustomError('No such user', 401));
     }

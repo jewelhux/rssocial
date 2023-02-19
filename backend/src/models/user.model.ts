@@ -1,7 +1,7 @@
 import { getModelForClass, modelOptions, pre, prop, index } from '@typegoose/typegoose';
 import bcrypt from 'bcryptjs';
 
-@index({ email: 1 })
+@index({ name: 'text', lastname: 'text' })
 @pre<User>('save', async function onSave(next) {
   this.id = this._id;
   if (this.isNew) this.password = await bcrypt.hash(this.password, 12);
@@ -22,13 +22,13 @@ export class User {
   @prop({ required: true })
   lastname: string;
 
-  @prop({ unique: true, required: true })
+  @prop({ unique: true, required: true, select: false })
   email: string;
 
   @prop({ required: true, minlength: 8, maxLength: 16, select: false })
   password: string;
 
-  @prop({ default: false })
+  @prop({ default: false, select: false })
   isAdmin: boolean;
 
   @prop({ default: '' })
@@ -38,7 +38,7 @@ export class User {
   age?: number;
 
   @prop()
-  status?: string;
+  relationship?: string;
 
   @prop()
   interests?: string;

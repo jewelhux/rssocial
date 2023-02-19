@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { AnyZodObject, ZodError } from 'zod';
-import CustomError from '../util/customError';
+import { AnyZodObject } from 'zod';
 
 export const validate =
   (schema: AnyZodObject) => (req: Request, res: Response, next: NextFunction) => {
@@ -13,8 +12,6 @@ export const validate =
 
       next();
     } catch (error) {
-      if (error instanceof ZodError)
-        return next(new CustomError(error.errors.map((e) => e.message).join(', '), 400));
       next(error);
     }
   };

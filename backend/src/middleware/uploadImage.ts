@@ -1,13 +1,14 @@
 import { Request } from 'express';
 import multer from 'multer';
+import generateFileName from '../util/uniquefileName';
 
 const multerStorage = multer.diskStorage({
   destination(req: Request, file: Express.Multer.File, cb) {
     cb(null, `${__dirname}/../../uploads`);
   },
   filename(req: Request, file: Express.Multer.File, cb) {
-    const filename = `image-${Date.now().toString(32)}${Math.random().toString(32).slice(2)}`;
-    req.body.image = filename;
+    const filename = generateFileName(file.fieldname);
+    req.body[file.fieldname] = filename;
     cb(null, filename);
   }
 });
@@ -25,4 +26,4 @@ const upload = multer({
   limits: { fileSize: 2 * 1024 * 1024, files: 1 }
 });
 
-export const uploadImage = upload.single('image');
+export const uploadImage = (fieldname: string) => upload.single(fieldname);

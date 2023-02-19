@@ -9,8 +9,8 @@ import connectDB from './config/db';
 import errorHandler from './middleware/errorHandler';
 import authRouter from './routes/auth.routes';
 import postRouter from './routes/post.routes';
-import postModel from './models/post.model';
-import { User } from './models/user.model';
+import profileRouter from './routes/profile.routes';
+import { checkAuth } from './middleware/checkAuth';
 
 const port = process.env.PORT ?? 3000;
 
@@ -29,10 +29,11 @@ app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 // routes
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
+app.use('/api/profile', profileRouter);
 
-app.get('/api/test', async (req: Request, res: Response) => {
-  const posts = await postModel.find().populate<{ user: User }>('user');
-  res.status(200).json({ posts });
+app.get('/api/test', checkAuth, async (req: Request, res: Response) => {
+  console.log(res.locals.user);
+  res.status(200).json({ d: 'd' });
 });
 
 app.use(errorHandler);
