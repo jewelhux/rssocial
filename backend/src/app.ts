@@ -10,6 +10,7 @@ import errorHandler from './middleware/errorHandler';
 import authRouter from './routes/auth.routes';
 import postRouter from './routes/post.routes';
 import profileRouter from './routes/profile.routes';
+import friendsRouter from './routes/friends.routes';
 import { checkAuth } from './middleware/checkAuth';
 
 const port = process.env.PORT ?? 3000;
@@ -30,6 +31,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/profile', profileRouter);
+app.use('/api/friends', friendsRouter);
 
 app.get('/api/test', checkAuth, async (req: Request, res: Response) => {
   console.log(res.locals.user);
