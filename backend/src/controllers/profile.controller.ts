@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { FilterQuery } from 'mongoose';
-import friendshipModel from '../models/friends.model';
+import friendshipModel from '../models/friendship.model';
 import { FriendStatus } from '../schemas/friends.schema';
 import userModel, { User } from '../models/user.model';
 import { UpdateProfileInput } from '../schemas/profile.schema';

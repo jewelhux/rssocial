@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { FilterQuery } from 'mongoose';
-import friendshipModel, { Friendship } from '../models/friends.model';
+import friendshipModel, { Friendship } from '../models/friendship.model';
 import { FriendRequestInput, GetFriendsInput, FriendStatus } from '../schemas/friends.schema';
 import CustomError from '../util/customError';
 
