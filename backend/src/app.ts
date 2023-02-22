@@ -38,7 +38,7 @@ app.use('/api/chat', chatRouter);
 
 app.get('/api/test', checkAuth, async (req: Request, res: Response) => {
   const profile = await userModel.findById(req.body.profile);
-  if (!profile) return res.status(200).json({ status: 'failed no profile' });
+  if (!profile) return res.status(200).json({ profile: 'no' });
 
   res.status(200).json({ profile });
 });

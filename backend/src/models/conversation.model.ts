@@ -31,10 +31,10 @@ export class Participant {
   }
 })
 export class Conversation {
-  @prop({ type: () => [Participant], required: true })
+  @prop({ type: () => [Participant], required: true, _id: false })
   participants: Participant[];
 
-  @prop({ type: () => [Message], default: [] })
+  @prop({ type: () => [Message], default: [], _id: false })
   messages: Message[];
 }
 

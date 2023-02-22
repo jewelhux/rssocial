@@ -60,6 +60,25 @@ export const getConversations = async (
       }
     ]);
 
+    const { newChat } = req.query;
+
+    if (
+      newChat &&
+      newChat !== res.locals.user._id.toString() &&
+      !conversations.some((conv) => conv.id === req.query.newChat)
+    ) {
+      const newChatProfile = await userModel.findById(req.query.newChat);
+      if (newChatProfile) {
+        conversations.unshift({
+          id: newChatProfile.id,
+          name: `${newChatProfile.name} ${newChatProfile.lastname}`,
+          avatar: newChatProfile.avatar,
+          lastMessage: '',
+          updatedAt: new Date(),
+          unreadCount: 0
+        });
+      }
+    }
     return res.status(200).json({ status: 'success', conversations });
   } catch (e) {
     next(e);
