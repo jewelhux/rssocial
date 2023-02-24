@@ -35,7 +35,7 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 app.use(cors({ credentials: true, origin: process.env.CLIENT_ORIGIN }));
 
-app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // routes
 app.use('/api/auth', authRouter);

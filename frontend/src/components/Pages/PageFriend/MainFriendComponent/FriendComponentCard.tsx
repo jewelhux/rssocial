@@ -52,15 +52,15 @@ function FriendComponentCard({ friend, status }: { friend: FriendProfile; status
           sx={{ fontWeight: 600 }}
         >{`${friend.name} ${friend.lastname}`}</Typography>
         <Typography gutterBottom>{`${t('friendLng.infoAge')}: ${
-          friend.about.age || t('friendLng.hidden')
+          friend.age || t('friendLng.hidden')
         }`}</Typography>
       </Box>
       <Box sx={{ display: 'flex', mt: 1, width: '30%', flexDirection: 'column' }}>
         <Typography gutterBottom>{`${t('friendLng.infoJob')}: ${
-          friend.about.work || t('friendLng.hidden')
+          friend.work || t('friendLng.hidden')
         }`}</Typography>
         <Typography gutterBottom>{`${t('friendLng.infoInterests')}: ${
-          friend.about.interests || t('friendLng.hidden')
+          friend.interests || t('friendLng.hidden')
         }`}</Typography>
       </Box>
       <CustomButtinListFriend>

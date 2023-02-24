@@ -7,7 +7,7 @@ import CustomError from '../util/customError';
 import { CustomRequest } from '../types/types';
 
 export const getConversations = async (
-  req: Request<object, object, object, { newChat?: string }>,
+  req: Request<object, object, object, { newchat?: string }>,
   res: Response,
   next: NextFunction
 ) => {
@@ -66,14 +66,14 @@ export const getConversations = async (
       return { ...convo, online: Boolean(io.sockets.adapter.rooms.get(convo.id.toString())) };
     });
 
-    const { newChat } = req.query;
+    const { newchat } = req.query;
 
     if (
-      newChat &&
-      newChat !== res.locals.user._id.toString() &&
-      !conversations.some((conv) => conv.id === req.query.newChat)
+      newchat &&
+      newchat !== res.locals.user._id.toString() &&
+      !conversations.some((conv) => conv.id.toString() === req.query.newchat)
     ) {
-      const newChatProfile = await userModel.findById(req.query.newChat);
+      const newChatProfile = await userModel.findById(req.query.newchat);
       if (newChatProfile) {
         conversations.unshift({
           id: newChatProfile.id,
@@ -124,33 +124,35 @@ export const sendMessage = async (
     const profile = await userModel.findById(req.body.profile);
     if (!profile) return next(new CustomError('Profile not found', 404));
 
-    const conversation = await conversationModel.findOneAndUpdate(
-      {
-        $or: [
-          { 'participants.user': { $all: [res.locals.user._id, profile._id] } },
-          { 'participants.user': { $all: [profile._id, res.locals.user._id] } }
-        ]
-      },
-      {
-        $push: {
-          messages: {
-            user: res.locals.user._id,
-            text: req.body.text,
-            image: req.body.image
+    const conversation = await conversationModel
+      .findOneAndUpdate(
+        {
+          $or: [
+            { 'participants.user': { $all: [res.locals.user._id, profile._id] } },
+            { 'participants.user': { $all: [profile._id, res.locals.user._id] } }
+          ]
+        },
+        {
+          $push: {
+            messages: {
+              user: res.locals.user._id,
+              text: req.body.text,
+              image: req.body.image
+            }
+          },
+          $setOnInsert: {
+            participants: [{ user: res.locals.user._id }, { user: profile._id }]
           }
         },
-        $setOnInsert: {
-          participants: [{ user: res.locals.user._id }, { user: profile._id }]
+        {
+          upsert: true,
+          new: true,
+          setDefaultsOnInsert: true,
+          rawResult: true,
+          projection: { messages: { $slice: -1 } }
         }
-      },
-      {
-        upsert: true,
-        new: true,
-        setDefaultsOnInsert: true,
-        rawResult: true,
-        projection: { messages: { $slice: -1 } }
-      }
-    );
+      )
+      .lean();
 
     await conversationModel.updateOne(
       {
@@ -192,24 +194,30 @@ export const sendMessage = async (
 };
 
 export const reportRead = async (socket: Socket, profile: string) => {
-  const response = await conversationModel.updateOne(
-    {
-      $or: [
-        { 'participants.user': { $all: [profile, socket.handshake.auth.user] } },
-        { 'participants.user': { $all: [socket.handshake.auth.user, profile] } }
-      ]
-    },
-    {
-      $set: {
-        'participants.$[elem].index': {
-          $size: '$messages'
-        }
-      }
-    },
-    {
-      arrayFilters: [{ 'elem.user': socket.handshake.auth.user }]
-    }
-  );
+  try {
+    // console.log(profile, socket.handshake.auth.user);
+    // const response = await conversationModel.findOneAndUpdate(
+    //   {
+    //     $or: [
+    //       { 'participants.user': { $all: [profile, socket.handshake.auth.user] } },
+    //       { 'participants.user': { $all: [socket.handshake.auth.user, profile] } }
+    //     ]
+    //   },
+    //   {
+    //     $set: {
+    //       'participants.$[elem].index': { $size: '$messages' }
+    //     }
+    //   },
+    //   {
+    //     arrayFilters: [{ 'elem.user': socket.handshake.auth.user }]
+    //   }
+    // );
 
-  if (response.modifiedCount) socket.emit('updateRead', profile);
+    // console.log(response);
+
+    // if (response.modifiedCount)
+    socket.emit('updateRead', profile);
+  } catch (e) {
+    console.log('error reporting read', e);
+  }
 };

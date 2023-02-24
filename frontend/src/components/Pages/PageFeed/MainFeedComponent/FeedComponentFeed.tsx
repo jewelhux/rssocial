@@ -33,9 +33,9 @@ function FeedComponentFeed({ post }: { post: GenericPost }) {
         }
         action={
           isLoggedIn &&
-          (self?.id === post.userId || self?.isAdmin) && (
+          (self?.id === post.user || self?.isAdmin) && (
             <IconButton aria-label="settings" onClick={() => deletePost(post.id)}>
-              {self?.id !== post.userId && self?.isAdmin && (
+              {self?.id !== post.user && self?.isAdmin && (
                 <Typography>{t('profileLng.removeAdmin')}</Typography>
               )}
               <ClearIcon />
@@ -43,9 +43,9 @@ function FeedComponentFeed({ post }: { post: GenericPost }) {
           )
         }
         title={post?.name ?? `Name Name`}
-        subheader={formatDate(new Date(post.date ?? 0), i18n.language)}
+        subheader={formatDate(new Date(post.createdAt), i18n.language)}
       />
-      <CardMedia component="img" image={post?.image ?? DEFAULT_IMAGE} alt="Image-post" />
+      <CardMedia component="img" image={post?.image || DEFAULT_IMAGE} alt="Image-post" />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {post.text}

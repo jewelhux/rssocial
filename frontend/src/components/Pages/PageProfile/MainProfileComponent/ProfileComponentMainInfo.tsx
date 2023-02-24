@@ -8,17 +8,17 @@ import { useTranslation } from 'react-i18next';
 import { FriendRequestActions, FriendStatus } from '../../../../redux/features/service/types';
 import { useFriendRequestMutation } from '../../../../redux/features/service/friendsService';
 
-function ProfileComponentMainInfo({ id }: { id?: number }): ReactElement {
+function ProfileComponentMainInfo({ id }: { id?: string }): ReactElement {
   const { data: profile } = useGetProfileQuery(id);
   const [logoutUser] = useLogoutMutation();
   const [friendRequest] = useFriendRequestMutation();
   const { t } = useTranslation();
 
-  const approve = (profileId: number) =>
+  const approve = (profileId: string) =>
     friendRequest({ id: profileId, action: FriendRequestActions.approve });
-  const request = (profileId: number) =>
+  const request = (profileId: string) =>
     friendRequest({ id: profileId, action: FriendRequestActions.request });
-  const remove = (profileId: number) =>
+  const remove = (profileId: string) =>
     friendRequest({ id: profileId, action: FriendRequestActions.delete });
 
   return (
@@ -39,7 +39,7 @@ function ProfileComponentMainInfo({ id }: { id?: number }): ReactElement {
           height={'100%'}
           alt="UserAvatar"
           style={{ objectFit: 'cover' }}
-          src={profile?.avatar ?? DEFAULT_IMAGE}
+          src={profile?.avatar || DEFAULT_IMAGE}
         />
       </Box>
       <Typography variant="h5" sx={{ textAlign: 'center', width: '100%' }}>

@@ -8,7 +8,13 @@ export const updateProfileSchema = object({
     ),
     interests: string(),
     work: string(),
-    relationship: zodEnum(['in relationship', 'single', 'not interested', 'complicated']),
+    relationship: zodEnum([
+      'notIndicated',
+      'itIsComplicated',
+      'inSearch',
+      'notLookingForAnyone',
+      'inARelationship'
+    ]),
     avatar: string()
   }).partial()
 });

@@ -11,7 +11,7 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
       const { user, ...rest } = post;
       return {
         ...rest,
-        userId: user.id,
+        user: user.id,
         avatar: user.avatar,
         name: `${user.name} ${user.lastname}`
       };
@@ -35,7 +35,7 @@ export const getPostsByUser = async (
     const posts = await postModel.find({ user: id });
     res.status(200).json({
       status: 'success',
-      posts: { posts }
+      posts
     });
   } catch (e) {
     next(e);

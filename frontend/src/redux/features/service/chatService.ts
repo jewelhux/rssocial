@@ -5,7 +5,7 @@ import notification from '../../../assets/notification.mp3';
 
 export const chatService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getConversations: builder.query<{ conversations: Conversation[] }, number | void>({
+    getConversations: builder.query<{ conversations: Conversation[] }, string | void>({
       query(profile) {
         return {
           url: '/chat/conversations',
@@ -15,7 +15,9 @@ export const chatService = apiSlice.injectEndpoints({
       providesTags: ['Chat'],
       transformResponse(response: { conversations: Conversation[] }) {
         return {
-          conversations: response.conversations.sort((a, b) => b.lastUpdate - a.lastUpdate)
+          conversations: response.conversations.sort(
+            (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+          )
         };
       },
       async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
@@ -30,7 +32,7 @@ export const chatService = apiSlice.injectEndpoints({
             const conv = draft.conversations.find((el) => el.id === message.conversationId);
             if (conv) {
               conv.lastMessage = message.text ? message.text : message.image ? 'Image' : '';
-              conv.lastUpdate = message.date;
+              conv.updatedAt = message.createdAt;
               if (!message.own) {
                 conv.unreadCount += 1;
                 const audio = new Audio(notification);
@@ -43,14 +45,14 @@ export const chatService = apiSlice.injectEndpoints({
           });
         };
 
-        const handleUserStatus = (userStatus: { id: number; online: boolean }) => {
+        const handleUserStatus = (userStatus: { id: string; online: boolean }) => {
           updateCachedData((draft) => {
             const conv = draft.conversations.find((el) => el.id === userStatus.id);
             if (conv) conv.online = userStatus.online;
           });
         };
 
-        const handleUpdateRead = (conversationId: number) => {
+        const handleUpdateRead = (conversationId: string) => {
           updateCachedData((draft) => {
             const conv = draft.conversations.find((el) => el.id === conversationId);
             if (conv) conv.unreadCount = 0;
@@ -73,7 +75,7 @@ export const chatService = apiSlice.injectEndpoints({
         socket.off('updateRead', handleUpdateRead);
       }
     }),
-    getMessages: builder.query<{ messages: Message[] }, number>({
+    getMessages: builder.query<{ messages: Message[] }, string>({
       query(profile) {
         return {
           url: '/chat/messages',
@@ -109,7 +111,7 @@ export const chatService = apiSlice.injectEndpoints({
         };
       }
     }),
-    reportRead: builder.mutation<null, number>({
+    reportRead: builder.mutation<null, string>({
       queryFn: (profile) => {
         socket.emit('reportRead', profile);
         return { data: null };

@@ -1,14 +1,14 @@
 import { Request } from 'express';
 import multer from 'multer';
-import generateFileName from '../util/uniquefileName';
+import { generateUniqueName } from '../util/uniqueFileName';
 
 const multerStorage = multer.diskStorage({
   destination(req: Request, file: Express.Multer.File, cb) {
     cb(null, `${__dirname}/../../uploads`);
   },
   filename(req: Request, file: Express.Multer.File, cb) {
-    const filename = generateFileName(file.fieldname);
-    req.body[file.fieldname] = filename;
+    const filename = generateUniqueName(file.fieldname);
+    req.body[file.fieldname] = process.env.UPLOADS_URL + filename;
     cb(null, filename);
   }
 });

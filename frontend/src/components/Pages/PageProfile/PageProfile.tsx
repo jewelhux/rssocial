@@ -10,8 +10,7 @@ import ProfileComponentMainInfo from './MainProfileComponent/ProfileComponentMai
 import ProfileComponentSecondaryInfo from './MainProfileComponent/ProfileComponentSecondaryInfo';
 
 function PageProfile(): ReactElement {
-  const params = useParams();
-  const id = !isNaN(Number(params.id)) ? Number(params.id) : undefined;
+  const id = useParams().id;
   const { data: profile, isError, isLoading } = useGetProfileQuery(id);
   const { data } = useGetUserPostsQuery(id);
   const { t } = useTranslation();

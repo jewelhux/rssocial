@@ -10,21 +10,14 @@ function ProfileComponentInputFeed() {
   const [sendPost, { isLoading }] = useAddPostMutation();
   const [text, setText] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
-  const formData = new FormData();
   const { t } = useTranslation();
 
   const handleImageAdd = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setImage(event.target.files[0]);
-      formData.append('image', event.target.files[0]);
-    }
+    if (event.target.files) setImage(event.target.files[0]);
     event.target.value = '';
   };
 
-  const handleImageRemove = () => {
-    formData.append('image', '');
-    setImage(null);
-  };
+  const handleImageRemove = () => setImage(null);
 
   const handleTextAdd = (event: React.ChangeEvent<HTMLInputElement>) => {
     setText(event.target.value);
@@ -32,6 +25,7 @@ function ProfileComponentInputFeed() {
   };
 
   const handleSubmith = () => {
+    const formData = new FormData();
     formData.append('text', text);
     if (image) formData.append('image', image);
     sendPost(formData);

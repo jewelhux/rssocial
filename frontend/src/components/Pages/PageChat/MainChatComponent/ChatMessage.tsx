@@ -93,21 +93,21 @@ const MessageImage = styled('img')`
 
 function ChatMessage({ message, own }: { message: Message; own: boolean }): ReactElement {
   const { i18n } = useTranslation();
-  const { data: profile } = useGetProfileQuery(message.userId);
+  const { data: profile } = useGetProfileQuery(message.user);
   const isNotMobile = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   return (
     <Box padding={1} display="flex" sx={{ flexDirection: 'column' }}>
       <MessageWrapper own={own}>
         <MessageContainer own={own}>
-          {isNotMobile && <Avatar alt="image" src={profile?.avatar ?? DEFAULT_IMAGE} />}
+          {isNotMobile && <Avatar alt="image" src={profile?.avatar || DEFAULT_IMAGE} />}
           <BubbleContainer own={own}>
             {message.image && <MessageImage src={message.image}></MessageImage>}
             {message.text && <SpeechBubble own={own}>{message.text}</SpeechBubble>}
           </BubbleContainer>
         </MessageContainer>
         <Typography fontSize={12} mt={1}>
-          {formatDistance(new Date(message.date), new Date(), {
+          {formatDistance(new Date(message.createdAt), new Date(), {
             addSuffix: true,
             locale: i18n.language === 'en' ? enUS : ru
           })}

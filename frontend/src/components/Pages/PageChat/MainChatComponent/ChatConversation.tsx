@@ -43,7 +43,7 @@ function ChatConversation({
           variant="dot"
           isonlineuser={conversation.online.toString()}
         >
-          <Avatar alt="image" src={conversation.avatar ?? DEFAULT_IMAGE} />
+          <Avatar alt="image" src={conversation.avatar || DEFAULT_IMAGE} />
         </StyledBadge>
         <ListItemText
           primary={conversation.name}

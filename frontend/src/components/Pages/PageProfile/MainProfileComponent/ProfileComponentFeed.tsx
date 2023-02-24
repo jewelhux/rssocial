@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { formatDate } from '../../../../utils/utils';
 
 function ProfileComponentFeed({ post }: { post: UserPost }) {
-  const { data: user } = useGetProfileQuery(post.userId);
+  const { data: user } = useGetProfileQuery(post.user);
   const { data: self } = useGetProfileQuery();
   const [deletePost] = useDeletePostByIdMutation();
   const { i18n, t } = useTranslation();
@@ -27,7 +27,7 @@ function ProfileComponentFeed({ post }: { post: UserPost }) {
           <Avatar
             sx={{ bgcolor: grey[500] }}
             aria-label="avatar"
-            src={user?.avatar ?? DEFAULT_IMAGE}
+            src={user?.avatar || DEFAULT_IMAGE}
             alt="User avatar"
           />
         }
@@ -44,9 +44,9 @@ function ProfileComponentFeed({ post }: { post: UserPost }) {
           )
         }
         title={user && `${user?.name} ${user.lastname}`}
-        subheader={formatDate(new Date(post.date ?? 0), i18n.language)}
+        subheader={formatDate(new Date(post.createdAt), i18n.language)}
       />
-      <CardMedia component="img" image={post?.image ?? DEFAULT_IMAGE} alt="Image-post" />
+      {post?.image && <CardMedia component="img" image={post.image} alt="Image-post" />}
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {post?.text}

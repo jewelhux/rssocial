@@ -32,17 +32,17 @@ function SettingComponentNewInfo() {
   const [avatarUserServer, setAvatarUserServer] = useState<string | null>(null);
 
   useEffect(() => {
-    if (dataUser?.about.status) {
-      setStatusUser(dataUser.about.status);
+    if (dataUser?.relationship) {
+      setStatusUser(dataUser.relationship);
     }
-    if (dataUser?.about.age) {
-      setAgeUser(dataUser.about.age.toString());
+    if (dataUser?.age) {
+      setAgeUser(dataUser.age.toString());
     }
-    if (dataUser?.about.interests) {
-      setInterestsUser(dataUser.about.interests);
+    if (dataUser?.interests) {
+      setInterestsUser(dataUser.interests);
     }
-    if (dataUser?.about.work) {
-      setWorkUser(dataUser.about.work);
+    if (dataUser?.work) {
+      setWorkUser(dataUser.work);
     }
     if (dataUser?.avatar) {
       setAvatarUserServer(dataUser.avatar);
@@ -87,7 +87,7 @@ function SettingComponentNewInfo() {
 
   const handleSendProfileUser = () => {
     formData.append('age', ageUser);
-    formData.append('status', statusUser);
+    formData.append('relationship', statusUser);
     formData.append('interests', interestsUser);
     formData.append('work', workUser);
     if (avatarUser) formData.append('avatar', avatarUser);
@@ -121,21 +121,11 @@ function SettingComponentNewInfo() {
               onChange={handleChangeStatusUser}
               disabled={isLoadingProfileUser}
             >
-              <MenuItem value={RelationshipUserStatus.notIndicated}>
-                {t('settingStatus.notIndicated')}
-              </MenuItem>
-              <MenuItem value={RelationshipUserStatus.itIsComplicated}>
-                {t('settingStatus.itIsComplicated')}
-              </MenuItem>
-              <MenuItem value={RelationshipUserStatus.inSearch}>
-                {t('settingStatus.inSearch')}
-              </MenuItem>
-              <MenuItem value={RelationshipUserStatus.notLookingForAnyone}>
-                {t('settingStatus.notLookingForAnyone')}
-              </MenuItem>
-              <MenuItem value={RelationshipUserStatus.inARelationship}>
-                {t('settingStatus.inARelationship')}
-              </MenuItem>
+              {Object.values(RelationshipUserStatus).map((status, index) => (
+                <MenuItem key={index} value={status}>
+                  {t('settingStatus.' + status)}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
 

@@ -11,7 +11,7 @@ const ImagePreview = styled('img')`
   object-fit: cover;
 `;
 
-function ChatSendForm({ profile }: { profile: number }): ReactElement {
+function ChatSendForm({ profile }: { profile: string }): ReactElement {
   const { t } = useTranslation();
   const [sendMessage, { isSuccess }] = useSendMessageMutation();
   const [image, setImage] = useState<File | null>(null);

@@ -3,15 +3,16 @@ import { GenericProfile } from './types';
 
 export const profileService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getProfile: builder.query<GenericProfile, number | void>({
+    getProfile: builder.query<GenericProfile, string | void>({
       query(id) {
         return {
           url: '/profile',
           params: { id }
         };
       },
+      transformResponse: (res: { profile: GenericProfile }) => res.profile,
       providesTags: (result, error, arg) =>
-        typeof arg === 'number' ? [{ type: 'Profile', id: arg }, 'Profile'] : ['Profile']
+        arg ? [{ type: 'Profile', id: arg }, 'Profile'] : ['Profile']
     }),
     updateOwnProfile: builder.mutation<GenericProfile, FormData>({
       query(data) {
@@ -21,13 +22,14 @@ export const profileService = apiSlice.injectEndpoints({
           body: data
         };
       },
+      transformResponse: (res: { profile: GenericProfile }) => res.profile,
       invalidatesTags: ['Profile']
     }),
-    getAllProfiles: builder.query<{ users: GenericProfile[] }, string | void>({
-      query(search) {
+    getAllProfiles: builder.query<{ profiles: GenericProfile[] }, string | void>({
+      query(q) {
         return {
           url: '/profile/all',
-          params: { search }
+          params: { q }
         };
       }
     })
