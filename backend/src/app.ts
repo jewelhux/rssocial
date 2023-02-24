@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import path from 'path';
-import express, { Response, Request } from 'express';
+import express, { Response, Request, NextFunction } from 'express';
 import morgan from 'morgan';
 import { createServer } from 'http';
 import cookieParser from 'cookie-parser';
@@ -14,11 +14,19 @@ import friendsRouter from './routes/friends.routes';
 import chatRouter from './routes/chat.routes';
 import { checkAuth } from './middleware/checkAuth';
 import userModel from './models/user.model';
+import { initializeSocket } from './socket';
+import { CustomRequest } from './types/types';
 
 const port = process.env.PORT ?? 3000;
 
 const app = express();
 const httpServer = createServer(app);
+const io = initializeSocket(httpServer);
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  (req as CustomRequest).io = io;
+  next();
+});
 
 app.use(express.json({ limit: '1kb' }));
 app.use(cookieParser());

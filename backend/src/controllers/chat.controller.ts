@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
+import { Socket } from 'socket.io';
 import conversationModel from '../models/conversation.model';
 import userModel from '../models/user.model';
 import { GetMessagesInput, SendMessageInput } from '../schemas/chat.schema';
 import CustomError from '../util/customError';
+import { CustomRequest } from '../types/types';
 
 export const getConversations = async (
   req: Request<object, object, object, { newChat?: string }>,
@@ -10,7 +12,8 @@ export const getConversations = async (
   next: NextFunction
 ) => {
   try {
-    const conversations = await conversationModel.aggregate([
+    const { io } = req as CustomRequest;
+    let conversations = await conversationModel.aggregate([
       {
         $match: {
           'participants.user': res.locals.user._id
@@ -59,6 +62,9 @@ export const getConversations = async (
         }
       }
     ]);
+    conversations = conversations.map((convo) => {
+      return { ...convo, online: Boolean(io.sockets.adapter.rooms.get(convo.id.toString())) };
+    });
 
     const { newChat } = req.query;
 
@@ -75,7 +81,8 @@ export const getConversations = async (
           avatar: newChatProfile.avatar,
           lastMessage: '',
           updatedAt: new Date(),
-          unreadCount: 0
+          unreadCount: 0,
+          online: Boolean(io.sockets.adapter.rooms.get(newChatProfile._id.toString()))
         });
       }
     }
@@ -113,6 +120,7 @@ export const sendMessage = async (
   next: NextFunction
 ) => {
   try {
+    const { io } = req as CustomRequest;
     const profile = await userModel.findById(req.body.profile);
     if (!profile) return next(new CustomError('Profile not found', 404));
 
@@ -127,7 +135,8 @@ export const sendMessage = async (
         $push: {
           messages: {
             user: res.locals.user._id,
-            text: req.body.text
+            text: req.body.text,
+            image: req.body.image
           }
         },
         $setOnInsert: {
@@ -154,21 +163,53 @@ export const sendMessage = async (
     );
 
     if (conversation.lastErrorObject?.updatedExisting) {
-      console.log(conversation.value?.messages[0]);
+      const message = { ...conversation.value?.messages[0], conversationId: res.locals.user._id };
+      io.to(profile._id.toString()).emit('newMessage', message);
     } else {
-      console.log({
+      const conv = {
         id: res.locals.user._id,
         name: `${res.locals.user.name} ${res.locals.user.lastname}`,
         avatar: res.locals.user.avatar,
         lastMessage: conversation.value?.messages[0].text,
         unreadCount: 1,
         updatedAt: new Date(),
-        online: true
-      });
+        online: Boolean(io.sockets.adapter.rooms.get(profile._id.toString()))
+      };
+      io.to(profile._id.toString()).emit('addConversation', conv);
     }
+
+    const message = { ...conversation.value?.messages[0], conversationId: profile._id };
+    io.to(res.locals.user._id.toString()).emit('newMessage', {
+      ...message,
+      conversationId: profile._id,
+      own: true
+    });
 
     return res.status(200).json({ status: 'success', message: 'Message sent' });
   } catch (e) {
     next(e);
   }
+};
+
+export const reportRead = async (socket: Socket, profile: string) => {
+  const response = await conversationModel.updateOne(
+    {
+      $or: [
+        { 'participants.user': { $all: [profile, socket.handshake.auth.user] } },
+        { 'participants.user': { $all: [socket.handshake.auth.user, profile] } }
+      ]
+    },
+    {
+      $set: {
+        'participants.$[elem].index': {
+          $size: '$messages'
+        }
+      }
+    },
+    {
+      arrayFilters: [{ 'elem.user': socket.handshake.auth.user }]
+    }
+  );
+
+  if (response.modifiedCount) socket.emit('updateRead', profile);
 };
