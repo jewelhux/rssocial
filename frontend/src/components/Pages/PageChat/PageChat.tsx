@@ -69,8 +69,7 @@ function PageChat() {
   const [open, setOpen] = useState(window.innerWidth > 600 ? true : false);
   const location = useLocation();
   const [profile, setProfile] = useState<string>(location.state?.profile || '');
-  location.state = {};
-  const { data: convData } = useGetConversationsQuery(profile === '' ? undefined : profile);
+  const { data: convData } = useGetConversationsQuery(location.state?.profile);
   const { data: msgData } = useGetMessagesQuery(profile, { skip: profile === '' });
   const [reportRead] = useReportReadMutation();
   const chatContainerRef = useRef<HTMLElement>(null);

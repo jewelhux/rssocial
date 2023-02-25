@@ -77,6 +77,12 @@ export interface Conversation {
   lastMessage: string;
 }
 
+export enum SendStatus {
+  pending = 'pending',
+  success = 'success',
+  error = 'error'
+}
+
 export interface Message {
   createdAt: string;
   text: string;
@@ -84,4 +90,5 @@ export interface Message {
   user: string;
   conversationId?: string;
   own?: boolean;
+  status?: SendStatus;
 }

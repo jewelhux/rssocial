@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { Socket } from 'socket.io';
+import { Types as MongoTypes } from 'mongoose';
 import conversationModel from '../models/conversation.model';
 import userModel from '../models/user.model';
 import { GetMessagesInput, SendMessageInput } from '../schemas/chat.schema';
@@ -75,7 +76,7 @@ export const getConversations = async (
     ) {
       const newChatProfile = await userModel.findById(req.query.newchat);
       if (newChatProfile) {
-        conversations.unshift({
+        conversations.push({
           id: newChatProfile.id,
           name: `${newChatProfile.name} ${newChatProfile.lastname}`,
           avatar: newChatProfile.avatar,
@@ -187,7 +188,7 @@ export const sendMessage = async (
       own: true
     });
 
-    return res.status(200).json({ status: 'success', message: 'Message sent' });
+    return res.status(200).json({ status: 'success', message });
   } catch (e) {
     next(e);
   }
@@ -195,28 +196,52 @@ export const sendMessage = async (
 
 export const reportRead = async (socket: Socket, profile: string) => {
   try {
-    // console.log(profile, socket.handshake.auth.user);
-    // const response = await conversationModel.findOneAndUpdate(
-    //   {
-    //     $or: [
-    //       { 'participants.user': { $all: [profile, socket.handshake.auth.user] } },
-    //       { 'participants.user': { $all: [socket.handshake.auth.user, profile] } }
-    //     ]
-    //   },
-    //   {
-    //     $set: {
-    //       'participants.$[elem].index': { $size: '$messages' }
-    //     }
-    //   },
-    //   {
-    //     arrayFilters: [{ 'elem.user': socket.handshake.auth.user }]
-    //   }
-    // );
+    const response = await conversationModel.aggregate([
+      {
+        $match: {
+          $or: [
+            {
+              'participants.user': {
+                $all: [
+                  new MongoTypes.ObjectId(profile),
+                  new MongoTypes.ObjectId(socket.handshake.auth.user)
+                ]
+              }
+            },
+            {
+              'participants.user': {
+                $all: [
+                  new MongoTypes.ObjectId(socket.handshake.auth.user),
+                  new MongoTypes.ObjectId(profile)
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          count: { $size: '$messages' }
+        }
+      }
+    ]);
 
-    // console.log(response);
+    const update = await conversationModel.updateOne(
+      {
+        _id: response[0]._id
+      },
+      {
+        $set: {
+          'participants.$[elem].index': response[0].count
+        }
+      },
+      {
+        arrayFilters: [{ 'elem.user': socket.handshake.auth.user }]
+      }
+    );
 
-    // if (response.modifiedCount)
-    socket.emit('updateRead', profile);
+    if (update.modifiedCount) socket.emit('updateRead', profile);
   } catch (e) {
     console.log('error reporting read', e);
   }

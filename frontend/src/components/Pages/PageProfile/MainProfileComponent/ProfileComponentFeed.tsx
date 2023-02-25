@@ -21,7 +21,7 @@ function ProfileComponentFeed({ post }: { post: UserPost }) {
   const { i18n, t } = useTranslation();
 
   return (
-    <Card sx={{ maxWidth: 600 }} variant="outlined">
+    <Card sx={{ width: 600 }} variant="outlined">
       <CardHeader
         avatar={
           <Avatar

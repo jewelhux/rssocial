@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import { createServer } from 'http';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { Types as MongoTypes } from 'mongoose';
 import connectDB from './config/db';
 import errorHandler from './middleware/errorHandler';
 import authRouter from './routes/auth.routes';
@@ -13,7 +14,6 @@ import profileRouter from './routes/profile.routes';
 import friendsRouter from './routes/friends.routes';
 import chatRouter from './routes/chat.routes';
 import { checkAuth } from './middleware/checkAuth';
-import userModel from './models/user.model';
 import { initializeSocket } from './socket';
 import { CustomRequest } from './types/types';
 
@@ -45,10 +45,9 @@ app.use('/api/friends', friendsRouter);
 app.use('/api/chat', chatRouter);
 
 app.get('/api/test', checkAuth, async (req: Request, res: Response) => {
-  const profile = await userModel.findById(req.body.profile);
-  if (!profile) return res.status(200).json({ profile: 'no' });
+  const id = new MongoTypes.ObjectId('63f253246adfb3dc1b59405d');
 
-  res.status(200).json({ profile });
+  res.status(200).json({ id });
 });
 
 app.use(errorHandler);

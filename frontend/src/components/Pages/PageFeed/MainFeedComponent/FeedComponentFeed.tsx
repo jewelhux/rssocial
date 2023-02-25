@@ -21,7 +21,7 @@ function FeedComponentFeed({ post }: { post: GenericPost }) {
   const { data: self } = useGetProfileQuery(undefined, { skip: !isLoggedIn });
   const [deletePost] = useDeletePostByIdMutation();
   return (
-    <Card sx={{ maxWidth: 600 }} variant="outlined">
+    <Card sx={{ width: 600 }} variant="outlined">
       <CardHeader
         avatar={
           <Avatar
@@ -45,7 +45,7 @@ function FeedComponentFeed({ post }: { post: GenericPost }) {
         title={post?.name ?? `Name Name`}
         subheader={formatDate(new Date(post.createdAt), i18n.language)}
       />
-      <CardMedia component="img" image={post?.image || DEFAULT_IMAGE} alt="Image-post" />
+      {post?.image && <CardMedia component="img" image={post.image} alt="Image-post" />}
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {post.text}

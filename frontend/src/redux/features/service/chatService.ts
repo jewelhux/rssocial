@@ -1,5 +1,5 @@
 import { apiSlice } from '../apiSlice';
-import { Conversation, GenericResponse, Message } from './types';
+import { Conversation, Message, SendStatus } from './types';
 import { socket } from './socket';
 import notification from '../../../assets/notification.mp3';
 
@@ -12,7 +12,10 @@ export const chatService = apiSlice.injectEndpoints({
           params: { newchat: profile }
         };
       },
-      providesTags: ['Chat'],
+      providesTags: (result, error, arg) => [
+        { type: 'Conversations', id: arg ?? 'default' },
+        'Conversations'
+      ],
       transformResponse(response: { conversations: Conversation[] }) {
         return {
           conversations: response.conversations.sort(
@@ -20,7 +23,10 @@ export const chatService = apiSlice.injectEndpoints({
           )
         };
       },
-      async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
+      async onCacheEntryAdded(
+        arg,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved, dispatch }
+      ) {
         const handleAddConversation = (conversation: Conversation) => {
           updateCachedData((draft) => {
             draft.conversations.unshift(conversation);
@@ -35,12 +41,18 @@ export const chatService = apiSlice.injectEndpoints({
               conv.updatedAt = message.createdAt;
               if (!message.own) {
                 conv.unreadCount += 1;
-                const audio = new Audio(notification);
-                audio.volume = 0.5;
-                // eslint-disable-next-line prettier/prettier
-                audio.play().catch(() => {});
+                if (arg === undefined) {
+                  const audio = new Audio(notification);
+                  audio.volume = 0.5;
+                  // eslint-disable-next-line prettier/prettier
+                  audio.play().catch(() => {});
+                }
               }
               draft.conversations = [conv, ...draft.conversations.filter((el) => el !== conv)];
+            } else {
+              dispatch(
+                chatService.util.invalidateTags([{ type: 'Conversations', id: arg ?? 'default' }])
+              );
             }
           });
         };
@@ -82,10 +94,10 @@ export const chatService = apiSlice.injectEndpoints({
           params: { profile }
         };
       },
-      providesTags: ['Chat'],
+      providesTags: ['Messages'],
       async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
         const handleNewMessage = (message: Message) => {
-          if (message.conversationId === arg) {
+          if (message.conversationId === arg && !message.own) {
             updateCachedData((draft) => {
               draft.messages.push(message);
             });
@@ -102,13 +114,52 @@ export const chatService = apiSlice.injectEndpoints({
         socket.off('newMessage', handleNewMessage);
       }
     }),
-    sendMessage: builder.mutation<GenericResponse, FormData>({
+    sendMessage: builder.mutation<{ message: Message }, FormData>({
       query(body) {
         return {
           url: '/chat/messages',
           method: 'POST',
           body
         };
+      },
+      //optimistic update
+      async onQueryStarted(formData, { dispatch, queryFulfilled }) {
+        const profile = formData.get('profile') as string | null;
+        const image =
+          (formData.get('image') && URL.createObjectURL(formData.get('image') as File)) ?? '';
+        const text = (formData.get('text') as string) ?? '';
+        if (profile) {
+          const patchResult = dispatch(
+            chatService.util.updateQueryData('getMessages', profile, (draft) => {
+              draft.messages.push({
+                image,
+                text,
+                createdAt: new Date().toISOString(),
+                user: '',
+                status: SendStatus.pending
+              });
+            })
+          );
+          try {
+            const actualResult = await queryFulfilled;
+            dispatch(
+              chatService.util.updateQueryData('getMessages', profile, (draft) => {
+                const message = draft.messages[patchResult.patches[0].path[1] as number];
+                if (message) {
+                  message.image = actualResult.data.message.image;
+                  message.status = SendStatus.success;
+                }
+              })
+            );
+          } catch {
+            dispatch(
+              chatService.util.updateQueryData('getMessages', profile, (draft) => {
+                const message = draft.messages[patchResult.patches[0].path[1] as number];
+                if (message) message.status = SendStatus.error;
+              })
+            );
+          }
+        }
       }
     }),
     reportRead: builder.mutation<null, string>({

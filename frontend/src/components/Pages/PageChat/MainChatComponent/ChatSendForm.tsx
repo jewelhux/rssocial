@@ -13,13 +13,13 @@ const ImagePreview = styled('img')`
 
 function ChatSendForm({ profile }: { profile: string }): ReactElement {
   const { t } = useTranslation();
-  const [sendMessage, { isSuccess }] = useSendMessageMutation();
+  const [sendMessage] = useSendMessageMutation();
   const [image, setImage] = useState<File | null>(null);
   const [text, setText] = useState<string>('');
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setImage(event.target.files[0]);
+      if (event.target.files[0].size < 5 * 1024 * 1024) setImage(event.target.files[0]);
       event.target.value = '';
     }
   };
@@ -35,6 +35,8 @@ function ChatSendForm({ profile }: { profile: string }): ReactElement {
       formData.append('text', text);
       formData.append('profile', profile.toString());
       sendMessage(formData);
+      setImage(null);
+      setText('');
     }
   };
 
@@ -51,7 +53,7 @@ function ChatSendForm({ profile }: { profile: string }): ReactElement {
   useEffect(() => {
     setImage(null);
     setText('');
-  }, [profile, isSuccess]);
+  }, [profile]);
 
   return (
     <FormControl fullWidth>

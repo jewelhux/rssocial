@@ -22,8 +22,6 @@ function SettingComponentNewInfo() {
   const { data: dataUser, isError, isLoading } = useGetProfileQuery();
   const [sendProfileUser, { isLoading: isLoadingProfileUser }] = useUpdateOwnProfileMutation();
 
-  const formData = new FormData();
-
   const [ageUser, setAgeUser] = useState('18');
   const [statusUser, setStatusUser] = useState('');
   const [interestsUser, setInterestsUser] = useState('');
@@ -55,24 +53,20 @@ function SettingComponentNewInfo() {
         return;
       } else {
         setAgeUser(event.target.value);
-        formData.append('age', event.target.value);
       }
     }
   };
 
   const handleChangeStatusUser = (event: SelectChangeEvent) => {
     setStatusUser(event.target.value);
-    formData.append('status', statusUser || RelationshipUserStatus.notIndicated);
   };
 
   const handleInterestsUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInterestsUser(event.target.value);
-    formData.append('interests', event.target.value);
   };
 
   const handleWorkUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     setWorkUser(event.target.value);
-    formData.append('work', event.target.value);
   };
 
   const handleAvatarUser = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,14 +74,14 @@ function SettingComponentNewInfo() {
       const file = event.target.files[0];
       setAvatarUser(file);
       setAvatarUserServer(null);
-      formData.append('avatar', file);
     }
     event.target.value = '';
   };
 
   const handleSendProfileUser = () => {
-    formData.append('age', ageUser);
-    formData.append('relationship', statusUser);
+    const formData = new FormData();
+    if (ageUser) formData.append('age', ageUser);
+    formData.append('relationship', statusUser || RelationshipUserStatus.notIndicated);
     formData.append('interests', interestsUser);
     formData.append('work', workUser);
     if (avatarUser) formData.append('avatar', avatarUser);
