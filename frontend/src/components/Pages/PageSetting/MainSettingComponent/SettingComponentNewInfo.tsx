@@ -16,6 +16,7 @@ import { RelationshipUserStatus } from '../../../../utils/enum';
 import { useEffect, useState } from 'react';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { useTranslation } from 'react-i18next';
+import { useSnackbar } from 'notistack';
 
 function SettingComponentNewInfo() {
   const { t } = useTranslation();
@@ -28,6 +29,7 @@ function SettingComponentNewInfo() {
   const [workUser, setWorkUser] = useState('');
   const [avatarUser, setAvatarUser] = useState<File | null>(null);
   const [avatarUserServer, setAvatarUserServer] = useState<string | null>(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (dataUser?.relationship) {
@@ -72,8 +74,10 @@ function SettingComponentNewInfo() {
   const handleAvatarUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files[0];
-      setAvatarUser(file);
-      setAvatarUserServer(null);
+      if (file.size < 5 * 1024 * 1024) {
+        setAvatarUser(file);
+        setAvatarUserServer(null);
+      } else enqueueSnackbar(t('snacks.largeFileSize'), { variant: 'warning' });
     }
     event.target.value = '';
   };
@@ -85,7 +89,12 @@ function SettingComponentNewInfo() {
     formData.append('interests', interestsUser);
     formData.append('work', workUser);
     if (avatarUser) formData.append('avatar', avatarUser);
-    sendProfileUser(formData);
+    sendProfileUser(formData)
+      .unwrap()
+      .then(
+        () => enqueueSnackbar(t('snacks.profileUpdated'), { variant: 'success' }),
+        () => enqueueSnackbar(t('snacks.udateFailed'), { variant: 'error' })
+      );
   };
 
   return (

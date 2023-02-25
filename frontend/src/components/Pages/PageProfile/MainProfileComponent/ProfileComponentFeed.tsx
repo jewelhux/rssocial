@@ -13,12 +13,14 @@ import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { useDeletePostByIdMutation } from '../../../../redux/features/service/postsService';
 import { useTranslation } from 'react-i18next';
 import { formatDate } from '../../../../utils/utils';
+import { useSnackbar } from 'notistack';
 
 function ProfileComponentFeed({ post }: { post: UserPost }) {
   const { data: user } = useGetProfileQuery(post.user);
   const { data: self } = useGetProfileQuery();
   const [deletePost] = useDeletePostByIdMutation();
   const { i18n, t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
 
   return (
     <Card sx={{ width: 600 }} variant="outlined">
@@ -35,7 +37,14 @@ function ProfileComponentFeed({ post }: { post: UserPost }) {
           user &&
           self &&
           (user.isOwn || self.isAdmin) && (
-            <IconButton aria-label="settings" onClick={() => deletePost(post.id)}>
+            <IconButton
+              aria-label="settings"
+              onClick={() =>
+                deletePost(post.id)
+                  .unwrap()
+                  .catch(() => enqueueSnackbar(t('snacks.deleteFailed'), { variant: 'error' }))
+              }
+            >
               {!user.isOwn && self.isAdmin && (
                 <Typography>{t('profileLng.removeAdmin')}</Typography>
               )}
