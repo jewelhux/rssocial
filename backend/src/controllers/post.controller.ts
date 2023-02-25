@@ -11,14 +11,14 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
       const { user, ...rest } = post;
       return {
         ...rest,
-        userId: user.id,
+        user: user.id,
         avatar: user.avatar,
         name: `${user.name} ${user.lastname}`
       };
     });
     res.status(200).json({
       status: 'success',
-      posts
+      posts: posts.reverse()
     });
   } catch (e) {
     next(e);
@@ -35,7 +35,7 @@ export const getPostsByUser = async (
     const posts = await postModel.find({ user: id });
     res.status(200).json({
       status: 'success',
-      posts: { posts }
+      posts: posts.reverse()
     });
   } catch (e) {
     next(e);
@@ -71,7 +71,7 @@ export const deletePost = async (
     if (!post) return next(new CustomError('Not found', 404));
     if (post.user.toString() !== id && !isAdmin) return next(new CustomError('Forbidden', 403));
 
-    post.delete();
+    await post.delete();
 
     res.status(204).json({
       status: 'success',

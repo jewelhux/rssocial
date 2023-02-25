@@ -6,6 +6,7 @@ import { store } from './redux/store';
 import { GlobalHistory } from './components/Common/GlobalNavigate';
 import i18n from './locales/i18cfg';
 import { I18nextProvider } from 'react-i18next';
+import { SnackbarProvider } from 'notistack';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
@@ -13,7 +14,9 @@ root.render(
     <BrowserRouter>
       <GlobalHistory />
       <I18nextProvider i18n={i18n}>
-        <App />
+        <SnackbarProvider maxSnack={3}>
+          <App />
+        </SnackbarProvider>
       </I18nextProvider>
     </BrowserRouter>
   </Provider>

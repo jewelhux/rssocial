@@ -7,18 +7,20 @@ import { useLogoutMutation } from '../../../../redux/features/service/authServic
 import { useTranslation } from 'react-i18next';
 import { FriendRequestActions, FriendStatus } from '../../../../redux/features/service/types';
 import { useFriendRequestMutation } from '../../../../redux/features/service/friendsService';
+import { useSnackbar } from 'notistack';
 
-function ProfileComponentMainInfo({ id }: { id?: number }): ReactElement {
+function ProfileComponentMainInfo({ id }: { id?: string }): ReactElement {
   const { data: profile } = useGetProfileQuery(id);
   const [logoutUser] = useLogoutMutation();
   const [friendRequest] = useFriendRequestMutation();
   const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const approve = (profileId: number) =>
+  const approve = (profileId: string) =>
     friendRequest({ id: profileId, action: FriendRequestActions.approve });
-  const request = (profileId: number) =>
+  const request = (profileId: string) =>
     friendRequest({ id: profileId, action: FriendRequestActions.request });
-  const remove = (profileId: number) =>
+  const remove = (profileId: string) =>
     friendRequest({ id: profileId, action: FriendRequestActions.delete });
 
   return (
@@ -39,7 +41,7 @@ function ProfileComponentMainInfo({ id }: { id?: number }): ReactElement {
           height={'100%'}
           alt="UserAvatar"
           style={{ objectFit: 'cover' }}
-          src={profile?.avatar ?? DEFAULT_IMAGE}
+          src={profile?.avatar || DEFAULT_IMAGE}
         />
       </Box>
       <Typography variant="h5" sx={{ textAlign: 'center', width: '100%' }}>
@@ -61,7 +63,12 @@ function ProfileComponentMainInfo({ id }: { id?: number }): ReactElement {
             to="/auth"
             color="inherit"
             variant="outlined"
-            onClick={() => logoutUser()}
+            onClick={() =>
+              logoutUser()
+                .unwrap()
+                .then(() => enqueueSnackbar(t('snacks.logout'), { variant: 'success' }))
+                .catch(() => {})
+            }
           >
             {t('profileLng.btnOut')}
           </Button>

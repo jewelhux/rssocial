@@ -96,6 +96,17 @@ i18n.use(initReactI18next).init({
           incorrectData: `The user doesn't exist or the data is entered incorrectly`,
           incorrectDataLogin: 'Please check your input',
           mail: 'Email'
+        },
+        snacks: {
+          largeFileSize: 'File size must be less then 5 megabyes!',
+          profileUpdated: 'Profile updated!',
+          udateFailed: 'Failed to update!',
+          deleteFailed: 'Failed deleting!',
+          addFailed: 'failed to add!',
+          logout: 'Logout successfull!',
+          login: 'Login successfull!',
+          loginFailed: 'Wrong email or password!',
+          registerFailed: 'User with this email already exists!'
         }
       }
     },
@@ -191,6 +202,17 @@ i18n.use(initReactI18next).init({
           incorrectData: 'Пользователь существует или некоректно введены данные',
           incorrectDataLogin: 'Пожалуйста, проверьте вводимые данные',
           mail: 'Почта'
+        },
+        snacks: {
+          largeFileSize: 'Файл должен быть меньше 5 мегабайт!',
+          profileUpdated: 'Профиль обновлен!',
+          udateFailed: 'Ошибка при обновлении!',
+          deleteFailed: 'Ошибка при удалении!',
+          addFailed: 'Ошибка при добавлении!',
+          logout: 'Выход выполнен успешно!',
+          login: 'Вход выполнен!',
+          loginFailed: 'Неверные имейл либо пароль!',
+          registerFailed: 'Такой пользователь уже существует!'
         }
       }
     }

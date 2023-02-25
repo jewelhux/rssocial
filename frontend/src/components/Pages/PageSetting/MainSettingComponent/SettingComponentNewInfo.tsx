@@ -16,13 +16,12 @@ import { RelationshipUserStatus } from '../../../../utils/enum';
 import { useEffect, useState } from 'react';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { useTranslation } from 'react-i18next';
+import { useSnackbar } from 'notistack';
 
 function SettingComponentNewInfo() {
   const { t } = useTranslation();
   const { data: dataUser, isError, isLoading } = useGetProfileQuery();
   const [sendProfileUser, { isLoading: isLoadingProfileUser }] = useUpdateOwnProfileMutation();
-
-  const formData = new FormData();
 
   const [ageUser, setAgeUser] = useState('18');
   const [statusUser, setStatusUser] = useState('');
@@ -30,19 +29,20 @@ function SettingComponentNewInfo() {
   const [workUser, setWorkUser] = useState('');
   const [avatarUser, setAvatarUser] = useState<File | null>(null);
   const [avatarUserServer, setAvatarUserServer] = useState<string | null>(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    if (dataUser?.about.status) {
-      setStatusUser(dataUser.about.status);
+    if (dataUser?.relationship) {
+      setStatusUser(dataUser.relationship);
     }
-    if (dataUser?.about.age) {
-      setAgeUser(dataUser.about.age.toString());
+    if (dataUser?.age) {
+      setAgeUser(dataUser.age.toString());
     }
-    if (dataUser?.about.interests) {
-      setInterestsUser(dataUser.about.interests);
+    if (dataUser?.interests) {
+      setInterestsUser(dataUser.interests);
     }
-    if (dataUser?.about.work) {
-      setWorkUser(dataUser.about.work);
+    if (dataUser?.work) {
+      setWorkUser(dataUser.work);
     }
     if (dataUser?.avatar) {
       setAvatarUserServer(dataUser.avatar);
@@ -55,43 +55,46 @@ function SettingComponentNewInfo() {
         return;
       } else {
         setAgeUser(event.target.value);
-        formData.append('age', event.target.value);
       }
     }
   };
 
   const handleChangeStatusUser = (event: SelectChangeEvent) => {
     setStatusUser(event.target.value);
-    formData.append('status', statusUser || RelationshipUserStatus.notIndicated);
   };
 
   const handleInterestsUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInterestsUser(event.target.value);
-    formData.append('interests', event.target.value);
   };
 
   const handleWorkUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     setWorkUser(event.target.value);
-    formData.append('work', event.target.value);
   };
 
   const handleAvatarUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files[0];
-      setAvatarUser(file);
-      setAvatarUserServer(null);
-      formData.append('avatar', file);
+      if (file.size < 5 * 1024 * 1024) {
+        setAvatarUser(file);
+        setAvatarUserServer(null);
+      } else enqueueSnackbar(t('snacks.largeFileSize'), { variant: 'warning' });
     }
     event.target.value = '';
   };
 
   const handleSendProfileUser = () => {
-    formData.append('age', ageUser);
-    formData.append('status', statusUser);
+    const formData = new FormData();
+    if (ageUser) formData.append('age', ageUser);
+    formData.append('relationship', statusUser || RelationshipUserStatus.notIndicated);
     formData.append('interests', interestsUser);
     formData.append('work', workUser);
     if (avatarUser) formData.append('avatar', avatarUser);
-    sendProfileUser(formData);
+    sendProfileUser(formData)
+      .unwrap()
+      .then(
+        () => enqueueSnackbar(t('snacks.profileUpdated'), { variant: 'success' }),
+        () => enqueueSnackbar(t('snacks.udateFailed'), { variant: 'error' })
+      );
   };
 
   return (
@@ -121,21 +124,11 @@ function SettingComponentNewInfo() {
               onChange={handleChangeStatusUser}
               disabled={isLoadingProfileUser}
             >
-              <MenuItem value={RelationshipUserStatus.notIndicated}>
-                {t('settingStatus.notIndicated')}
-              </MenuItem>
-              <MenuItem value={RelationshipUserStatus.itIsComplicated}>
-                {t('settingStatus.itIsComplicated')}
-              </MenuItem>
-              <MenuItem value={RelationshipUserStatus.inSearch}>
-                {t('settingStatus.inSearch')}
-              </MenuItem>
-              <MenuItem value={RelationshipUserStatus.notLookingForAnyone}>
-                {t('settingStatus.notLookingForAnyone')}
-              </MenuItem>
-              <MenuItem value={RelationshipUserStatus.inARelationship}>
-                {t('settingStatus.inARelationship')}
-              </MenuItem>
+              {Object.values(RelationshipUserStatus).map((status, index) => (
+                <MenuItem key={index} value={status}>
+                  {t('settingStatus.' + status)}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
 

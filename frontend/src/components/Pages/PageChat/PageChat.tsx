@@ -68,14 +68,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 function PageChat() {
   const [open, setOpen] = useState(window.innerWidth > 600 ? true : false);
   const location = useLocation();
-  const [profile, setProfile] = useState<number>(location.state?.profile ?? -1);
-  location.state = {};
-  const { data: convData } = useGetConversationsQuery(profile === -1 ? undefined : profile);
-  const { data: msgData } = useGetMessagesQuery(profile, { skip: profile === -1 });
+  const [profile, setProfile] = useState<string>(location.state?.profile || '');
+  const { data: convData } = useGetConversationsQuery(location.state?.profile);
+  const { data: msgData } = useGetMessagesQuery(profile, { skip: profile === '' });
   const [reportRead] = useReportReadMutation();
   const chatContainerRef = useRef<HTMLElement>(null);
 
-  const handleConversationClick = (id: number) => {
+  const handleConversationClick = (id: string) => {
     setProfile(id);
     if (open && window.innerWidth <= 600) setOpen(false);
   };
@@ -143,7 +142,7 @@ function PageChat() {
           ref={chatContainerRef}
         >
           {msgData?.messages.map((message) => (
-            <ChatMessage key={message.date} message={message} own={message.userId !== profile} />
+            <ChatMessage key={message.createdAt} message={message} own={message.user !== profile} />
           ))}
         </Box>
         {msgData && <ChatSendForm profile={profile} />}

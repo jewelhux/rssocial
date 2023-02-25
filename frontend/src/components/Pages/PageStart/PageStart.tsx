@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   TextField,
   Box,
@@ -14,12 +14,7 @@ import {
   IconButton,
   FormControl,
   InputLabel,
-  OutlinedInput,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogContentText
+  OutlinedInput
 } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -30,6 +25,7 @@ import {
   useRegisterMutation
 } from '../../../redux/features/service/authService';
 import { useTranslation } from 'react-i18next';
+import { useSnackbar } from 'notistack';
 
 function PageStart() {
   const { data: isLoggedIn } = useLoginCheckQuery();
@@ -41,15 +37,7 @@ function PageStart() {
 
   const [loginUser, { isLoading, isSuccess }] = useLoginMutation();
 
-  const [openDialog, setOpenDialog] = useState(false);
-
-  useEffect(() => {
-    if (isSuccess) setOpenDialog(false);
-  }, [isSuccess]);
-
-  useEffect(() => {
-    if (isSuccessRegisredUser) setOpenDialog(false);
-  }, [isSuccessRegisredUser]);
+  const { enqueueSnackbar } = useSnackbar();
 
   const [isLogin, setIsLogin] = useState(true);
   const [isCheckedRules, setIsCheckedRules] = useState(false);
@@ -99,7 +87,7 @@ function PageStart() {
       [target.name]: target.value.trim()
     }));
 
-    if (target.value.length > 2) {
+    if (target.value.length > 7) {
       setisValidForm((prev) => ({
         ...prev,
         [e.target.name]: true
@@ -153,14 +141,6 @@ function PageStart() {
     }
   };
 
-  const handleClickOpen = () => {
-    setOpenDialog(true);
-  };
-
-  const handleClose = () => {
-    if (!isLoading) setOpenDialog(false);
-  };
-
   const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isValidArray = Object.values(isValidForm);
@@ -171,16 +151,29 @@ function PageStart() {
         loginUser({
           email: onSubmit.email,
           password: onSubmit.password
-        });
-      }
+        })
+          .unwrap()
+          .then(
+            () => enqueueSnackbar(t('snacks.login'), { variant: 'success' }),
+            () => enqueueSnackbar(t('snacks.loginFailed'), { variant: 'error' })
+          );
+      } else enqueueSnackbar(t('startLng.incorrectDataLogin'), { variant: 'error' });
     } else {
       // ВХОД ОТ РЕЖИМА РЕГИСТРАЦИИ
       const validForm = isValidArray.every((el) => el);
       if (validForm && isCheckedRules) {
-        createUser(onSubmit);
-      }
+        createUser(onSubmit)
+          .unwrap()
+          .then(
+            () => enqueueSnackbar(t('snacks.login'), { variant: 'success' }),
+            (err: { status: number }) =>
+              enqueueSnackbar(
+                err.status === 409 ? t('snacks.registerFailed') : t('startLng.incorrectDataLogin'),
+                { variant: 'error' }
+              )
+          );
+      } else enqueueSnackbar(t('startLng.incorrectDataLogin'), { variant: 'error' });
     }
-    handleClickOpen();
   };
 
   if (isLoggedIn || isSuccess || isSuccessRegisredUser)
@@ -188,28 +181,6 @@ function PageStart() {
 
   return (
     <>
-      <Dialog
-        open={openDialog}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {isLoading || isLoadingRegisredUser ? t('startLng.wait') : t('startLng.messageError')}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {isLogin && (isLoading ? t('startLng.wait') : t('startLng.incorrectDataLogin'))}
-            {!isLogin && (isLoadingRegisredUser ? t('startLng.wait') : t('startLng.incorrectData'))}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary" autoFocus>
-            {t('startLng.close')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
       <Container
         component="main"
         maxWidth="md"
@@ -361,7 +332,7 @@ function PageStart() {
                 </Grid>
               </Grid>
               <Button
-                disabled={isLoading}
+                disabled={isLoading || isLoadingRegisredUser}
                 type="submit"
                 fullWidth
                 variant="contained"

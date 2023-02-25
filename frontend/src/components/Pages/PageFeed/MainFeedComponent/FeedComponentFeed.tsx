@@ -14,14 +14,16 @@ import { useGetProfileQuery } from '../../../../redux/features/service/profileSe
 import ClearIcon from '@mui/icons-material/Clear';
 import { useDeletePostByIdMutation } from '../../../../redux/features/service/postsService';
 import { useLoginCheckQuery } from '../../../../redux/features/service/authService';
+import { useSnackbar } from 'notistack';
 
 function FeedComponentFeed({ post }: { post: GenericPost }) {
   const { data: isLoggedIn } = useLoginCheckQuery();
   const { i18n, t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
   const { data: self } = useGetProfileQuery(undefined, { skip: !isLoggedIn });
   const [deletePost] = useDeletePostByIdMutation();
   return (
-    <Card sx={{ maxWidth: 600 }} variant="outlined">
+    <Card sx={{ width: 600 }} variant="outlined">
       <CardHeader
         avatar={
           <Avatar
@@ -33,9 +35,16 @@ function FeedComponentFeed({ post }: { post: GenericPost }) {
         }
         action={
           isLoggedIn &&
-          (self?.id === post.userId || self?.isAdmin) && (
-            <IconButton aria-label="settings" onClick={() => deletePost(post.id)}>
-              {self?.id !== post.userId && self?.isAdmin && (
+          (self?.id === post.user || self?.isAdmin) && (
+            <IconButton
+              aria-label="settings"
+              onClick={() =>
+                deletePost(post.id)
+                  .unwrap()
+                  .catch(() => enqueueSnackbar(t('snacks.deleteFailed'), { variant: 'error' }))
+              }
+            >
+              {self?.id !== post.user && self?.isAdmin && (
                 <Typography>{t('profileLng.removeAdmin')}</Typography>
               )}
               <ClearIcon />
@@ -43,9 +52,9 @@ function FeedComponentFeed({ post }: { post: GenericPost }) {
           )
         }
         title={post?.name ?? `Name Name`}
-        subheader={formatDate(new Date(post.date ?? 0), i18n.language)}
+        subheader={formatDate(new Date(post.createdAt), i18n.language)}
       />
-      <CardMedia component="img" image={post?.image ?? DEFAULT_IMAGE} alt="Image-post" />
+      {post?.image && <CardMedia component="img" image={post.image} alt="Image-post" />}
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {post.text}
