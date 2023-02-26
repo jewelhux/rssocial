@@ -46,15 +46,15 @@ function SearchComponentUserCard({ user }: { user: FriendProfile }) {
           sx={{ fontWeight: 600 }}
         >{`${user.name} ${user.lastname}`}</Typography>
         <Typography gutterBottom>{`${t('friendLng.infoAge')}: ${
-          user.about.age || t('friendLng.hidden')
+          user.age || t('friendLng.hidden')
         }`}</Typography>
       </Box>
       <Box sx={{ display: 'flex', mt: 1, width: '30%', flexDirection: 'column' }}>
         <Typography gutterBottom>{`${t('friendLng.infoJob')}: ${
-          user.about.work || t('friendLng.hidden')
+          user.work || t('friendLng.hidden')
         }`}</Typography>
         <Typography gutterBottom>{`${t('friendLng.infoInterests')}: ${
-          user.about.interests || t('friendLng.hidden')
+          user.interests || t('friendLng.hidden')
         }`}</Typography>
       </Box>
       <CustomButtinListFriend>

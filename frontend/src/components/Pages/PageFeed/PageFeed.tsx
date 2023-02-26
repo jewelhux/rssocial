@@ -21,7 +21,9 @@ function PageFeed() {
     >
       <Typography variant="h5">{t('feedLng.title')}</Typography>
       <Typography>{t('feedLng.lastpost')}</Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <Box
+        sx={{ display: 'flex', flexDirection: 'column', gap: '15px', maxWidth: 600, width: '100%' }}
+      >
         {data?.posts.map((post) => (
           <FeedComponentFeed key={post.id} post={post} />
         ))}

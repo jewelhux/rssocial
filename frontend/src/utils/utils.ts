@@ -11,7 +11,7 @@ const partText = (text: string) => {
 const formatDate = (date: Date, lang: string) => {
   const locale = lang === 'en' ? enUS : ru;
   const at = lang === 'en' ? ' at ' : ' в ';
-  return format(date, 'PPP', { locale }) + at + format(new Date(), 'p', { locale });
+  return format(date, 'PPP', { locale }) + at + format(date, 'p', { locale });
 };
 
 export { partText, formatDate };

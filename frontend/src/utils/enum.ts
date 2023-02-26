@@ -1,9 +1,9 @@
 export enum RelationshipUserStatus {
-  notIndicated = 'не указан',
-  itIsComplicated = 'всё сложно',
-  inSearch = 'в поиске',
-  notLookingForAnyone = 'никого не ищу',
-  inARelationship = 'в отношениях'
+  notIndicated = 'notIndicated',
+  itIsComplicated = 'itIsComplicated',
+  inSearch = 'inSearch',
+  notLookingForAnyone = 'notLookingForAnyone',
+  inARelationship = 'inARelationship'
 }
 
 export enum SiteLanguage {

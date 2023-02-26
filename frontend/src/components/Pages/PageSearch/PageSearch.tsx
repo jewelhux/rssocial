@@ -22,8 +22,8 @@ function PageSearch() {
       >
         {isLoading ? (
           <CircularProgress />
-        ) : data?.users.length ? (
-          data.users.map((user) => <SearchComponentUserCard key={user.id} user={user} />)
+        ) : data?.profiles.length ? (
+          data.profiles.map((user) => <SearchComponentUserCard key={user.id} user={user} />)
         ) : (
           t('friendLng.empty')
         )}

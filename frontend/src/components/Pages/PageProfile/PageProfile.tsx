@@ -10,8 +10,7 @@ import ProfileComponentMainInfo from './MainProfileComponent/ProfileComponentMai
 import ProfileComponentSecondaryInfo from './MainProfileComponent/ProfileComponentSecondaryInfo';
 
 function PageProfile(): ReactElement {
-  const params = useParams();
-  const id = !isNaN(Number(params.id)) ? Number(params.id) : undefined;
+  const id = useParams().id;
   const { data: profile, isError, isLoading } = useGetProfileQuery(id);
   const { data } = useGetUserPostsQuery(id);
   const { t } = useTranslation();
@@ -63,7 +62,14 @@ function PageProfile(): ReactElement {
           </Box>
 
           <Box
-            sx={{ display: 'flex', flexDirection: 'column', rowGap: '15px', alignSelf: 'center' }}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: '15px',
+              alignSelf: 'center',
+              maxWidth: 600,
+              width: '100%'
+            }}
           >
             {data?.posts.map((post) => (
               <ProfileComponentFeed key={post.id} post={post} />

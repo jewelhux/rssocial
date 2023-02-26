@@ -5,26 +5,24 @@ import { CustomCreatePost } from '../../../Common/CustomStyleComponents';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAddPostMutation } from '../../../../redux/features/service/postsService';
 import { useTranslation } from 'react-i18next';
+import { useSnackbar } from 'notistack';
 
 function ProfileComponentInputFeed() {
   const [sendPost, { isLoading }] = useAddPostMutation();
   const [text, setText] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
-  const formData = new FormData();
   const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleImageAdd = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setImage(event.target.files[0]);
-      formData.append('image', event.target.files[0]);
+      if (event.target.files[0].size < 5 * 1024 * 1024) setImage(event.target.files[0]);
+      else enqueueSnackbar(t('snacks.largeFileSize'), { variant: 'warning' });
     }
     event.target.value = '';
   };
 
-  const handleImageRemove = () => {
-    formData.append('image', '');
-    setImage(null);
-  };
+  const handleImageRemove = () => setImage(null);
 
   const handleTextAdd = (event: React.ChangeEvent<HTMLInputElement>) => {
     setText(event.target.value);
@@ -32,9 +30,12 @@ function ProfileComponentInputFeed() {
   };
 
   const handleSubmith = () => {
+    const formData = new FormData();
     formData.append('text', text);
     if (image) formData.append('image', image);
-    sendPost(formData);
+    sendPost(formData)
+      .unwrap()
+      .catch(() => enqueueSnackbar(t('snacks.addFailed'), { variant: 'error' }));
 
     handleImageRemove();
     setText('');

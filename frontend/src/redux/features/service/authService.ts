@@ -20,7 +20,7 @@ export const authService = apiSlice.injectEndpoints({
           socket.connect();
         } catch {}
       },
-      invalidatesTags: ['Login', 'Chat', 'Friends', 'Post', 'Profile']
+      invalidatesTags: ['Login', 'Conversations', 'Messages', 'Friends', 'Post', 'Profile']
     }),
     login: builder.mutation<GenericResponse, LoginInput>({
       query(data) {
@@ -36,7 +36,7 @@ export const authService = apiSlice.injectEndpoints({
           socket.connect();
         } catch {}
       },
-      invalidatesTags: ['Login', 'Chat', 'Friends', 'Post', 'Profile']
+      invalidatesTags: ['Login', 'Conversations', 'Messages', 'Friends', 'Post', 'Profile']
     }),
     logout: builder.mutation<GenericResponse, void>({
       query() {

@@ -1,4 +1,5 @@
 export interface GenericResponse {
+  status: string;
   message: string;
 }
 
@@ -22,37 +23,35 @@ export enum FriendStatus {
 }
 
 export interface Friend {
-  id: number;
+  id: string;
   status: FriendStatus;
 }
 
 export interface GenericProfile {
-  id: number;
+  id: string;
   name: string;
   lastname: string;
-  avatar: string | null;
+  avatar: string;
   isAdmin?: boolean;
   isOwn?: boolean;
   friendStatus: FriendStatus;
-  about: {
-    age?: number;
-    status?: string;
-    interests?: string;
-    work?: string;
-  };
+  age?: number;
+  relationship?: string;
+  interests?: string;
+  work?: string;
 }
 
 export interface UserPost {
-  id: number;
-  image: null | string;
+  id: string;
+  image: string;
   text: string;
-  date: number;
-  userId: number;
+  createdAt: string;
+  user: string;
 }
 
 export interface GenericPost extends UserPost {
   name: string;
-  avatar: null | string;
+  avatar: string;
 }
 
 export type FriendProfile = Omit<GenericProfile, 'friendStatus'>;
@@ -64,25 +63,32 @@ export enum FriendRequestActions {
 }
 
 export interface FriendRequest {
-  id: number;
+  id: string;
   action: FriendRequestActions;
 }
 
 export interface Conversation {
-  id: number;
+  id: string;
   name: string;
-  avatar: null | string;
+  avatar: string;
   online: boolean;
   unreadCount: number;
-  lastUpdate: number;
+  updatedAt: string;
   lastMessage: string;
 }
 
+export enum SendStatus {
+  pending = 'pending',
+  success = 'success',
+  error = 'error'
+}
+
 export interface Message {
-  date: number;
+  createdAt: string;
   text: string;
-  image: string | null;
-  userId: number;
-  conversationId: number;
+  image: string;
+  user: string;
+  conversationId?: string;
   own?: boolean;
+  status?: SendStatus;
 }

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useGetProfileQuery } from '../../../../redux/features/service/profileService';
 import { CustomGrid, CustomGridItem } from '../../../Common/CustomStyleComponents';
 
-function ProfileComponentSecondaryInfo({ id }: { id?: number }): ReactElement {
+function ProfileComponentSecondaryInfo({ id }: { id?: string }): ReactElement {
   const { data: profile } = useGetProfileQuery(id);
   const { t } = useTranslation();
 
@@ -16,17 +16,18 @@ function ProfileComponentSecondaryInfo({ id }: { id?: number }): ReactElement {
       }}
     >
       <CustomGridItem variant="outlined">
-        <b>{t('profileLng.infoAge')}: </b> {profile?.about.age ?? t('friendLng.hidden')}
+        <b>{t('profileLng.infoAge')}: </b> {profile?.age ?? t('friendLng.hidden')}
       </CustomGridItem>
       <CustomGridItem variant="outlined">
-        <b>{t('profileLng.infoStatus')}: </b> {profile?.about.status ?? t('friendLng.hidden')}
+        <b>{t('profileLng.infoStatus')}: </b>{' '}
+        {profile?.relationship ? t('settingStatus.' + profile.relationship) : t('friendLng.hidden')}
       </CustomGridItem>
       <CustomGridItem variant="outlined">
-        <b>{t('profileLng.infoInterests')}: </b> {profile?.about.interests ?? t('friendLng.hidden')}
+        <b>{t('profileLng.infoInterests')}: </b> {profile?.interests ?? t('friendLng.hidden')}
       </CustomGridItem>
       <CustomGridItem variant="outlined">
         <b>{t('profileLng.infoJob')}: </b>
-        {profile?.about.work ?? t('friendLng.hidden')}
+        {profile?.work ?? t('friendLng.hidden')}
       </CustomGridItem>
     </CustomGrid>
   );

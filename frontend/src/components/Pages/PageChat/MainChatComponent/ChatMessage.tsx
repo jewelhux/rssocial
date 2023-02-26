@@ -1,6 +1,6 @@
-import { Avatar, Box, Typography, useMediaQuery } from '@mui/material';
+import { Avatar, Box, CircularProgress, Stack, Typography, useMediaQuery } from '@mui/material';
 import { ReactElement } from 'react';
-import { Message } from '../../../../redux/features/service/types';
+import { Message, SendStatus } from '../../../../redux/features/service/types';
 import { useGetProfileQuery } from '../../../../redux/features/service/profileService';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
 import { styled } from '@mui/material/styles';
@@ -8,6 +8,8 @@ import type { Theme } from '@mui/material/styles';
 import { formatDistance } from 'date-fns';
 import { ru, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
+import DoneIcon from '@mui/icons-material/Done';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 const SpeechBubble = styled('div')<{ own: boolean }>`
   border-radius: 1.15rem;
@@ -93,25 +95,38 @@ const MessageImage = styled('img')`
 
 function ChatMessage({ message, own }: { message: Message; own: boolean }): ReactElement {
   const { i18n } = useTranslation();
-  const { data: profile } = useGetProfileQuery(message.userId);
+  const { data: profile } = useGetProfileQuery(message.user ? message.user : undefined);
   const isNotMobile = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   return (
     <Box padding={1} display="flex" sx={{ flexDirection: 'column' }}>
       <MessageWrapper own={own}>
         <MessageContainer own={own}>
-          {isNotMobile && <Avatar alt="image" src={profile?.avatar ?? DEFAULT_IMAGE} />}
+          {isNotMobile && <Avatar alt="image" src={profile?.avatar || DEFAULT_IMAGE} />}
           <BubbleContainer own={own}>
             {message.image && <MessageImage src={message.image}></MessageImage>}
             {message.text && <SpeechBubble own={own}>{message.text}</SpeechBubble>}
           </BubbleContainer>
         </MessageContainer>
-        <Typography fontSize={12} mt={1}>
-          {formatDistance(new Date(message.date), new Date(), {
-            addSuffix: true,
-            locale: i18n.language === 'en' ? enUS : ru
-          })}
-        </Typography>
+        <Stack flexDirection={'row'} gap={'10px'} alignItems={'flex-end'}>
+          <Typography fontSize={12} mt={1}>
+            {formatDistance(new Date(message.createdAt), new Date(), {
+              addSuffix: true,
+              locale: i18n.language === 'en' ? enUS : ru
+            })}
+          </Typography>
+          {message.status && (
+            <Box width={20} height={20}>
+              {message.status === SendStatus.pending ? (
+                <CircularProgress size={15} />
+              ) : message.status === SendStatus.success ? (
+                <DoneIcon fontSize="small" />
+              ) : (
+                <ErrorOutlineIcon fontSize="small" color="error" />
+              )}
+            </Box>
+          )}
+        </Stack>
       </MessageWrapper>
     </Box>
   );
