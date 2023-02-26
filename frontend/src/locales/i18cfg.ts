@@ -37,7 +37,9 @@ i18n.use(initReactI18next).init({
           infoAge: 'Age',
           infoJob: 'Job',
           infoInterests: 'Interests',
-          hidden: 'Not entered'
+          hidden: 'Not entered',
+          acceptedNotification: 'accepted your friend request!',
+          requestedNotification: 'wants to be friends!'
         },
         profileLng: {
           infoAge: 'Age',
@@ -143,7 +145,9 @@ i18n.use(initReactI18next).init({
           infoJob: 'Место работы',
           infoInterests: 'Интересы',
           hidden: 'Не указано',
-          btnRevoke: 'Отменить заявку'
+          btnRevoke: 'Отменить заявку',
+          acceptedNotification: 'принял Вашу заявку в друзья!',
+          requestedNotification: 'хочет с Вами дружить!'
         },
         profileLng: {
           infoAge: 'Возраст',
