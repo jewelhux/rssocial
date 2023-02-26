@@ -2,6 +2,7 @@ import { apiSlice } from '../apiSlice';
 import { Conversation, Message, SendStatus } from './types';
 import { socket } from './socket';
 import notification from '../../../assets/notification.mp3';
+import { snack } from '../../../components/Common/SnackbarMassege';
 
 export const chatService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -31,6 +32,8 @@ export const chatService = apiSlice.injectEndpoints({
           updateCachedData((draft) => {
             draft.conversations.unshift(conversation);
           });
+          if (arg === undefined && window.location.pathname !== '/messages')
+            snack.toast(`${conversation.name}: ${conversation.lastMessage}`);
         };
 
         const handleNewMessage = (message: Message) => {
@@ -46,6 +49,8 @@ export const chatService = apiSlice.injectEndpoints({
                   audio.volume = 0.5;
                   // eslint-disable-next-line prettier/prettier
                   audio.play().catch(() => {});
+                  if (window.location.pathname !== '/messages')
+                    snack.toast(`${conv.name}: ${conv.lastMessage}`);
                 }
               }
               draft.conversations = [conv, ...draft.conversations.filter((el) => el !== conv)];

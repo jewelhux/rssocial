@@ -7,6 +7,7 @@ import { GlobalHistory } from './components/Common/GlobalNavigate';
 import i18n from './locales/i18cfg';
 import { I18nextProvider } from 'react-i18next';
 import { SnackbarProvider } from 'notistack';
+import { SnackbarUtilsConfigurator } from './components/Common/SnackbarMassege';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
@@ -15,6 +16,7 @@ root.render(
       <GlobalHistory />
       <I18nextProvider i18n={i18n}>
         <SnackbarProvider maxSnack={3}>
+          <SnackbarUtilsConfigurator />
           <App />
         </SnackbarProvider>
       </I18nextProvider>
