@@ -23,7 +23,7 @@ function ProfileComponentFeed({ post }: { post: UserPost }) {
   const { enqueueSnackbar } = useSnackbar();
 
   return (
-    <Card sx={{ width: 600 }} variant="outlined">
+    <Card variant="outlined">
       <CardHeader
         avatar={
           <Avatar

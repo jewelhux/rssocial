@@ -23,7 +23,7 @@ function FeedComponentFeed({ post }: { post: GenericPost }) {
   const { data: self } = useGetProfileQuery(undefined, { skip: !isLoggedIn });
   const [deletePost] = useDeletePostByIdMutation();
   return (
-    <Card sx={{ width: 600 }} variant="outlined">
+    <Card variant="outlined">
       <CardHeader
         avatar={
           <Avatar

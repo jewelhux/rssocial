@@ -62,7 +62,14 @@ function PageProfile(): ReactElement {
           </Box>
 
           <Box
-            sx={{ display: 'flex', flexDirection: 'column', rowGap: '15px', alignSelf: 'center' }}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: '15px',
+              alignSelf: 'center',
+              maxWidth: 600,
+              width: '100%'
+            }}
           >
             {data?.posts.map((post) => (
               <ProfileComponentFeed key={post.id} post={post} />
