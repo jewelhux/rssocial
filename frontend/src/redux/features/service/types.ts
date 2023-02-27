@@ -41,7 +41,12 @@ export interface GenericProfile {
   work?: string;
 }
 
-export interface UserPost {
+export interface PostLikes {
+  likesCount: number;
+  isLiked: boolean;
+}
+
+export interface UserPost extends PostLikes {
   id: string;
   image: string;
   text: string;

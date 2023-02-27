@@ -5,7 +5,6 @@ import morgan from 'morgan';
 import { createServer } from 'http';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { Types as MongoTypes } from 'mongoose';
 import connectDB from './config/db';
 import errorHandler from './middleware/errorHandler';
 import authRouter from './routes/auth.routes';
@@ -16,6 +15,7 @@ import chatRouter from './routes/chat.routes';
 import { checkAuth } from './middleware/checkAuth';
 import { initializeSocket } from './socket';
 import { CustomRequest } from './types/types';
+import postModel from './models/post.model';
 
 const port = process.env.PORT ?? 3000;
 
@@ -45,10 +45,37 @@ app.use('/api/friends', friendsRouter);
 app.use('/api/chat', chatRouter);
 
 app.get('/api/test', checkAuth, async (req: Request, res: Response) => {
-  const id = new MongoTypes.ObjectId('63f253246adfb3dc1b59405d');
-
-  res.status(200).json({ id });
+  const result = await postModel.findOneAndUpdate(
+    { _id: 'knnknk' },
+    [
+      {
+        $set: {
+          likes: {
+            $cond: [
+              { $in: [res.locals.user._id, '$likes'] },
+              { $setDifference: ['$likes', [res.locals.user._id]] },
+              { $concatArrays: ['$likes', [res.locals.user._id]] }
+            ]
+          }
+        }
+      }
+    ],
+    {
+      new: true,
+      projection: {
+        isLiked: { $in: [res.locals.user._id, '$likes'] },
+        likesCount: { $size: '$likes' }
+      }
+    }
+  );
+  res.status(200).json({ result });
 });
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('*', (req: Request, res: Response) =>
+  res.sendFile(path.join(__dirname, 'build', 'index.html'))
+);
 
 app.use(errorHandler);
 

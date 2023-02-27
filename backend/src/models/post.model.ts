@@ -22,6 +22,9 @@ export class Post {
 
   @prop({ required: true, ref: () => User })
   user: Ref<User>;
+
+  @prop({ ref: () => User, required: true, default: [] })
+  likes: Ref<User>[];
 }
 
 const postModel = getModelForClass(Post);

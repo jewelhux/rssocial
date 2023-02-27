@@ -5,6 +5,17 @@ import { Socket } from 'socket.io';
 import userModel from '../models/user.model';
 import CustomError from '../util/customError';
 
+export const getUserId = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { token } = req.cookies;
+    const decoded = verify(token, process.env.JWT_SECRET as string);
+    res.locals.userId = decoded.sub;
+    next();
+  } catch {
+    next();
+  }
+};
+
 export const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { token } = req.cookies;

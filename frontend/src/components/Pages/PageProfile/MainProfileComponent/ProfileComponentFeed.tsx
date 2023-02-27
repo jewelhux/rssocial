@@ -10,15 +10,21 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { UserPost } from '../../../../redux/features/service/types';
 import { useGetProfileQuery } from '../../../../redux/features/service/profileService';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
-import { useDeletePostByIdMutation } from '../../../../redux/features/service/postsService';
+import {
+  useDeletePostByIdMutation,
+  useToggleLikeMutation
+} from '../../../../redux/features/service/postsService';
 import { useTranslation } from 'react-i18next';
 import { formatDate } from '../../../../utils/utils';
 import { useSnackbar } from 'notistack';
+import { CardActions } from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 function ProfileComponentFeed({ post }: { post: UserPost }) {
   const { data: user } = useGetProfileQuery(post.user);
   const { data: self } = useGetProfileQuery();
   const [deletePost] = useDeletePostByIdMutation();
+  const [toggleLike] = useToggleLikeMutation();
   const { i18n, t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -61,6 +67,12 @@ function ProfileComponentFeed({ post }: { post: UserPost }) {
           {post?.text}
         </Typography>
       </CardContent>
+      <CardActions disableSpacing>
+        <IconButton aria-label="like button" onClick={() => toggleLike(post.id)} size="small">
+          <FavoriteIcon color={post.isLiked ? 'primary' : undefined} />
+          {post.likesCount}
+        </IconButton>
+      </CardActions>
     </Card>
   );
 }
