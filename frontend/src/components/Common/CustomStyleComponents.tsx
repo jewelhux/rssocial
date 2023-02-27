@@ -117,7 +117,31 @@ const CustomButtinListFriend = styled(Box)(() => ({
   justifyContent: 'center'
 }));
 
+const Scrollable = styled('div')`
+  scrollbar-width: 'thin';
+  overflow-y: overlay;
+  overflow-x: hidden;
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+  @media (hover: hover) {
+    &:hover::-webkit-scrollbar {
+      width: 0.3rem;
+    }
+  }
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #888;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
+`;
+
 export {
+  Scrollable,
   StyledBadge,
   SmallAvatar,
   Search,

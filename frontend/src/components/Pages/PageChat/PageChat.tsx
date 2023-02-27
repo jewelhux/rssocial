@@ -18,6 +18,9 @@ import {
 import ChatConversation from './MainChatComponent/ChatConversation';
 import ChatSendForm from './MainChatComponent/ChatSendForm';
 import { useLocation } from 'react-router-dom';
+import { Scrollable } from '../../Common/CustomStyleComponents';
+import { CircularProgress, Stack } from '@mui/material';
+
 const drawerWidth = 300;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -70,9 +73,11 @@ function PageChat() {
   const location = useLocation();
   const [profile, setProfile] = useState<string>(location.state?.profile || '');
   const { data: convData } = useGetConversationsQuery(location.state?.profile);
-  const { data: msgData } = useGetMessagesQuery(profile, { skip: profile === '' });
+  const { currentData: msgData, isFetching: isMsgFetching } = useGetMessagesQuery(profile, {
+    skip: profile === ''
+  });
   const [reportRead] = useReportReadMutation();
-  const chatContainerRef = useRef<HTMLElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const handleConversationClick = (id: string) => {
     setProfile(id);
@@ -124,7 +129,7 @@ function PageChat() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List sx={{ overflowY: 'auto', overflowX: 'hidden', p: 0 }}>
+        <Scrollable as={List} sx={{ p: 0 }}>
           {convData?.conversations.map((conversation) => (
             <ChatConversation
               key={conversation.id}
@@ -134,17 +139,24 @@ function PageChat() {
               handleClick={() => handleConversationClick(conversation.id)}
             />
           ))}
-        </List>
+        </Scrollable>
       </Drawer>
       <Box component="main" sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-        <Box
-          sx={{ overflowY: 'auto', overflowX: 'hidden', p: 2, width: '100%', flex: 1 }}
-          ref={chatContainerRef}
-        >
-          {msgData?.messages.map((message) => (
-            <ChatMessage key={message.createdAt} message={message} own={message.user !== profile} />
-          ))}
-        </Box>
+        <Scrollable as={Box} sx={{ p: 2, width: '100%', flex: 1 }} ref={chatContainerRef}>
+          {isMsgFetching ? (
+            <Stack flex={1} alignItems="center" justifyContent="center" height={'100%'}>
+              <CircularProgress size={50} />
+            </Stack>
+          ) : (
+            msgData?.messages.map((message) => (
+              <ChatMessage
+                key={message.createdAt}
+                message={message}
+                own={message.user !== profile}
+              />
+            ))
+          )}
+        </Scrollable>
         {msgData && <ChatSendForm profile={profile} />}
       </Box>
     </Box>
