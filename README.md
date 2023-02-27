@@ -1,4 +1,4 @@
-<h1 align="center">RS Soscial Network</h1>
+<h1 align="center">RS Social Network</h1>
 
 ## Description
 
