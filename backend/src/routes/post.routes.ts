@@ -1,15 +1,22 @@
 import express from 'express';
-import { addPost, deletePost, getAllPosts, getPostsByUser } from '../controllers/post.controller';
-import { checkAuth } from '../middleware/checkAuth';
+import {
+  addPost,
+  deletePost,
+  getAllPosts,
+  getPostsByUser,
+  toggleLike
+} from '../controllers/post.controller';
+import { checkAuth, getUserId } from '../middleware/checkAuth';
 import { uploadImage } from '../middleware/uploadImage';
-import { addPostSchema, deletePostSchema } from '../schemas/post.schema';
+import { addPostSchema, postByIdSchema } from '../schemas/post.schema';
 import { validate } from '../middleware/validate';
 
 const router = express.Router();
 
 router.get('/', checkAuth, getPostsByUser);
-router.get('/all', getAllPosts);
+router.get('/all', getUserId, getAllPosts);
 router.post('/', checkAuth, uploadImage('image'), validate(addPostSchema), addPost);
-router.delete('/:id', checkAuth, validate(deletePostSchema), deletePost);
+router.delete('/:id', checkAuth, validate(postByIdSchema), deletePost);
+router.patch('/:id', checkAuth, validate(postByIdSchema), toggleLike);
 
 export default router;

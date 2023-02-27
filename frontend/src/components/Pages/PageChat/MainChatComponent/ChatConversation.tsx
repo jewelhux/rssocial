@@ -1,11 +1,12 @@
 import { ReactElement } from 'react';
-import { Avatar, ListItem, ListItemButton, ListItemText, styled } from '@mui/material';
+import { Avatar, ListItem, ListItemButton, ListItemText, styled, Typography } from '@mui/material';
 import { StyledBadge } from '../../../Common/CustomStyleComponents';
 import { Conversation } from '../../../../redux/features/service/types';
 import { DEFAULT_IMAGE } from '../../../../utils/const';
 
 const UnreadCounter = styled('div')`
   display: flex;
+  flex-shrink: 0;
   font-size: 0.9rem;
   justify-content: center;
   align-items: center;
@@ -13,6 +14,19 @@ const UnreadCounter = styled('div')`
   height: 27px;
   border-radius: 50%;
   background-color: ${(props) => props.theme.palette.divider};
+`;
+
+const UnreadCounterClosed = styled('div')`
+  position: absolute;
+  font-size: 0.62rem;
+  text-align: center;
+  bottom: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  color: white;
+  background-color: ${(props) => props.theme.palette.error.dark};
 `;
 
 function ChatConversation({
@@ -44,13 +58,24 @@ function ChatConversation({
           isonlineuser={conversation.online.toString()}
         >
           <Avatar alt="image" src={conversation.avatar || DEFAULT_IMAGE} />
+          {conversation.unreadCount > 0 && !open && (
+            <UnreadCounterClosed>
+              {conversation.unreadCount <= 99 ? conversation.unreadCount : 99}
+            </UnreadCounterClosed>
+          )}
         </StyledBadge>
         <ListItemText
           primary={conversation.name}
-          secondary={conversation.lastMessage}
+          secondary={
+            <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {conversation.lastMessage}
+            </Typography>
+          }
           sx={{ opacity: open ? 1 : 0 }}
         />
-        {conversation.unreadCount > 0 && <UnreadCounter>{conversation.unreadCount}</UnreadCounter>}
+        {conversation.unreadCount > 0 && open && (
+          <UnreadCounter>{conversation.unreadCount}</UnreadCounter>
+        )}
       </ListItemButton>
     </ListItem>
   );

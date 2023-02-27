@@ -12,11 +12,11 @@ export const addPostSchema = object({
     )
 });
 
-export const deletePostSchema = object({
+export const postByIdSchema = object({
   params: object({
     id: string()
   })
 });
 
 export type AddPostInput = TypeOf<typeof addPostSchema>['body'];
-export type DeletePostInput = TypeOf<typeof deletePostSchema>['params'];
+export type PostByIdInput = TypeOf<typeof postByIdSchema>['params'];

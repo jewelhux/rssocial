@@ -4,6 +4,7 @@ import InputBase from '@mui/material/InputBase';
 import { StyledBadgeProps } from '../../utils/interfaces';
 
 const StyledBadge = styled(Badge)<StyledBadgeProps>(({ theme, isonlineuser }) => ({
+  position: 'relative',
   '& .MuiBadge-badge': {
     position: 'relative',
     backgroundColor: isonlineuser === 'true' ? '#44b700' : '#ccc',

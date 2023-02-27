@@ -12,9 +12,15 @@ import { useTranslation } from 'react-i18next';
 import { formatDate } from '../../../../utils/utils';
 import { useGetProfileQuery } from '../../../../redux/features/service/profileService';
 import ClearIcon from '@mui/icons-material/Clear';
-import { useDeletePostByIdMutation } from '../../../../redux/features/service/postsService';
+import {
+  useDeletePostByIdMutation,
+  useToggleLikeMutation
+} from '../../../../redux/features/service/postsService';
 import { useLoginCheckQuery } from '../../../../redux/features/service/authService';
 import { useSnackbar } from 'notistack';
+import { CardActions } from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { useNavigate } from 'react-router-dom';
 
 function FeedComponentFeed({ post }: { post: GenericPost }) {
   const { data: isLoggedIn } = useLoginCheckQuery();
@@ -22,8 +28,10 @@ function FeedComponentFeed({ post }: { post: GenericPost }) {
   const { enqueueSnackbar } = useSnackbar();
   const { data: self } = useGetProfileQuery(undefined, { skip: !isLoggedIn });
   const [deletePost] = useDeletePostByIdMutation();
+  const [toggleLike] = useToggleLikeMutation();
+  const navigate = useNavigate();
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{ textAlign: 'left' }}>
       <CardHeader
         avatar={
           <Avatar
@@ -51,15 +59,31 @@ function FeedComponentFeed({ post }: { post: GenericPost }) {
             </IconButton>
           )
         }
-        title={post?.name ?? `Name Name`}
+        title={
+          <div onClick={() => navigate(`/profile/${post.user}`)}>
+            <Typography color="text.primary" sx={{ cursor: 'pointer', width: 'fit-content' }}>
+              {post?.name ?? `Name Name`}
+            </Typography>
+          </div>
+        }
         subheader={formatDate(new Date(post.createdAt), i18n.language)}
       />
       {post?.image && <CardMedia component="img" image={post.image} alt="Image-post" />}
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.primary">
           {post.text}
         </Typography>
       </CardContent>
+      <CardActions disableSpacing>
+        <IconButton
+          aria-label="like button"
+          onClick={() => isLoggedIn && toggleLike(post.id)}
+          size="small"
+        >
+          <FavoriteIcon color={post.isLiked && isLoggedIn ? 'primary' : undefined} />
+          {post.likesCount}
+        </IconButton>
+      </CardActions>
     </Card>
   );
 }

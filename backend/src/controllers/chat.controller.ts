@@ -196,6 +196,12 @@ export const sendMessage = async (
 
 export const reportRead = async (socket: Socket, profile: string) => {
   try {
+    if (
+      !MongoTypes.ObjectId.isValid(profile) ||
+      !MongoTypes.ObjectId.isValid(socket.handshake.auth.user)
+    )
+      throw new Error('invalid ids');
+
     const response = await conversationModel.aggregate([
       {
         $match: {
@@ -227,6 +233,8 @@ export const reportRead = async (socket: Socket, profile: string) => {
       }
     ]);
 
+    if (!response[0]) throw new Error('Cannot find the profile to update');
+
     const update = await conversationModel.updateOne(
       {
         _id: response[0]._id
@@ -237,12 +245,13 @@ export const reportRead = async (socket: Socket, profile: string) => {
         }
       },
       {
-        arrayFilters: [{ 'elem.user': socket.handshake.auth.user }]
+        arrayFilters: [{ 'elem.user': socket.handshake.auth.user }],
+        timestamps: false
       }
     );
 
     if (update.modifiedCount) socket.emit('updateRead', profile);
   } catch (e) {
-    console.log('error reporting read', e);
+    console.log('error reporting read');
   }
 };
