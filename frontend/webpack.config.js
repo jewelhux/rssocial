@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 const isProduction = process.env.NODE_ENV == 'production';
 
 const config = {
@@ -19,12 +20,14 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html'
+      template: './public/index.html',
+      favicon: './src/assets/favicon.png'
     }),
     new ESLintPlugin({
       extensions: ['.ts', '.tsx'],
       quiet: true
-    })
+    }),
+    new Dotenv()
   ],
   module: {
     rules: [

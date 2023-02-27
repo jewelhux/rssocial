@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start:watch": "nodemon mockserver.js",
     "start": "ts-node src/app.ts",
     "dev": "ts-node-dev --respawn --transpile-only --debounce 2000 src/app.ts",
     "lint": "eslint src"

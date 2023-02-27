@@ -20,6 +20,7 @@ import ChatSendForm from './MainChatComponent/ChatSendForm';
 import { useLocation } from 'react-router-dom';
 import { Scrollable } from '../../Common/CustomStyleComponents';
 import { CircularProgress, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 const drawerWidth = 300;
 
@@ -78,6 +79,7 @@ function PageChat() {
   });
   const [reportRead] = useReportReadMutation();
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   const handleConversationClick = (id: string) => {
     setProfile(id);
@@ -121,7 +123,7 @@ function PageChat() {
         <DrawerHeader>
           {open && (
             <Typography ml={2} variant="h6">
-              Conversations
+              {t('chat.title')}
             </Typography>
           )}
           <IconButton onClick={() => setOpen((state) => !state)}>
