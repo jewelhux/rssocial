@@ -1,0 +1,96 @@
+import { NextFunction, Request, Response } from 'express';
+import { FilterQuery } from 'mongoose';
+import friendshipModel, { Friendship } from '../models/friendship.model';
+import { FriendRequestInput, GetFriendsInput, FriendStatus } from '../schemas/friends.schema';
+import { CustomRequest } from '../types/types';
+import CustomError from '../util/customError';
+
+export const getFriends = async (
+  req: Request<object, object, object, GetFriendsInput>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = res.locals.user;
+    const status = req.query.type;
+    let query: FilterQuery<Friendship>;
+
+    if (status === FriendStatus.ACCEPTED) {
+      query = {
+        $and: [{ status: FriendStatus.ACCEPTED }, { $or: [{ requester: id }, { requestee: id }] }]
+      };
+    } else if (status === FriendStatus.PENDING) {
+      query = {
+        $and: [{ status: FriendStatus.PENDING }, { requestee: id }]
+      };
+    } else {
+      query = {
+        $and: [{ status: FriendStatus.PENDING }, { requester: id }]
+      };
+    }
+
+    const friends = (
+      await friendshipModel
+        .find(query)
+        .populate({ path: 'requestee', match: { _id: { $ne: id } } })
+        .populate({ path: 'requester', match: { _id: { $ne: id } } })
+        .lean()
+    ).map((friend) => (friend.requestee ? friend.requestee : friend.requester));
+
+    return res.status(200).json({ status: 'success', friends });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const friendRequest = async (
+  req: Request<object, object, FriendRequestInput>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { io } = req as CustomRequest;
+    const { id: userId, name: firstname, lastname } = res.locals.user;
+    const { id: targetId, action } = req.body;
+    const name = `${firstname} ${lastname}`;
+
+    const existingFriendship = await friendshipModel.findOne({
+      $or: [
+        { requester: userId, requestee: targetId },
+        { requester: targetId, requestee: userId }
+      ]
+    });
+
+    if (action === 'request') {
+      if (existingFriendship)
+        return next(new CustomError('Either already friends or already requsted', 400));
+      await friendshipModel.create({
+        requester: userId,
+        requestee: targetId,
+        status: FriendStatus.PENDING
+      });
+      io.to(targetId).emit('friendStatus', { id: userId, status: FriendStatus.REQUESTED, name });
+      return res.status(200).json({ status: 'success', message: 'Request sent' });
+    }
+
+    if (action === 'approve') {
+      if (!existingFriendship) return next(new CustomError('No request to approve', 400));
+      if (existingFriendship.status === FriendStatus.ACCEPTED)
+        return next(new CustomError('Already a friend', 400));
+      if (!existingFriendship.requestee.equals(userId))
+        return next(new CustomError('You cannot approve your own request', 400));
+
+      existingFriendship.status = FriendStatus.ACCEPTED;
+      await existingFriendship.save();
+      io.to(targetId).emit('friendStatus', { id: userId, status: FriendStatus.ACCEPTED, name });
+      return res.status(200).json({ status: 'success', message: 'Request approved' });
+    }
+
+    if (!existingFriendship) return next(new CustomError('No request to delete', 400));
+    await existingFriendship.delete();
+    io.to(targetId).emit('friendStatus', { id: userId, status: FriendStatus.NONE, name });
+    return res.status(200).json({ status: 'success', message: 'Request deleted' });
+  } catch (e) {
+    next(e);
+  }
+};

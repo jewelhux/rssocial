@@ -1,0 +1,23 @@
+{
+  "name": "rssocial-app",
+  "version": "1.0.0",
+  "description": "",
+  "workspaces": [
+    "./frontend",
+    "./backend"
+  ],
+  "scripts": {
+    "start": "npm run start --prefix backend",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run serve --prefix frontend\"",
+    "start:frontend": "npm run serve --prefix frontend",
+    "build:frontend": "npm run build --prefix frontend",
+    "start:dev:backend": "npm run dev --prefix backend",
+    "prepare": "husky install"
+  },
+  "author": "Seniors team",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "husky": "^8.0.3"
+  }
+}
