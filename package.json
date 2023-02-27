@@ -7,11 +7,11 @@
     "./backend"
   ],
   "scripts": {
-    "start": "concurrently \"npm run start --prefix backend\" \"npm run serve --prefix frontend\"",
+    "start": "npm run start --prefix backend",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run serve --prefix frontend\"",
     "start:frontend": "npm run serve --prefix frontend",
     "build:frontend": "npm run build --prefix frontend",
-    "start:backend": "npm run start --prefix backend",
-    "start:watch:backend": "npm run start:watch --prefix backend",
+    "start:dev:backend": "npm run dev --prefix backend",
     "prepare": "husky install"
   },
   "author": "Seniors team",
