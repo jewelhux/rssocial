@@ -51,11 +51,17 @@ function SettingComponentNewInfo() {
 
   const handleAgeUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value) {
-      if (+event.target.value > 120 || 18 > +event.target.value) {
-        return;
-      } else {
-        setAgeUser(event.target.value);
-      }
+      // if (+event.target.value > 120 || 18 > +event.target.value) {
+      //   return;
+      // } else {
+      setAgeUser(event.target.value);
+      // }
+    }
+  };
+
+  const handleAgeUserKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Backspace' && ageUser.length === 1) {
+      setAgeUser('');
     }
   };
 
@@ -109,7 +115,16 @@ function SettingComponentNewInfo() {
             variant="filled"
             value={ageUser}
             onChange={handleAgeUser}
+            onKeyDown={handleAgeUserKeyDown}
             disabled={isLoadingProfileUser}
+            onBlur={(e) => {
+              const value = parseInt(e.target.value, 10);
+              if (isNaN(value) || value < 18) {
+                setAgeUser('');
+              } else if (isNaN(value) || value > 120) {
+                setAgeUser('120');
+              }
+            }}
             sx={{ width: '100%' }}
           />
           <FormControl variant="filled" sx={{ width: '100%' }}>
