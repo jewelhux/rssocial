@@ -51,11 +51,7 @@ function SettingComponentNewInfo() {
 
   const handleAgeUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value) {
-      // if (+event.target.value > 120 || 18 > +event.target.value) {
-      //   return;
-      // } else {
       setAgeUser(event.target.value);
-      // }
     }
   };
 
