@@ -83,6 +83,7 @@ i18n.use(initReactI18next).init({
         },
         startLng: {
           titleLogin: 'Log in to your account',
+          loadingProgress: 'Loading in progress',
           password: 'Password',
           btnLogin: 'Enter',
           btnToRegistration: 'Go to registration',
@@ -191,6 +192,7 @@ i18n.use(initReactI18next).init({
         },
         startLng: {
           titleLogin: 'Вход в аккаунт',
+          loadingProgress: 'Идет загрузка',
           password: 'Пароль',
           btnLogin: 'Войти',
           btnToRegistration: 'Перейти к регистрации',

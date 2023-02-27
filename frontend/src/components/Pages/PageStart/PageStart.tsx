@@ -205,7 +205,7 @@ function PageStart() {
             </Avatar>
             <Typography component="h1" variant="h5">
               {isLoading
-                ? 'Идет загрузка'
+                ? t('startLng.loadingProgress')
                 : isLogin
                 ? t('startLng.titleLogin')
                 : t('startLng.titleRegistration')}
